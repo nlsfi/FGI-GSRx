@@ -1,0 +1,130 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Land Survey of Finland. This file is part of FGI-GSRx software-defined
+%% receiver. FGI-GSRx is a free software: you can redistribute it and/or
+%% modify it under the terms of the GNU General Public License as published
+%% by the Free Software Foundation, either version 3 of the License, or any
+%% later version. FGI-GSRx software receiver is distributed in the hope
+%% that it will be useful, but WITHOUT ANY WARRANTY, without even the
+%% implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% See the GNU General Public License for more details. You should have
+%% received a copy of the GNU General Public License along with FGI-GSRx
+%% software-defined receiver. If not, please visit the following website 
+%% for further information: https://www.gnu.org/licenses/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+% This is the default parameter file. 
+% All the default parameter values are set here.
+%
+% Change this only if you are adding or removing parameters permanently
+% in the code.
+%
+% If you want to use your own values or temporary parameters
+% make a personal parameter file in this same format.
+% 
+% You only need to write those parameters and values 
+% that you want to change or temporary add
+% into that file.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% System parameters
+sys,enabledSignals,[ {['gpsl1']}], % List of enabled signals
+sys,msToProcess,100000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
+sys,msToSkip,0,             % Number of ms to skip from beginning of file
+
+% Input/Output file names
+sys,loadDataFile,true,     % Defines if data file is to be loaded
+sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_Chapter2.mat',          % Datafile to load of enabled
+sys,saveDataFile,false,     % Defines if data should be stored to file
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_Chapter2.mat',  % Data file for storing output
+sys,loadIONMetaDataReading,false,
+sys,metaDataFileIn,''
+
+% Plotting parameters
+sys,plotSpectra,true,              % If set to true plot spectrum and histogram results
+sys,plotAcquisition,true,          % If set to true plot acquisition results
+sys,plotTracking,true,             % If set to true plot tracking results
+sys,showTrackingOutput,true,        % If set to true show the tracking output
+
+% Multi correlator tracking parameters
+sys,enableMultiCorrelatorTracking,false, 	% Disable or enable multi correlator tracking 
+sys,multiCorrelatorTrackingChannel,1,       % Channel to be used for multi correlator tracking
+sys,multiCorrelatorTrackingRate,20,        	% Update rate in epochs for multi correlator tracking
+sys,corrFingers,[-2:0.25:2],                % Correlator finger positions [chips]
+sys,noiseFingerIndex,1,                  	% Index of finger for measuring noise level when multi correlator tracking is enabled
+sys,earlyFingerIndex,8,                  	% Index of early finger when multi correlator tracking is enabled
+sys,promptFingerIndex,9,                 	% Index of prompt finger when multi correlator tracking is enabled
+sys,lateFingerIndex,10,                  	% Index of late finger when multi correlator tracking is enabled
+
+% Navigation parameters
+nav,navSolPeriod,100,           % Output period in ms for navigation solution
+nav,elevationMask,5,            % Elevation mask in degrees [0 - 90]. Satellites below this elevation will be excluded from navigation
+nav,snrMask,30,            		% SNR mask in dB-Hz [usually in the range between 30-35 dB-Hz]. Satellites below the SNR mask will be excluded from navigation
+nav,gpsLeapSecond,18,           % GPS-UTC leap seconds
+
+% True/reference user position, if available
+nav,trueLat,60.161086788889,    
+nav,trueLong,24.545448080556,
+nav,trueHeight,54.1640000026673,
+
+
+% GPS L1 Settings
+
+% Input RF file
+gpsl1,rfFileName,'.\FGI-GSRx Raw IQ Data\GPSL1GalileoE1\rawData_GPSL1GalileoE1B_Chapters2_4.dat',            % Name of RF data file used for GPS L1 signal
+
+% Radio front end configurations
+gpsl1,centerFrequency,1569030000, % Radio center frequency [Hz]
+gpsl1,samplingFreq,26e6, % Sampling frequency [Hz]
+gpsl1,bandWidth,4.2e6, % Bandwidth of the front end [Hz]
+gpsl1,sampleSize,8, % Number of bits for one sample. For complex data this is the size for I+Q.
+gpsl1,complexData,false, % Complex or real data
+gpsl1,iqSwap,false, % Complex or real data
+
+% Acquisition parameters
+gpsl1,acqSatelliteList,[1:32],       % Specify what GPS satellites to search for [PRN numbers]          
+gpsl1,nonCohIntNumber,5,           % Number of non-coherent integration rounds for signal acquisition
+gpsl1,cohIntNumber,5,              % Coherent integration time for signal acquisition [ms]
+gpsl1,acqThreshold,9,             % Threshold for the signal presence decision rule
+gpsl1,maxSearchFreq,6000,          % Maximum search frequency in one direction 
+
+% Tracking parameters
+gpsl1,fllNoiseBandwidthWide,200, 	% FLL noise BW wide[Hz]
+gpsl1,fllNoiseBandwidthNarrow,100,   % FLL noise BW narrow [Hz]
+gpsl1,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
+gpsl1,fllDampingRatio,1.5,         % PLL damping ratio
+gpsl1,fllLoopGain,0.7,             % PLL loop gain
+gpsl1,pllNoiseBandwidthWide,15,        % PLL noise BW [Hz]
+gpsl1,pllNoiseBandwidthNarrow,15,        % PLL noise BW [Hz]
+gpsl1,pllNoiseBandwidthVeryNarrow,10,        % PLL noise BW [Hz]
+gpsl1,pllDampingRatio,0.7,          % PLL damping ratio
+gpsl1,pllLoopGain,0.1,              % PLL loop gain
+gpsl1,dllDampingRatio,0.7,          % DLL damping ratio
+gpsl1,dllNoiseBandwidth,1,          % DLL noise BW [Hz]
+gpsl1,M,20,                         % Number of blocks to use for computing wide band power
+gpsl1,K,50,                         % Averaging over M number of blocks 
+gpsl1,Nc,0.001,                     % integration time in seconds for DLL 
+gpsl1,corrFingers,[-2 -0.1 0 0.1],    % Correlator finger positions [chips]
+gpsl1,earlyFingerIndex,2,               % Index of early finger
+gpsl1,promptFingerIndex,3,              % Index of prompt finger
+gpsl1,lateFingerIndex,4,                % Index of late finger
+gpsl1,noiseFingerIndex,1,               % Index of fingers for measuring noise level
+gpsl1,CN0Coeff,1,
+gpsl1,pllWideBandLockIndicatorThreshold,0.5,               % PLL lock indicator threshold for DLL unlocked => locked
+gpsl1,pllNarrowBandLockIndicatorThreshold,0.8,               % PLL lock indicator threshold for DLL unlocked => locked
+gpsl1,runningAvgWindowForLockDetectorInMs, 20
+gpsl1,fllWideBandLockIndicatorThreshold,0.5,               % FLL wide band lock indicator threshold for DLL unlocked => locked
+gpsl1,fllNarrowBandLockIndicatorThreshold,0.7,               % FLL narrow band lock detector threshold for DLL unlocked => locked
+
+
+% Signal specific observation parameters
+gpsl1,enableIonoCorrections,true,       % Use iono corrections or not
+gpsl1,enableTropoCorrections,true,      % Use tropo corrections or not
+gpsl1,ionomodel,'default',              % Iono model to use (default,gpsl1,gale1b,beib1,glol1, ionex)
+gpsl1,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
+
