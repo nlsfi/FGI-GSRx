@@ -286,7 +286,7 @@ tec = 1000 * tec;
 %% Computes the local time and month based on GPS and longitude
 function [lt, month] = localtime( towMs, week, posLLA )
 lt = mod( mod( towMs/1000, 7*24*3600 ) / 3600 + posLLA(2) / 15, 24 );
-gpsEpoch = datenum( '1980-01-06 00:00:00' );
+gpsEpoch = 723186; %datenum( '1980-01-06 00:00:00' ); % The constant '723186' is used to make faster execution of the code: datenum fuction in matlab is rather slow.
 today = addtodate( gpsEpoch, week*7 + floor( towMs / (1000*3600*24) ), 'day' );
 month = str2double( datestr( today, 'mm' ) );
 
