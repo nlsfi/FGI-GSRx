@@ -120,6 +120,11 @@ end
 % Execute navigation
 [obsData,satData,navData] = doNavigation(obsData, settings, ephData);
 
+% Save results so far to file
+if(settings.sys.saveDataFile == true)
+    save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData','obsData');
+end
+
 % Calculate and output statistics
 % True values
 trueLat=settings.nav.trueLat; 
