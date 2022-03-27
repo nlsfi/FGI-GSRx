@@ -8,5 +8,6 @@ clear all;
 clc;
 format long g
 
-% gsrx('default_param_BeiDouB1_Chapter5.txt');
-gsrx('default_param_GPSL1_Texbatds4.txt');
+gsrx('default_param_BeiDouB1_Chapter5.txt');
+% gsrx('default_param_GPSL1_Texbatds4.txt');
+% gsrx('default_param_GPSL1_Staticclean.txt');

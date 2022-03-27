@@ -83,7 +83,7 @@ for loopCnt =  1:allSettings.sys.msToProcess % Loop over all epochs
         t2 = clock;
         time = etime(t2,t1);
         estimtime = allSettings.sys.msToProcess/loopCnt * time;
-        showTrackStatus(trackResults,allSettings,loopCnt);
+%         showTrackStatus(trackResults,allSettings,loopCnt);
         msProcessed = loopCnt;
         msLeftToProcess = allSettings.sys.msToProcess-loopCnt;
         disp(['Ms Processed: ',int2str(msProcessed),' Ms Left: ',int2str(msLeftToProcess)]);

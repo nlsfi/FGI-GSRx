@@ -47,7 +47,7 @@ if(tR.enableMultiCorrelatorTracking)
     tR = multiFingerTracking(tR,ch,fingers); % Generate fingers for multi finger tracking
     if(mod(tR.channel(ch).loopCnt,tR.multiCorrelatorTrackingRate) == 0)
         % Plot output
-        tR.channel(ch) = plotMultiFingerTracking(tR.channel(ch));
+%         tR.channel(ch) = plotMultiFingerTracking(tR.channel(ch));
     end
 end
 

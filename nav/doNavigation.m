@@ -95,7 +95,7 @@ for currMeasNr = 1:nrOfEpochs
      navData = updateNavState(navData);
 
      % Update output to UI 
-     showNavStatus(allSettings, currMeasNr, navData, obsData, satData);
+%      showNavStatus(allSettings, currMeasNr, navData, obsData, satData);
      
      % Copy to new structure that holds data for all measuremenet epochs
      obs{fixIndex} = obsData;
