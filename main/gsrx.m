@@ -122,7 +122,7 @@ end
 
 % Save results so far to file
 if(settings.sys.saveDataFile == true)
-    save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData','obsData');
+    save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData','obsData','satData','navData');
 end
 
 % Calculate and output statistics

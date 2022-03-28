@@ -46,7 +46,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             obs.(signal).channel(channelNr).trueRange = Pos.trueRange(ind);
             obs.(signal).channel(channelNr).rangeResid = Pos.rangeResid(ind);
             obs.(signal).channel(channelNr).dopplerResid = Vel.dopplerResid(ind);
-            ind = ind + 1;
+            ind = ind + 1;     
         end
     end
 end

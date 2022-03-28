@@ -68,9 +68,9 @@ nav,snrMask,20,            		% SNR mask in dB-Hz [usually in the range between 3
 nav,gpsLeapSecond,15,           % GPS-UTC leap seconds
 
 % True/reference user position, if available
-% nav,trueLat,60.161086788889,    
-% nav,trueLong,24.545448080556,
-% nav,trueHeight,54.1640000026673,
+nav,trueLat,30.287528140,
+nav,trueLong,-97.735720004,
+nav,trueHeight,166.1898,
 
 
 % GPS L1 Settings
