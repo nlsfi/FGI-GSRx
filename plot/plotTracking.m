@@ -161,8 +161,8 @@ for signalNr = 1:allSettings.sys.nrOfSignals
         dispind=dispind+1;
         visiblePRN = [visiblePRN double(tC.SvId.satId)];         
         title(['Carrier-to-Noise density ratio (C/N_0) for the tracked ', signal, ' satellites']);
-        xlabel('Time [s]');
-        ylabel('C/N_0 [dB-Hz]');                
+        xlabel('Time (s)');
+        ylabel('C/N_0 (dB-Hz)');                
     end       
     legend(num2str(visiblePRN'));    
 end %for signalNr
