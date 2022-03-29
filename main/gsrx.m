@@ -100,9 +100,9 @@ if(settings.sys.saveDataFile == true)
 end
 
 % Convert track data to usefull observations for navigation if data not allready available
-if(~exist('obsData'))
+% if(~exist('obsData'))
     obsData = generateObservations(trackData, settings);
-end
+% end
 
 % Save results so far to file
 if(settings.sys.saveDataFile == true)

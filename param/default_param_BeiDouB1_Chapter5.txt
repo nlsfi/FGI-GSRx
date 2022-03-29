@@ -39,9 +39,9 @@ sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
 sys,loadDataFile,true,     % Defines if data file is to be loaded
-sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_BeiDouB1_Chapter5.mat',          % Datafile to load of enabled
+sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_BeiDouB1_Chapter5_test.mat',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_BeiDouB1_Chapter5_dev.mat',  % Data file for storing output
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_BeiDouB1_Chapter5_test2.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 

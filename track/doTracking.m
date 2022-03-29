@@ -87,7 +87,7 @@ for loopCnt =  1:allSettings.sys.msToProcess % Loop over all epochs
         msProcessed = loopCnt;
         msLeftToProcess = allSettings.sys.msToProcess-loopCnt;
         disp(['Ms Processed: ',int2str(msProcessed),' Ms Left: ',int2str(msLeftToProcess)]);
-        disp(['Time processed: ',int2str(time),' Time left: ',int2str(estimtime-time)]);
+%         disp(['Time processed: ',int2str(time),' Time left: ',int2str(estimtime-time)]);
 
      end    
 end % Loop over all epochs

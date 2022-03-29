@@ -41,7 +41,7 @@ sys,msToSkip,0,             % Number of ms to skip from beginning of file
 sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_Chapter2.mat',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_texbatds4_dev.mat',  % Data file for storing output
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_texbatds7_dev.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -76,7 +76,7 @@ nav,trueHeight,166.1898,
 % GPS L1 Settings
 
 % Input RF file
-gpsl1,rfFileName,'G:\TEXBAT\texbatds4.bin',            % Name of RF data file used for GPS L1 signal, change the user folder!!!
+gpsl1,rfFileName,'G:\TEXBAT\texbatds7.bin',            % Name of RF data file used for GPS L1 signal, change the user folder!!!
 
 % Radio front end configurations
 gpsl1,centerFrequency,1575.42e6, % Radio center frequency [Hz]
