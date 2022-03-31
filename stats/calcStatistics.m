@@ -51,7 +51,11 @@ for i=1:length(nav)
         x.res(ind,1:length(nav{i}.Pos.rangeResid)) =nav{i}.Pos.rangeResid;
         x.latitude(ind) =nav{i}.Pos.LLA(1);
         x.longitude(ind) =nav{i}.Pos.LLA(2);        
-        x.height(ind) =nav{i}.Pos.LLA(3);        
+        x.height(ind) =nav{i}.Pos.LLA(3);
+        % add
+        x.time(ind) = nav{i}.Time.receiverTow;
+        x.nrsats(ind) = nav{i}.Pos.nrSats;
+        
         dop(ind,:) =nav{i}.Pos.dop;            
         fom(ind) =nav{i}.Pos.fom;          
         nSat(ind)=sum(nav{i}.Pos.nrSats);
@@ -281,5 +285,49 @@ legend('E','N','U');
 xlabel('Time (s)');
 ylabel('Deviation (m)');
 title('Coordinate variation with respect to true position');
+
+%% 
+figure;
+%--- Draw axes --------------------------------------------------------
+handles(1, 1) = subplot(3, 1, 1);
+handles(2, 1) = subplot(3, 1, 2);
+handles(3, 1) = subplot(3, 1, 3);
+
+%--- The number of navigation satellite -----------------------------
+plot(handles(1, 1), x.time,x.nrsats);
+title (handles(1, 1), 'The number of navigation satellite');
+xlabel(handles(1, 1), ['Local time (s)']);
+ylabel(handles(1, 1), 'Number');
+grid  (handles(1, 1));
+axis  (handles(1, 1), 'tight');
+
+%--- The receiver clock offset of navigation solution -----------------------------
+plot(handles(2, 1), x.time,x.dt);
+title (handles(2, 1), 'The receiver clock offset of navigation solution');
+xlabel(handles(2, 1), ['Local time (s)']);
+ylabel(handles(2, 1), 'Clock offset (m)');
+grid  (handles(2, 1));
+axis  (handles(2, 1), 'tight');
+
+%--- The receiver clock offset of navigation solution -----------------------------
+plot(handles(3, 1), x.time,x.df);
+title (handles(3, 1), 'The receiver clock drift offset of navigation solution');
+xlabel(handles(3, 1), ['Local time (s)']);
+ylabel(handles(3, 1), 'Clock drift offset (m/s)');
+grid  (handles(3, 1));
+axis  (handles(3, 1), 'tight');
+
+index = max(x.nrsats);
+plotx = x.time'*ones(1,index);
+ploty = x.res(:,1:index);
+figure;
+%--- The residual of navigation satellite -----------------------------
+% plot(x.res(1:x.nrsats(1))');
+plot(ploty);
+title ('The residual of navigation satellite');
+xlabel(['epoch']);
+ylabel('Residual (m)');
+grid on;
+axis tight;
 
 end

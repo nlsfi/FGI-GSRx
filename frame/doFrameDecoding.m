@@ -79,9 +79,10 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
                 end                
             end
 
-            % Decode ephemerides
-            [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
-
+             if parityCheck == true
+                % Decode ephemerides
+                [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
+             end
 
             if parityCheck == false            
                 % Now we know wheterh parity is ok or not            
