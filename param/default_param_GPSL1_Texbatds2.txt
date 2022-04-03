@@ -38,9 +38,9 @@ sys,msToProcess,410000,       % Number of ms to process in total from data file.
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
-sys,loadDataFile,false,     % Defines if data file is to be loaded
-sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_Chapter2.mat',          % Datafile to load of enabled
-sys,saveDataFile,true,     % Defines if data should be stored to file
+sys,loadDataFile,true,     % Defines if data file is to be loaded
+sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_texbatds2_test.mat',          % Datafile to load of enabled
+sys,saveDataFile,false,     % Defines if data should be stored to file
 sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_texbatds2_dev.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
