@@ -32,7 +32,7 @@ set(0,'defaultlinelinewidth',2);
 % Clean up the environment
 close all; 
 clc;
-clearvars -EXCEPT varargin
+clearvars -except varargin
 
 % Set number format
 format ('compact');
