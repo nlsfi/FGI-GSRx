@@ -41,7 +41,7 @@ sys,msToSkip,5000,             % Number of ms to skip from beginning of file
 sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GalileoE1_Chapter4.mat',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GalileoE1_cleanStatic_galileo_dev.mat',  % Data file for storing output
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GalileoE1_Oakbatos13_dev.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -75,7 +75,7 @@ nav,trueHeight,248.6000,
 
 % Galileo E1B Settings
 % Input RF file
-gale1b,rfFileName,'C:\Users\user\Documents\Downloads\cleanStatic_galileo.bin',            % Name of RF data file used for Galileo E1B signal
+gale1b,rfFileName,'C:\Users\user\Documents\Downloads\os13.bin',            % Name of RF data file used for Galileo E1B signal
 % Radio front end configurations
 gale1b,centerFrequency,1575.42e6,   % Radio center frequency [Hz]
 gale1b,samplingFreq,5e6,           % Sampling frequency [Hz]

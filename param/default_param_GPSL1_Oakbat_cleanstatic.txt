@@ -35,13 +35,13 @@
 % System parameters
 sys,enabledSignals,[ {['gpsl1']}], % List of enabled signals
 sys,msToProcess,410000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
-sys,msToSkip,0,             % Number of ms to skip from beginning of file
+sys,msToSkip,5000,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
-sys,loadDataFile,true,     % Defines if data file is to be loaded
-sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_texbatds4_dev.mat',          % Datafile to load of enabled
-sys,saveDataFile,false,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_texbatds4_test.mat',  % Data file for storing output
+sys,loadDataFile,false,     % Defines if data file is to be loaded
+sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_oakbat_cleanStatic_test.mat',          % Datafile to load of enabled
+sys,saveDataFile,true,     % Defines if data should be stored to file
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_oakbat_cleanStatic_dev.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -65,23 +65,23 @@ sys,lateFingerIndex,10,                  	% Index of late finger when multi corr
 nav,navSolPeriod,100,           % Output period in ms for navigation solution
 nav,elevationMask,5,            % Elevation mask in degrees [0 - 90]. Satellites below this elevation will be excluded from navigation
 nav,snrMask,20,            		% SNR mask in dB-Hz [usually in the range between 30-35 dB-Hz]. Satellites below the SNR mask will be excluded from navigation
-nav,gpsLeapSecond,15,           % GPS-UTC leap seconds
+nav,gpsLeapSecond,18,           % GPS-UTC leap seconds
 
 % True/reference user position, if available
-nav,trueLat,30.287528140,
-nav,trueLong,-97.735720004,
-nav,trueHeight,166.1898,
+nav,trueLat,35.930544444,
+nav,trueLong,-84.310652778,
+nav,trueHeight,248.6000,
 
 
 % GPS L1 Settings
 
 % Input RF file
-gpsl1,rfFileName,'G:\TEXBAT\texbatds4.bin',            % Name of RF data file used for GPS L1 signal, change the user folder!!!
+gpsl1,rfFileName,'C:\Users\user\Documents\Downloads\cleanStatic_gps.bin',            % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 gpsl1,centerFrequency,1575.42e6, % Radio center frequency [Hz]
-gpsl1,samplingFreq,25e6, % Sampling frequency [Hz]
-gpsl1,bandWidth,20e6, % Bandwidth of the front end [Hz]
+gpsl1,samplingFreq,5e6,           % Sampling frequency [Hz]
+gpsl1,bandWidth,5e6,              % Bandwidth of the front end [Hz]
 gpsl1,sampleSize,32, % Number of bits for one sample. For complex data this is the size for I+Q.
 gpsl1,complexData,true, % Complex or real data
 gpsl1,iqSwap,false, % Complex or real data

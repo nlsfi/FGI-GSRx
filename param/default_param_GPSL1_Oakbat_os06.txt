@@ -34,14 +34,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % System parameters
 sys,enabledSignals,[ {['gpsl1']}], % List of enabled signals
-sys,msToProcess,60000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
-sys,msToSkip,100000,             % Number of ms to skip from beginning of file
+sys,msToProcess,410000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
+sys,msToSkip,5000,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
-sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_Chapter2.mat',          % Datafile to load of enabled
+sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_oakbat_os6_test.mat',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_oakbatdynamicclean_dev.mat',  % Data file for storing output
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GPSL1_oakbat_os6_dev.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -76,12 +76,12 @@ nav,trueHeight,248.6000,
 % GPS L1 Settings
 
 % Input RF file
-gpsl1,rfFileName,'C:\Users\user\Documents\Downloads\cleanDynamic_gps.bin',            % Name of RF data file used for GPS L1 signal, change the user folder!!!
+gpsl1,rfFileName,'C:\Users\user\Documents\Downloads\os06.bin',            % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 gpsl1,centerFrequency,1575.42e6, % Radio center frequency [Hz]
-gpsl1,samplingFreq,5e6, % Sampling frequency [Hz]
-gpsl1,bandWidth,5e6, % Bandwidth of the front end [Hz]
+gpsl1,samplingFreq,5e6,           % Sampling frequency [Hz]
+gpsl1,bandWidth,5e6,              % Bandwidth of the front end [Hz]
 gpsl1,sampleSize,32, % Number of bits for one sample. For complex data this is the size for I+Q.
 gpsl1,complexData,true, % Complex or real data
 gpsl1,iqSwap,false, % Complex or real data

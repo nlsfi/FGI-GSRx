@@ -34,7 +34,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % System parameters
 sys,enabledSignals,[ {['gpsl1']}], % List of enabled signals
-sys,msToProcess,420000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
+sys,msToProcess,410000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
