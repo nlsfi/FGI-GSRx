@@ -121,7 +121,7 @@ Vel.df = vel(4:end);
 Vel.fom = norm(Res/length(Res));
 
 % Check if solution is valid
-if(Vel.fom < 50)
+if(Vel.fom < 5000)
     Vel.bValid = true;
 end
  

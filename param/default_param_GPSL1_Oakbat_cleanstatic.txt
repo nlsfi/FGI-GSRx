@@ -76,7 +76,7 @@ nav,trueHeight,248.6000,
 % GPS L1 Settings
 
 % Input RF file
-gpsl1,rfFileName,'C:\Users\user\Documents\Downloads\cleanStatic_gps.bin',            % Name of RF data file used for GPS L1 signal
+gpsl1,rfFileName,'I:\oakbat\DataSet\cleanStatic_gps.bin',            % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 gpsl1,centerFrequency,1575.42e6, % Radio center frequency [Hz]

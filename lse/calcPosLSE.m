@@ -132,7 +132,7 @@ Pos.dop = getDOPValues(allSettings.const,H, Pos.xyz);
 Pos.fom = norm(Res/length(Res));
 
 % Check if solution is valid
-if(Pos.fom < 50)
+if(Pos.fom < 5000)
     Pos.bValid = true;
 end
  
