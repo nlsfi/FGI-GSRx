@@ -7,10 +7,14 @@ addpath(genpath(pwd))
 
 
 %% II. 导入数据
-load 'train_data.mat'
-load 'train_data2.mat'
-load 'train_data3.mat'
-TrainData=[TrainData;TrainData2;TrainData3];
+% load 'train_data.mat'
+% load 'train_data2.mat'
+% load 'train_data3.mat'
+load('train_data_clean.mat')
+load('train_data_ds2.mat')
+load('train_data_ds3.mat')
+load('train_data_ds7.mat')
+TrainData=[TrainData_clean;TrainData_ds2;TrainData_ds3;TrainData_ds7];
 % TrainData=TrainData(1:4021,:)
 
 

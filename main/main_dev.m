@@ -21,15 +21,15 @@ format long g
 % gsrx('default_param_GPSL1_Texbatds7.txt');
 gsrx('default_param_GPSL1_Oakbat_cleanstatic.txt');
 
-% settings.nav.elevationMask = 4;
-% obsData = generateObservations(trackData, settings);
-% % Execute frame decoding. Needed for time stamps at least 
-% [obsData, ephData] = doFrameDecoding(obsData, trackData, settings);
-% % Execute navigation
-% [obsData,satData,navData] = doNavigation(obsData, settings, ephData);
+settings.nav.elevationMask = 4;
+obsData = generateObservations(trackData, settings);
+% Execute frame decoding. Needed for time stamps at least 
+[obsData, ephData] = doFrameDecoding(obsData, trackData, settings);
+% Execute navigation
+[obsData,satData,navData] = doNavigation(obsData, settings, ephData);
 % 
-% plotTracking(trackData, settings); 
-% % Calculate statistics
+plotTracking(trackData, settings); 
+% Calculate statistics
 % 
-% statResults = calcStatistics(navData,[trueLat trueLong trueHeight],settings.nav.navSolPeriod,settings.const); 
-% save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData','obsData','satData','navData');
+statResults = calcStatistics(navData,[trueLat trueLong trueHeight],settings.nav.navSolPeriod,settings.const); 
+save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData','obsData','satData','navData');

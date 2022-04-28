@@ -4,7 +4,7 @@ clc;
 
 addpath(genpath(pwd));
 satId = [3,6,7,8,10,11,13,16,19,20,23,30,32];
-Img_path='figure/';
+Img_path='figure_texbat_gps_static/';
 load 'train_data_clean.mat'
 load 'train_data_ds2.mat'
 load 'train_data_ds3.mat'
@@ -18,6 +18,7 @@ for h=3:16
         index_ds2=find(TrainData_ds2(:,2)==satprn);        
         index_ds3=find(TrainData_ds3(:,2)==satprn);
         index_ds7=find(TrainData_ds7(:,2)==satprn);
+%         data
         figure;
         set(0,'DefaultFigureVisible', 'off');%图片不显示
 %         set(0,'DefaultFigureVisible', 'on');%图片不显示
