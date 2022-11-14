@@ -34,6 +34,9 @@ blockSize = tblen;
 AEM = Inf*ones(64,1); 
 AEM(1) = 0;
 
+outputBins1 = str2num(cell2mat(trellis.outputsBin(:,1)));
+outputBins2 = str2num(cell2mat(trellis.outputsBin(:,2)));
+
 for blockId = 1:length(encodedSymbols)/blockSize
     % Extract block of 40 encoded symbols
     rxBlock = encodedSymbols(blockSize*(blockId-1)+1:blockSize*blockId);
@@ -51,10 +54,10 @@ for blockId = 1:length(encodedSymbols)/blockSize
         
         for stateId = currentStates'
             % For input bit = 0
-            d0 = sum(abs(rxSymbol-str2num(cell2mat(trellis.outputsBin(stateId,1))))); % Hamming distance
+            d0 = sum(abs(rxSymbol-outputBins1(stateId,:))); % Hamming distance
             auxMatrix(trellis.nextStatesDec(stateId,1)+1,stateId) = d0+previousAEM(stateId);
             % For input bit = 1
-            d1 = sum(abs(rxSymbol-str2num(cell2mat(trellis.outputsBin(stateId,2))))); % Hamming distance
+            d1 = sum(abs(rxSymbol-outputBins2(stateId,:))); % Hamming distance
             auxMatrix(trellis.nextStatesDec(stateId,2)+1,stateId) = d1+previousAEM(stateId);
         end
         [AEM,indices] = min(auxMatrix,[],2);
@@ -63,6 +66,7 @@ for blockId = 1:length(encodedSymbols)/blockSize
         % Update list of predecessors for every state
         predecessors(find(AEM~=Inf),t) = indices(find(AEM~=Inf));
     end
+    
     % Retrieve the sequence of states that form the most likely path
     minAEM = find(AEM==min(AEM));
     if blockId ~= length(encodedSymbols)/blockSize
@@ -76,6 +80,7 @@ for blockId = 1:length(encodedSymbols)/blockSize
     end
     % Find the transmitted bits corresponding to state transitions forming the most likely path
     for s = 1:blockSize/2
+        
         successiveStates = statesSequence(s:s+1);
         if trellis.nextStatesDec(successiveStates(1),1)+1 == successiveStates(2)
             inputBits(s) = 0;
@@ -87,4 +92,3 @@ for blockId = 1:length(encodedSymbols)/blockSize
 end
 
 end
-
