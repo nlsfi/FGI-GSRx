@@ -16,6 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function codeReplica = beib1GeneratePrnCode(PRN)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generates one BeiDou satellite code
@@ -120,6 +121,58 @@ for i=1:2046
         g2(i) = reg2(9)*reg2(11);
     elseif PRN == 37 
         g2(i) = reg2(10)*reg2(11);
+    elseif PRN == 38
+        g2(i) = reg2(1)*reg2(2)*reg2(7);
+    elseif PRN == 39
+        g2(i) = reg2(1)*reg2(3)*reg2(4);
+    elseif PRN == 40 
+        g2(i) = reg2(1)*reg2(3)*reg2(6);
+    elseif PRN == 41 
+        g2(i) = reg2(1)*reg2(3)*reg2(8);
+    elseif PRN == 42 
+        g2(i) = reg2(1)*reg2(3)*reg2(10);
+    elseif PRN == 43  
+        g2(i) = reg2(1)*reg2(3)*reg2(11);
+    elseif PRN == 44 
+        g2(i) = reg2(1)*reg2(4)*reg2(5);
+    elseif PRN == 45 
+        g2(i) = reg2(1)*reg2(4)*reg2(9);
+    elseif PRN == 46 
+        g2(i) = reg2(1)*reg2(5)*reg2(6);
+    elseif PRN == 47 
+        g2(i) = reg2(1)*reg2(5)*reg2(8);
+    elseif PRN == 48 
+        g2(i) = reg2(1)*reg2(5)*reg2(10);
+    elseif PRN == 49 
+        g2(i) = reg2(1)*reg2(5)*reg2(11);
+    elseif PRN == 50 
+        g2(i) = reg2(1)*reg2(6)*reg2(9);
+    elseif PRN == 51 
+        g2(i) = reg2(1)*reg2(8)*reg2(9);
+    elseif PRN == 52 
+        g2(i) = reg2(1)*reg2(9)*reg2(10);
+    elseif PRN == 53 
+        g2(i) = reg2(1)*reg2(9)*reg2(11);
+    elseif PRN == 54 
+        g2(i) = reg2(2)*reg2(3)*reg2(7);
+    elseif PRN == 55 
+        g2(i) = reg2(2)*reg2(5)*reg2(7);
+    elseif PRN == 56 
+        g2(i) = reg2(2)*reg2(7)*reg2(9);
+    elseif PRN == 57 
+        g2(i) = reg2(3)*reg2(4)*reg2(5);
+    elseif PRN == 58 
+        g2(i) = reg2(3)*reg2(4)*reg2(9);
+    elseif PRN == 59 
+        g2(i) = reg2(3)*reg2(5)*reg2(6);
+    elseif PRN == 60 
+        g2(i) = reg2(3)*reg2(5)*reg2(8);
+    elseif PRN == 61 
+        g2(i) = reg2(3)*reg2(5)*reg2(10);
+    elseif PRN == 62 
+        g2(i) = reg2(3)*reg2(5)*reg2(11);
+    elseif PRN == 63 
+        g2(i) = reg2(3)*reg2(6)*reg2(9);
     end
     saveBit = reg2(1)*reg2(2)*reg2(3)*reg2(4)*reg2(5)*reg2(8)*reg2(9)*reg2(11);
     reg2(2:11) = reg2(1:10);

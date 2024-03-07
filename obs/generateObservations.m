@@ -44,8 +44,8 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
     % This is whi it is called pseudo range and not range
     obsResults.(signal).averagetraveltime = 80; 
 
-    obsResults.(signal).codeLengthInMs = tR.(signal).codeLengthInMs; 
-    obsResults.(signal).codeFreqBasis = tR.(signal).codeFreqBasis; 
+    obsResults.(signal).codeLengthInMs = allSettings.(signal).codeLengthMs; 
+    obsResults.(signal).codeFreqBasis = allSettings.(signal).codeFreqBasis; 
     obsResults.(signal).nrObs = tR.(signal).nrObs;
     obsResults.(signal).signal = tR.(signal).signal;
 

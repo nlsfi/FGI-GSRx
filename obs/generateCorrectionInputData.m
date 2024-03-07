@@ -38,6 +38,9 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
     % Extract block of parameters for one signal from settings
     signal = allSettings.sys.enabledSignals{signalIndex};
     signalSettings = allSettings.(signal);
+    %For boradcast ionosphere correction data, use the first set of
+    %ionosphere correction for now (can be changed later, but this should work, since we are still dealing 10-30 minutes data at best)
+    subframeNo = 1;
     eph = ephData.(signal);
 
     % Loop over all channels
@@ -62,9 +65,9 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
                 corrInputData.iono.beib1.beta2 = eph(obs.(signal).channel(channelNr).SvId.satId).beta2;        
                 corrInputData.iono.beib1.beta3 = eph(obs.(signal).channel(channelNr).SvId.satId).beta3;        
             elseif strcmp(signalSettings.ionomodel,'gale1b')==1   %No iono parameters are transmitted from Glonass satellites                             
-                corrInputData.iono.gale1b.a0 = eph(obs.(signal).channel(channelNr).SvId.satId).ai0_5;        
-                corrInputData.iono.gale1b.a1 = eph(obs.(signal).channel(channelNr).SvId.satId).ai1_5;        
-                corrInputData.iono.gale1b.a2 = eph(obs.(signal).channel(channelNr).SvId.satId).ai2_5;                        
+                corrInputData.iono.gale1b.a0 = eph(obs.(signal).channel(channelNr).SvId.satId).subframe(subframeNo).ai0_5;        
+                corrInputData.iono.gale1b.a1 = eph(obs.(signal).channel(channelNr).SvId.satId).subframe(subframeNo).ai1_5;        
+                corrInputData.iono.gale1b.a2 = eph(obs.(signal).channel(channelNr).SvId.satId).subframe(subframeNo).ai2_5;                        
             elseif strcmp(signalSettings.ionomodel,'glol1')==1   %No iono parameters are transmitted from Glonass satellites                             
                 corrInputData.iono.glol1.alpha0 = 0;        
                 corrInputData.iono.glol1.alpha1 = 0;        

@@ -36,20 +36,96 @@ function [eph, obsCh] = gale1bDecodeEphemeris(obsCh, I_P, prn, signalSettings, c
 obsCh.bEphOk = false;
 eph = [];
 
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%Assign NaN to all temporary variables: that will help in case of bit
+%%decoding error, and some words in the page cannot be decoded.
+
+% Word type 0   
+weekNumber = NaN;
+
+% Word type 1
+IODC = NaN;
+IODE_sf2 = NaN;
+M_0 = NaN;
+e = NaN;
+sqrtA = NaN;
+t_oe = NaN;
+IODE_sf3 = NaN;
+
+% Word type 2
+omega_0 = NaN;
+i_0 = NaN;
+omega = NaN;
+iDot = NaN;
+
+% Word type 3
+C_rs = NaN;
+deltan = NaN;
+C_uc = NaN;
+C_us = NaN;
+C_rc = NaN;
+omegaDot = NaN;
+SISA = NaN;
+
+% Word type 4
+t_oc = NaN;
+a_f2 = NaN;
+a_f1 = NaN;
+a_f0 = NaN;
+C_ic = NaN;
+C_is = NaN;
+
+% Word type 5
+ai0_5 = NaN;
+ai1_5 = NaN;
+ai2_5 = NaN;
+Region1_flag_5 = NaN;
+Region2_flag_5 = NaN;
+Region3_flag_5 = NaN;
+Region4_flag_5 = NaN;
+Region5_flag_5 = NaN;
+T_GD = NaN;
+geo = NaN;
+E1B_DVS = NaN;
+E1B_HS = NaN;
+
+% GST-UTC conversion parameters
+A0 = NaN;
+A1 = NaN;    
+Delta_tLS = NaN;
+t_ot = NaN; 
+WN_ot = NaN;
+WN_LSF = NaN;
+D = NaN;
+Delta_tLSF = NaN;
+TOW_6 = NaN;   
+A_0G = NaN;
+A_1G = NaN;
+t_0G = NaN;
+WN_0G = NaN;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 signal = 'gale1b';
 
 % Pi used in the Galileo coordinate system
 galileoPi = const.PI;
 
+numberOfFullNominalPages=floor((((length(I_P))/4)-obsCh.firstSubFrame)/500);   %500 symbols for 2 seconds nominal page (odd + even)
+%navBitsSamples = I_P(4 * obsCh.firstSubFrame : 4 : 4 * (obsCh.firstSubFrame + 250*2*x -1))';
+
+numberOfFullSubFrames = floor((((length(I_P))/4)-obsCh.firstSubFrame)/500/15);
+
 % Extract nav bits from track channel data 
-navBitsSamples = I_P(4 * obsCh.firstSubFrame : 4 : 4 * (obsCh.firstSubFrame + 250*2*20 -1))';
+navBitsSamples = I_P(4 * obsCh.firstSubFrame : 4 : 4 * (obsCh.firstSubFrame + 250*2*numberOfFullNominalPages -1))';
 
 % Now threshold the output and convert it to -1 and +1 
 navBits( navBitsSamples > 0)  =  1;
 navBits( navBitsSamples <= 0) = -1;
 
-% Calculate cross correlation between nav bits and preamble
-corrValPreamble = calcCrossCorrelation(navBits,signalSettings.preamble);
+% Calculate cross correlation between nav bits and preamble: In case of
+% Navigation bits, take only 15 pages: 15*2*250 symbols
+corrValPreamble = calcCrossCorrelation(navBits(1:250*2*15),signalSettings.preamble);
 
 % Find peaks in CC values
 indPositiveCorrelation = find(corrValPreamble>=10);
@@ -82,7 +158,6 @@ end
 % if the page starts with even/odd == 0, then ignore the first 120 bits of
 % the page: it will then always start with even/odd = 1, which is needed to
 % arrange the bits into word
-
 evenOddTypeBeginningPage = bin2dec(bits(1));
 pageTypeBeginningPage = bin2dec(bits(2));
 if evenOddTypeBeginningPage == 1 && pageTypeBeginningPage == 0
@@ -95,16 +170,18 @@ end
 foundPages = 0;
 
 for i=1:(length(bits)/240)
+    subframeOk = true;
     bitsArrangedPageWise = bits((i-1)*240+1: i*240);
     
     % CRC check of bits
     chk(i) = gale1bCrcCheck(bitsArrangedPageWise);
        
     % TBA: Wait to implement this since we need tow for the
-    if(chk ~= 0) 
-        fprintf('CRC check fails!');
+    if(chk ~= 0)         
+        disp(['CRC check fails for subframe number ', i,' of ', obsCh.signal ,' prn ', ...
+        int2str(prn)]);  
         obsCh.bEphOk = false;
-        break;
+        subframeOk = false;        
     end
     
     % Arrange bits
@@ -212,97 +289,101 @@ for i=1:(length(bits)/240)
         case 63 % Dummy data word: Type 63
             ;
         otherwise
-            fprintf('Wrong Word Number! Word type: %d. Check CRC!\n',wordType(i));
-    end     
-end
-
-obsCh.bEphOk = false;
-eph = [];
+            ;%fprintf('Word type: %d has not yet been decoded!\n',wordType(i));
+    end    
+    if mod(i,15)==0
+        % Word type 0
+        eph.subframe(i/15).weekNumber = WN_0;    
+        % Word type 1
+        eph.subframe(i/15).IODC = IOD_nav_1;
+        eph.subframe(i/15).IODE_sf2 = IOD_nav_1;
+        eph.subframe(i/15).M_0 = M0_1;
+        eph.subframe(i/15).e = e_1;
+        eph.subframe(i/15).sqrtA = A_1;
+        eph.subframe(i/15).t_oe = t0e_1;
+        eph.subframe(i/15).IODE_sf3 = IOD_nav_1;
     
-% Let's also decode into same format as for GPS.
-if(bitand(foundPages,63) == 63)
-    % Word type 0
-    eph.weekNumber = WN_0;
-
-    % Word type 1
-    eph.IODC = IOD_nav_1;
-    eph.IODE_sf2 = IOD_nav_1;
-    eph.M_0 = M0_1;
-    eph.e = e_1;
-    eph.sqrtA = A_1;
-    eph.t_oe = t0e_1;
-    eph.IODE_sf3 = IOD_nav_1;
-
-    % Word type 2
-    eph.omega_0 = OMEGA_0_2;
-    eph.i_0 = i_0_2;
-    eph.omega = omega_2;
-    eph.iDot = iDot_2;
-
-    % Word type 3
-    eph.C_rs = C_rs_3;
-    eph.deltan = delta_n_3;
-    eph.C_uc = C_uc_3;
-    eph.C_us = C_us_3;
-    eph.C_rc = C_rc_3;
-    eph.omegaDot = OMEGA_dot_3;
-    eph.SISA = SISA_3;
-
-    % Word type 4
-    eph.t_oc = t0c_4;
-    eph.a_f2 = af2_4;
-    eph.a_f1 = af1_4;
-    eph.a_f0 = af0_4;
-    eph.C_ic = C_ic_4;
-    eph.C_is = C_is_4;
-
-    % Word type 5
-    eph.ai0_5 = ai0_5;
-    eph.ai1_5 = ai1_5;
-    eph.ai2_5 = ai2_5;
-    eph.Region1_flag_5 = Region1_flag_5;
-    eph.Region2_flag_5 = Region2_flag_5;
-    eph.Region3_flag_5 = Region3_flag_5;
-    eph.Region4_flag_5 = Region4_flag_5;
-    eph.Region5_flag_5 = Region5_flag_5;    
-    eph.T_GD = BGD_E1E5b_5;
-    eph.geo = false;
-    eph.E1B_DVS = E1B_DVS_5;
-    eph.E1B_HS = E1B_HS_5;
-    % TOW_5 is from the last decoded wordtype = 5.
-    % The index tells us in which word this was.
-    % Each word corresponds to 2 seconds in TOW.
-    % If, for example we decoded TOW_5 in word 16 that TOW points to the
-    % beginning of that WORD and we need to subtract 15 x 2 sec to get the TOW
-    % at the beginning of the bitbuffer.
-    % Also we need to subtract one sec since our data starts with odd page and
-    % frames starts with even page
-    TOW = TOW_5 - (2*(ind_TOW_5-1)) - 1 +  shifttow;
+        % Word type 2
+        eph.subframe(i/15).omega_0 = OMEGA_0_2;
+        eph.subframe(i/15).i_0 = i_0_2;
+        eph.subframe(i/15).omega = omega_2;
+        eph.subframe(i/15).iDot = iDot_2;
     
-    obsCh.bEphOk = true;
-    obsCh.tow = TOW;    
-end
+        % Word type 3
+        eph.subframe(i/15).C_rs = C_rs_3;
+        eph.subframe(i/15).deltan = delta_n_3;
+        eph.subframe(i/15).C_uc = C_uc_3;
+        eph.subframe(i/15).C_us = C_us_3;
+        eph.subframe(i/15).C_rc = C_rc_3;
+        eph.subframe(i/15).omegaDot = OMEGA_dot_3;
+        eph.subframe(i/15).SISA = SISA_3;
+    
+        % Word type 4
+        eph.subframe(i/15).t_oc = t0c_4;
+        eph.subframe(i/15).a_f2 = af2_4;
+        eph.subframe(i/15).a_f1 = af1_4;
+        eph.subframe(i/15).a_f0 = af0_4;
+        eph.subframe(i/15).C_ic = C_ic_4;
+        eph.subframe(i/15).C_is = C_is_4;
+    
+        % Word type 5
+        eph.subframe(i/15).ai0_5 = ai0_5;
+        eph.subframe(i/15).ai1_5 = ai1_5;
+        eph.subframe(i/15).ai2_5 = ai2_5;
+        eph.subframe(i/15).Region1_flag_5 = Region1_flag_5;
+        eph.subframe(i/15).Region2_flag_5 = Region2_flag_5;
+        eph.subframe(i/15).Region3_flag_5 = Region3_flag_5;
+        eph.subframe(i/15).Region4_flag_5 = Region4_flag_5;
+        eph.subframe(i/15).Region5_flag_5 = Region5_flag_5;    
+        eph.subframe(i/15).T_GD = BGD_E1E5b_5;
+        eph.subframe(i/15).geo = false;
+        eph.subframe(i/15).E1B_DVS = E1B_DVS_5;
+        eph.subframe(i/15).E1B_HS = E1B_HS_5;
 
-if(bitand(foundPages,64) == 64)
-    % GST-UTC conversion parameters
-    eph.A0 = A0_6;
-    eph.A1 = A1_6;
-    eph.Delta_tLS = Delta_tLS_6;
-    eph.t_ot = t_ot_6; 
-    eph.WN_ot = WN_ot_6;
-    eph.WN_LSF = WN_LSF_6;
-    eph.D = DN_6;
-    eph.Delta_tLSF = Delta_tLSF_6;
-    eph.TOW_6 = TOW_6;    
-end
-
-if(bitand(foundPages,1024) == 1024)
-    % Word type 10
-    % GPS to Galileo time conversion parameters
-    eph.A_0G = A_0G;
-    eph.A_1G = A_1G;
-    eph.t_0G = t_0G;
-    eph.WN_0G = WN_0G;
+        % Word Type 6: GST-UTC conversion parameters
+        % Require revision from ICD
+        % GST-UTC conversion parameters
+        eph.subframe(i/15).A0 = A0_6;
+        eph.subframe(i/15).A1 = A1_6;
+        eph.subframe(i/15).Delta_tLS = Delta_tLS_6;
+        eph.subframe(i/15).t_ot = t_ot_6; 
+        eph.subframe(i/15).WN_ot = WN_ot_6;
+        eph.subframe(i/15).WN_LSF = WN_LSF_6;
+        eph.subframe(i/15).D = DN_6;
+        eph.subframe(i/15).Delta_tLSF = Delta_tLSF_6;
+        eph.subframe(i/15).TOW_6 = TOW_6;                 
+        eph.subframe(i/15).subframeOk = subframeOk;
+        if(bitand(foundPages,1024) == 1024)
+            % Word type 10
+            % GPS to Galileo time conversion parameters
+            eph.subframe(i/15).A_0G = A_0G;
+            eph.subframe(i/15).A_1G = A_1G;
+            eph.subframe(i/15).t_0G = t_0G;
+            eph.subframe(i/15).WN_0G = WN_0G;
+        else
+            eph.subframe(i/15).A_0G = NaN;
+            eph.subframe(i/15).A_1G = NaN;
+            eph.subframe(i/15).t_0G = NaN;
+            eph.subframe(i/15).WN_0G = NaN;
+        end
+        % TOW_5 is from the last decoded wordtype = 5.
+        % The index tells us in which word this was.
+        % Each word corresponds to 2 seconds in TOW.
+        % If, for example we decoded TOW_5 in word 16 that TOW points to the
+        % beginning of that WORD and we need to subtract 15 x 2 sec to get the TOW
+        % at the beginning of the bitbuffer.
+        % Also we need to subtract one sec since our data starts with odd page and
+        % frames starts with even page
+        TOW = TOW_5 - (2*(ind_TOW_5-1)) - 1 +  shifttow;
+        %If the first subframe decoding (15 pages) is successful, we can
+        %use the first subframe just to get some form of navigation: It can
+        %be changed based on the requirements from the user application (in 
+        % case of OSNMA, all subframes should successfully be decoded)
+        if (eph.subframe(1).subframeOk)
+            obsCh.bEphOk = true;
+        end
+        obsCh.tow = TOW;    
+    end
 end
 
 % Print status
@@ -312,88 +393,4 @@ if(obsCh.bEphOk == true)
 else
     disp(['   Ephemeris for ', obsCh.signal ,' prn ', ...
         int2str(prn),' is NOT found.'])  
-    
-    % Word type 0
-    eph.weekNumber = 0;
-
-    % Word type 1
-    eph.IODC = 0;
-    eph.IODE_sf2 = 0;
-    eph.M_0 = 0;
-    eph.e = 0;
-    eph.sqrtA = 0;
-    eph.t_oe = 0;
-    eph.IODE_sf3 = 0;
-
-    % Word type 2
-    eph.omega_0 = 0;
-    eph.i_0 = 0;
-    eph.omega = 0;
-    eph.iDot = 0;
-
-    % Word type 3
-    eph.C_rs = 0;
-    eph.deltan = 0;
-    eph.C_uc = 0;
-    eph.C_us = 0;
-    eph.C_rc = 0;
-    eph.omegaDot = 0;
-    eph.SISA = 0;
-
-    % Word type 4
-    eph.t_oc = 0;
-    eph.a_f2 = 0;
-    eph.a_f1 = 0;
-    eph.a_f0 = 0;
-    eph.C_ic = 0;
-    eph.C_is = 0;
-
-    % Word type 5
-    eph.ai0_5 = 0;
-    eph.ai1_5 = 0;
-    eph.ai2_5 = 0;
-    eph.Region1_flag_5 = 0;
-    eph.Region2_flag_5 = 0;
-    eph.Region3_flag_5 = 0;
-    eph.Region4_flag_5 = 0;
-    eph.Region5_flag_5 = 0;    
-    eph.T_GD = 0;
-    eph.geo = false;
-    eph.E1B_DVS = 0;
-    eph.E1B_HS = 0;
-    
-    % GST-UTC conversion parameters
-    eph.A0 = 0;
-    eph.A1 = 0;
-    eph.Delta_tLS = 0;
-    eph.t_ot = 0; 
-    eph.WN_ot = 0;
-    eph.WN_LSF = 0;
-    eph.D = 0;
-    eph.Delta_tLSF = 0;
-    eph.TOW_6 = 0;   
-    
-    eph.A_0G = 0;
-    eph.A_1G = 0;
-    eph.t_0G = 0;
-    eph.WN_0G = 0;
-    obsCh.bEphOk = false;    
 end
-
-
-
-
-
-
-
-
-
-
-
-
-	
-	
-
-
-
-

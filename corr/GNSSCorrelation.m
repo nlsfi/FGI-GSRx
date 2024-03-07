@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [tR]= GNSSCorrelation(tR, ch)
+function [tR]= GNSSCorrelation(signalSettings, tR, ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Performs code and carrier correlation for GNSS data
 %
@@ -31,30 +31,31 @@ function [tR]= GNSSCorrelation(tR, ch)
 
 % Set local variables
 fid = tR.fid;
-loopCnt = tR.channel(ch).loopCnt;
+loopCnt = tR.loopCnt;
 
 % Read RF data from file
-[tR, rawSignal] = getDataForCorrelation(fid,tR,ch);
+[tR, rawSignal] = getDataForCorrelation(fid,signalSettings,tR,ch);
 
 % Generate finger data
-[fingers,tR] = corrFingerGeneration(tR,ch);
+[fingers,tR] = corrFingerGeneration(signalSettings,tR,ch);
 
 % Carrier generation + correlation and mixing with code signal
-tR = carrierMixing(tR,ch, rawSignal);
+tR = carrierMixing(signalSettings,tR,ch, rawSignal);
 
 % Check if user have requested multi correlator tracking
-if(tR.enableMultiCorrelatorTracking)    
-    tR = multiFingerTracking(tR,ch,fingers); % Generate fingers for multi finger tracking
-    if(mod(tR.channel(ch).loopCnt,tR.multiCorrelatorTrackingRate) == 0)
-        % Plot output
-        tR.channel(ch) = plotMultiFingerTracking(tR.channel(ch));
+if(mod(loopCnt,tR.multiCorrelatorTrackingRate) == 0)
+    if(tR.enableMultiCorrelatorTracking)    
+        [mulFingers,tR] = mulCorrFingerGeneration(signalSettings,tR,ch);        
+        tR = multiFingerTracking(tR,ch,mulFingers); % Generate fingers for multi finger tracking    
+        % if(mod(loopCnt,tR.multiCorrelatorTrackingRate) == 0)
+        %     % Plot output
+        %     tR.channel(ch) = plotMultiFingerTracking(tR.channel(ch),loopCnt);
+        % end
     end
 end
 
-loopCnt = tR.channel(ch).loopCnt;
-
 % Check where we are in data file
-tR.channel(ch).absoluteSample(loopCnt) =(ftell(fid))/(tR.sampleSize/8);
+tR.channel(ch).absoluteSample(loopCnt) =(ftell(fid))/(signalSettings.sampleSize/8);
 tR.channel(ch).prevAbsoluteSample =tR.channel(ch).absoluteSample(loopCnt);
 
 

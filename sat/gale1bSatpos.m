@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [satPositions, satClkCorr, satT_GD, satVelocity, satHealth, satSISA] = gale1bSatpos(transmitTime, prn, eph, const)
+function [satPositions, satClkCorr, satT_GD, satVelocity, satHealth, satSISA] = gale1bSatpos(transmitTime, prn, ephAll, const)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculation of satellite coordinates, clock corrections and velocities at 
 % given time
@@ -34,6 +34,29 @@ function [satPositions, satClkCorr, satT_GD, satVelocity, satHealth, satSISA] = 
 %       satSISA       - predicted SIS accuracy standard deviation
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+noOfSubframes = size(ephAll(prn).subframe,2);
+
+for i=1:noOfSubframes
+    timeDifference(i) = abs(ephAll(prn).subframe(i).TOW_6 - transmitTime);
+end
+[minVal currentSubframeNo] = min(timeDifference);
+
+previousSubframeNo = max([1 (currentSubframeNo-1)]);
+%Find if Issue of Data has changed from the previous subframe
+if abs(ephAll(prn).subframe(currentSubframeNo).IODC-ephAll(prn).subframe(previousSubframeNo).IODC)>0 && (ephAll(prn).subframe(currentSubframeNo).subframeOk == 1) 
+    eph(prn) = ephAll(prn).subframe(currentSubframeNo);
+else
+    if ephAll(prn).subframe(previousSubframeNo).subframeOk==1
+        eph(prn) = ephAll(prn).subframe(previousSubframeNo);
+    else
+        %bEphOk is enabled only when the first subframe is successfully
+        %decoded: it is safe to assume that the first subframe is always
+        %successfully deocded: can be changed later depending on the need
+        %of the user application
+        eph(prn) = ephAll(prn).subframe(1);
+    end
+end
 
 % First check the navigation data validity and health status flags (shared for E1B/C)
 % DVS: 0 = nav data valid;  1 = working without guarantee

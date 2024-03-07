@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [tR]  = carrierMixing(tR, ch, pRfData)
+function [tR]  = carrierMixing(signalSettings,tR, ch, pRfData)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Carrier and code mixing (correlation)
 %
@@ -32,7 +32,7 @@ function [tR]  = carrierMixing(tR, ch, pRfData)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 blockSize = trackChannelData.blockSize(loopCnt);
 if(trackChannelData.bInited)
     carrFreq      = trackChannelData.acquiredFreq + trackChannelData.prevCarrFreq;
@@ -43,7 +43,7 @@ else
 end
 
 % Get time stamps for carrier signal
-time    = (0:blockSize) ./ tR.samplingFreq;
+time    = (0:blockSize) ./ signalSettings.samplingFreq;
 
 % Get the argument to sin/cos functions
 trigarg = -((carrFreq * 2.0 * pi) .* time) + carrPhase;
@@ -56,14 +56,14 @@ iBasebandSignal = real(carrSignal .* pRfData);
 qBasebandSignal = imag(carrSignal .* pRfData);
 
 % Mix with code replicas
-trackChannelData.I_E(loopCnt) = sum(trackChannelData.earlyCode  .* iBasebandSignal);
+trackChannelData.I_E = sum(trackChannelData.earlyCode  .* iBasebandSignal);
 trackChannelData.I_P(loopCnt) = sum(trackChannelData.promptCode      .* iBasebandSignal);
-trackChannelData.I_L(loopCnt) = sum(trackChannelData.lateCode   .* iBasebandSignal);
-trackChannelData.Q_E(loopCnt) = sum(trackChannelData.earlyCode  .* qBasebandSignal);
+trackChannelData.I_L = sum(trackChannelData.lateCode   .* iBasebandSignal);
+trackChannelData.Q_E = sum(trackChannelData.earlyCode  .* qBasebandSignal);
 trackChannelData.Q_P(loopCnt) = sum(trackChannelData.promptCode      .* qBasebandSignal);
-trackChannelData.Q_L(loopCnt) = sum(trackChannelData.lateCode   .* qBasebandSignal);     
-trackChannelData.I_E_E(loopCnt) = sum(trackChannelData.twoChipEarlyCode  .* iBasebandSignal);
-trackChannelData.Q_E_E(loopCnt) = sum(trackChannelData.twoChipEarlyCode  .* qBasebandSignal);
+trackChannelData.Q_L = sum(trackChannelData.lateCode   .* qBasebandSignal);     
+trackChannelData.I_E_E = sum(trackChannelData.twoChipEarlyCode  .* iBasebandSignal);
+trackChannelData.Q_E_E = sum(trackChannelData.twoChipEarlyCode  .* qBasebandSignal);
 
 % Copy data 
 trackChannelData.prevCarrPhase = rem(trigarg(blockSize+1), (2 * pi)); 

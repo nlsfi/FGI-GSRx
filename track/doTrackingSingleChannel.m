@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [trackResults]= doTracking(acqResults, allSettings)
+function doTrackingSingleChannel(acqData,trackResults, allSettings)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This function takes input of acquisition results and performs tracking.
 %
@@ -30,68 +30,64 @@ function [trackResults]= doTracking(acqResults, allSettings)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Start timer for tracking
-trackStartTime = now;
-
+trackStartTime = tic;
+trackStartTimeInstance = now; 
 % UI output
-disp (['   Tracking started at ', datestr(trackStartTime)]); 
+disp (['   Tracking started at ', datestr(trackStartTimeInstance)]); 
 
-% Initialise tracking structure
-trackResults = initTracking(acqResults, allSettings);  
+% Select acquisition results and parameter block
+signal = trackResults.signal;
+signalSettings = allSettings.(signal);
+saveEnabledSignals = allSettings.sys.enabledSignals;
+saveNrOfSignals = allSettings.sys.nrOfSignals;
+allSettings.sys.nrOfSignals = 1;
+index= strcmp(saveEnabledSignals,signal);
+allSettings.sys.enabledSignals = saveEnabledSignals{index};
 
-% Let's loop over all enabled signals and open files for reading
-for signalNr = 1:allSettings.sys.nrOfSignals
-
-    % Extract block of parameters for one signal from settings
-    signal = allSettings.sys.enabledSignals{signalNr};
-    signalSettings = allSettings.(signal);
-    
-    % Open file for reading
-    [fid, message] = fopen(signalSettings.rfFileName, 'rb');
-    if (fid == -1)
-       error('Failed to open data file for tracking!');
-       return;
-    else
-       fidTemp{signalNr} = fid;
-    end
+% Open file for reading    
+[fid, message] = fopen(signalSettings.rfFileName, 'rb');
+if (fid == -1)
+    error('Failed to open data file for tracking!');
+    return;    
 end
 
+
 t1=clock;
-
-for loopCnt =  1:allSettings.sys.msToProcess % Loop over all epochs
-    for signalNr = 1:allSettings.sys.nrOfSignals % Loop over all signals
-        signal = allSettings.sys.enabledSignals{signalNr};
-        trackResults.(signal).loopCnt = loopCnt;
-        for channelNr = 1:trackResults.(signal).nrObs % Loop over all channels            
-             % Set file pointer
-            trackResults.(signal).fid = fidTemp{signalNr};
-
-            % Check epoch boundary
-            if(mod(loopCnt,allSettings.(signal).codeLengthMs)==0)
-                
-                % Correlate signal
-                trackResults.(signal) = GNSSCorrelation(allSettings.(signal),trackResults.(signal),channelNr);             
-                
-                % Tracking of signal
-                trackResults.(signal) = GNSSTracking(allSettings.(signal),trackResults.(signal),channelNr); 
-            end
-        end
-    end
-    
+trackResults.(signal).fid = fid;
+for loopCnt =  1:allSettings.sys.msToProcess % Loop over all epochs        
+    trackResults.(signal).loopCnt = loopCnt;
+    channelNr = 1; % Loop over all channels            
+    % Set file pointer    
+    % Check epoch boundary        
+    if(mod(loopCnt,allSettings.(signal).codeLengthMs)==0)                        
+        % Correlate signal            
+        trackResults.(signal) = GNSSCorrelation(allSettings.(signal),trackResults.(signal),channelNr);                         
+        % Tracking of signal            
+        trackResults.(signal) = GNSSTracking(allSettings.(signal),trackResults.(signal),channelNr);             
+    end               
     % UI function
     if (mod(loopCnt, 1000) == 0)   
         t2 = clock;
         time = etime(t2,t1);
         estimtime = allSettings.sys.msToProcess/loopCnt * time;
-        showTrackStatus(trackResults,allSettings,loopCnt);
+        showTrackStatusSingle(trackResults,allSettings,loopCnt);
         msProcessed = loopCnt;
         msLeftToProcess = allSettings.sys.msToProcess-loopCnt;
         disp(['Ms Processed: ',int2str(msProcessed),' Ms Left: ',int2str(msLeftToProcess)]);
         disp(['Time processed: ',int2str(time),' Time left: ',int2str(estimtime-time)]);
-
      end    
 end % Loop over all epochs
+trackResults.(signal).channel(channelNr).trackingRunTime = toc(trackStartTime);
+trackDataFilePath = allSettings.sys.trackDataFilePath;
 
+trackDataFileName = [trackDataFilePath,'trackData_',signal,'_Satellite_ID_',num2str(trackResults.(signal).channel.SvId.satId),'.mat'];
+
+allSettings.sys.enabledSignals=saveEnabledSignals;
+allSettings.sys.nrOfSignals=saveNrOfSignals;
+
+
+save(trackDataFileName, 'trackResults', 'allSettings','acqData');
 % Notify user tracking is over
-disp(['   Tracking is over (elapsed time ', datestr(now - trackStartTime, 13), ')']) 
+disp(['   Tracking is over (elapsed time ', datestr(now - trackStartTimeInstance, 13), ')']) 
 
 

@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = navicl5UpdateChannelState(tR,ch)
+function tR = navicl5UpdateChannelState(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Update track state for gps tracking
 %
@@ -31,16 +31,14 @@ function tR = navicl5UpdateChannelState(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 
 % Switch between tracking states
 if trackChannelData.fllLockIndicator(loopCnt)<trackChannelData.fllWideBandLockIndicatorThreshold %(trackChannelData.phaseLock == 0) 
-    trackChannelData.trackState = 'STATE_PULL_IN';
-    trackChannelData.state_PULL_IN_LoopCounter = trackChannelData.state_PULL_IN_LoopCounter + 1;  
+    trackChannelData.trackState = 'STATE_PULL_IN'; 
 elseif (trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllWideBandLockIndicatorThreshold && ...
        trackChannelData.fllLockIndicator(loopCnt)<trackChannelData.fllNarrowBandLockIndicatorThreshold) 
     trackChannelData.trackState = 'STATE_COARSE_TRACKING';       
-    trackChannelData.state_PULL_IN_LoopCounter = 0;
 elseif (trackChannelData.bitSync ==1 && trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllNarrowBandLockIndicatorThreshold && ...
         trackChannelData.pllLockIndicator(loopCnt)>=trackChannelData.pllNarrowBandLockIndicatorThreshold)
     trackChannelData.trackState = 'STATE_FINE_TRACKING';

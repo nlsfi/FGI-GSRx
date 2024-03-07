@@ -69,13 +69,12 @@ for k=1:tR.nrObs
     navigationBits(navigationBits > 0)  =  1;
     navigationBits(navigationBits <= 0) = -1;
 
+    %Consider processing first few messages within one minute or so:
+    %specially helpful for long data set
+    firstNbits = navigationBits(1:preambleInterval*10);
+
     %Correlate tracking output with the preamble
-    tlmXcorrResult = calcCrossCorrelation(navigationBits, preamble_ms);
-    
-    tm_bits = [-1 1 1 -1 1 -1 -1 1 -1 -1 -1 -1 1 -1 1 -1 1 1 1 -1 1 1 -1 -1 -1 1 1 1 1 1]; 
-    tm_long = kron(-tm_bits, ones(1,10)); 
-    tm_corr_rslt = conv(tm_long, navigationBits);
-    tm_corr_rslt = tm_corr_rslt(300:length(tm_corr_rslt)); %First 300 points are not considered as tracking require some time to settle in at Fine Tracking stage
+    tlmXcorrResult = calcCrossCorrelation(firstNbits, preamble_ms);
 
     % Find all starting points of all preamble like patterns 
     clear index
@@ -86,30 +85,41 @@ for k=1:tR.nrObs
         for i = 1:length(index)
             indexVerification = find(mod(index-index(i),preambleInterval)==0); % Nr of values spaced by a multiple of 250
             cnt = size(indexVerification,1);
-            
+            %Estimate possible number of preambles in the sucessfully converted data stream
+            possibleNrOfPreambleOccurance = floor(length(firstNbits)/(preambleInterval))-3; %Use some protection for transition from FLL to PLL (usually couple of seconds shoudl be fine)
             % we have at least 6 matching indexes
-            if (cnt > 5)
-
-                % Check parity
-                codeFunc = str2func([signalSettings.signal,'NavParityCheck']);
-                parityCheck1 = codeFunc(tR.channel(k), index(i),1);
-                parityCheck2 = codeFunc(tR.channel(k), index(i),2);
+            if (cnt >=  (possibleNrOfPreambleOccurance-1)) && index(i)>preambleInterval % Do not consider the first index within the first second of data processing
                 
-                if ((parityCheck1 ~= 0) && (parityCheck2 ~= 0))
-                    % At this stage, parity check is successful. Preamble start position is recorded.
+                % Check parity
+                codeFunc = str2func([tR.signal,'NavParityCheck']);
+                parity1 = codeFunc(tR.channel(k), index(i),1);
+                parity2 = codeFunc(tR.channel(k), index(i),2);
+                
+                if ((parity1 ~= 0) && (parity2 ~= 0))
+                    % Parity was OK. Record the preamble start position. Skip
+                    % the rest of preamble pattern checking for this channel
+                    % and process next channel.
                     obs.channel(k).firstSubFrame = index(i);
+                    
                     obs.channel(k).bPreambleOk = true;
-                    disp(['Preamble found for ', obs.signal ,' prn ', num2str(obs.channel(k).SvId.satId),' !'])              
-                    break;                   
+                    
+                    if strcmp(signalSettings.signal,'navicl5')==1
+                        disp(['Sync Word found for ', obs.signal ,' prn ', ...
+                            num2str(obs.channel(k).SvId.satId),' !'])
+                    else
+                        disp(['Preamble found for ', obs.signal ,' prn ', ...
+                            num2str(obs.channel(k).SvId.satId),'!'])
+                    end
+                    
+                    break;
                 end
-
-           end
-        end            
-    end    
-
-    %Report if no preamble is found
+                
+            end
+        end
+    end
+    % Report if no preamble was found
     if (isnan(obs.channel(k).firstSubFrame))
         disp(['Could not find valid preambles for ', obs.signal ,' prn ', ...
-            num2str(obs.channel(k).SvId.satId),' !'])  
+            num2str(obs.channel(k).SvId.satId),'!'])
     end
 end

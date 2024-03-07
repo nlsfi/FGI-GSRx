@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = gale1cUpdateChannelState(tR,ch)
+function tR = gale1cUpdateChannelState(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Update track state for Galileo signals
 %
@@ -31,7 +31,7 @@ function tR = gale1cUpdateChannelState(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 
 % Switch between tracking states
 if trackChannelData.fllLockIndicator(loopCnt)<trackChannelData.fllWideBandLockIndicatorThreshold %(trackChannelData.phaseLock == 0) 

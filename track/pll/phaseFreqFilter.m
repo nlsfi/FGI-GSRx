@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = phaseFreqFilter(tR,ch)
+function tR = phaseFreqFilter(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Last Loop filter 
 %
@@ -35,10 +35,10 @@ function tR = phaseFreqFilter(tR,ch)
 
 % Copy updated local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 tau1carr = trackChannelData.tau1carr;
 tau2carr = trackChannelData.tau2carr;
-PDIcarr = trackChannelData.PDIcarr;
+PDIcarr = tR.PDIcarr;
 carrFreqBasis = trackChannelData.acquiredFreq;
 if(trackChannelData.bInited)
     oldCarrNco   = trackChannelData.prevCarrFreq;
@@ -49,10 +49,10 @@ else
 end
 
 % Calculate normalised PLL filter output
-pllDiscrFilt = trackChannelData.pllFilter(loopCnt);
+pllDiscrFilt = trackChannelData.pllFilter;
 
 % Calculate normalised FLL filter output
-fllDiscrFilt = trackChannelData.fllFilter(loopCnt);
+fllDiscrFilt = trackChannelData.fllFilter;
 % Calculate total carrier error
 if (strcmp(trackChannelData.trackState, 'STATE_PULL_IN') == 1) %phase 1
     % total carrier tracking error = frequency error
@@ -70,7 +70,7 @@ end
 
 [trackChannelData.tau1carr, trackChannelData.tau2carr] = calcLoopCoef(pllNoiseBandwidth, ...
                                                              trackChannelData.pllDampingRatio, trackChannelData.pllLoopGain); 
-trackChannelData.carrError(loopCnt) = totalCarrError;
+trackChannelData.carrError = totalCarrError;
 
 % Calculate NCO feedback
 carrNco        = ((tau2carr/tau1carr) * (totalCarrError - oldCarrError) + totalCarrError * (PDIcarr/tau1carr)) + oldCarrNco;

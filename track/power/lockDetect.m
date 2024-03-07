@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = lockDetect(tR,ch)
+function tR = lockDetect(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Lock Detector function for all signals
 %
@@ -31,10 +31,10 @@ function tR = lockDetect(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 
 
-step = (trackChannelData.Nc*1000);
+step = (signalSettings.Nc*1000);
 runningAvgWindowForLockDetectorInMs = trackChannelData.runningAvgWindowForLockDetectorInMs;
 startInd = max([0 loopCnt-runningAvgWindowForLockDetectorInMs])+step;        
 endInd = min([loopCnt length(trackChannelData.I_P)]);

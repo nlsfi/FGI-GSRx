@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [tR, rawSignal] = getDataForCorrelation(fid,tR,ch)
+function [tR, rawSignal] = getDataForCorrelation(fid,signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Read data for processing
 %
@@ -33,33 +33,32 @@ function [tR, rawSignal] = getDataForCorrelation(fid,tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
-dataCoeff = 1/tR.samplesPerRead;
-complexData = tR.complexData;
-iqSwap = tR.iqSwap;
+loopCnt = tR.loopCnt;
+%complexData = tR.complexData;
+complexData = signalSettings.complexData;
 
 if(trackChannelData.bInited)
     codeFreq      = trackChannelData.prevCodeFreq;  
     codePhase  = trackChannelData.prevCodePhase; % residual code phase from previous round    
     %fseek(fid, tR.sampleSize/8*trackChannelData.prevAbsoluteSample,'bof');   
-    bytesToSkip = tR.sampleSize/8*trackChannelData.prevAbsoluteSample;
+    bytesToSkip = signalSettings.sampleSize/8*trackChannelData.prevAbsoluteSample;
 else
-    codeFreq = tR.codeFreqBasis;    
+    codeFreq = signalSettings.codeFreqBasis;    
     codePhase  = 0; % First epoch. No previous value exist    
     %fseek(fid, ...
     %    tR.numberOfBytesToSkip + (trackChannelData.acquiredCodePhase-1)*tR.sampleSize/8, ...
     %    'bof');         
-    bytesToSkip =  tR.numberOfBytesToSkip + (trackChannelData.acquiredCodePhase-1)*tR.sampleSize/8;
+    bytesToSkip =  tR.numberOfBytesToSkip + (trackChannelData.acquiredCodePhase-1)*signalSettings.sampleSize/8;
 end
 
 % Calculate how much data to read and step size
-trackChannelData.codePhaseStep(loopCnt) = codeFreq / tR.samplingFreq;
-trackChannelData.blockSize(loopCnt) = ceil((tR.codeLengthInChips-codePhase) / trackChannelData.codePhaseStep(loopCnt));
+trackChannelData.codePhaseStep = codeFreq / signalSettings.samplingFreq;
+trackChannelData.blockSize(loopCnt) = ceil((signalSettings.codeLengthInChips-codePhase) / trackChannelData.codePhaseStep);
 
 % Copy the block size to read
 blockSize = trackChannelData.blockSize(loopCnt);
 
-rawSignal = readRfData(fid, tR.dataType, complexData,tR.iqSwap, bytesToSkip, blockSize);
+rawSignal = readRfData(fid, signalSettings.dataType, complexData,signalSettings.iqSwap, bytesToSkip, blockSize);
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;

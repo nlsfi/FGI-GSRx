@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = phaseDiscrim(tR,ch)
+function tR = phaseDiscrim(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Phase discriminator function 
 %
@@ -31,14 +31,14 @@ function tR = phaseDiscrim(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 IP_2 = trackChannelData.I_P(loopCnt);
 QP_2 = trackChannelData.Q_P(loopCnt);
 
 % Compute PLL discriminator
 % Phase error (in radians) is converted to phase error in cycles (1 cycle = 2pi radians)
 carrError = atan(QP_2/IP_2)/(2*pi); 
-trackChannelData.pllDiscr(loopCnt) = carrError;
+trackChannelData.pllDiscr = carrError;
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;

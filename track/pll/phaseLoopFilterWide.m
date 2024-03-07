@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = phaseLoopFilterWide(tR,ch)
+function tR = phaseLoopFilterWide(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PLL loop filter for all signals
 %
@@ -31,14 +31,14 @@ function tR = phaseLoopFilterWide(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 BWPLL = trackChannelData.pllNoiseBandwidthWide;
 loopGainPLL = trackChannelData.pllLoopGain;
 dampingRatioPLL = trackChannelData.pllDampingRatio;
-PDIcarr = trackChannelData.PDIcarr;
+PDIcarr = tR.PDIcarr;
 
 % Calculate phase error from discriminator function
-pllDiscr = trackChannelData.pllDiscr(loopCnt);
+pllDiscr = trackChannelData.pllDiscr;
 % Phase locked loop filter
 Wn = (8*dampingRatioPLL*BWPLL)/(4*dampingRatioPLL^2 + 1);
 c1 = (1/loopGainPLL)*(8*dampingRatioPLL*Wn*PDIcarr)/(4+(4*dampingRatioPLL*Wn*PDIcarr)+(Wn*PDIcarr)^2);
@@ -56,7 +56,7 @@ IR4 = IR1 + IR3;
 IR5 = IR4 + IR3;
 IR6 = 0.5*IR5;
 IR7 = IR6 + IR2;
-trackChannelData.pllFilter(loopCnt)   = IR7;
+trackChannelData.pllFilter  = IR7;
 
 % Store values for next round
 trackChannelData.prevIR4 = IR4;

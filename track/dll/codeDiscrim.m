@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = codeDiscrim(tR,ch)
+function tR = codeDiscrim(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Code discriminator function
 %
@@ -31,11 +31,11 @@ function tR = codeDiscrim(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
-I_E = trackChannelData.I_E(loopCnt);
-Q_E = trackChannelData.Q_E(loopCnt);
-I_L = trackChannelData.I_L(loopCnt);
-Q_L = trackChannelData.Q_L(loopCnt);
+loopCnt = tR.loopCnt;
+I_E = trackChannelData.I_E;
+Q_E = trackChannelData.Q_E;
+I_L = trackChannelData.I_L;
+Q_L = trackChannelData.Q_L;
 
 % Calculate code error with discriminator function 
 codeError = (sqrt(I_E * I_E + Q_E * Q_E) - sqrt(I_L * I_L + Q_L * Q_L)) / ...

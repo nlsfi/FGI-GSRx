@@ -91,7 +91,7 @@ for PRN = signalSettings.acqSatelliteList
         % Perform the parallel code phase search 
         resultsE1B = searchFreqCodePhase(upSampledCodeE1B, signalSettings, pRfData, PRN);
         resultsE1C = searchFreqCodePhase(upSampledCodeE1C, signalSettings, pRfData, PRN);      
-        results = resultsE1B + abs(resultsE1C);
+        results = resultsE1B + abs(resultsE1C);        
     else
         % Generate ranging code
         generatePrnCodeFunc = str2func([signalSettings.signal,'GeneratePrnCode']);
@@ -108,7 +108,6 @@ for PRN = signalSettings.acqSatelliteList
     % Find the correlation peak and the corresponding frequency bin and code phase
     [peakSize, frequencyBinIndex] = max(max(results, [], 2));
     [peakSize, codePhase] = max(results(frequencyBinIndex,:));
-    
     % Find 1 chip wide code phase exclude range around the peak
     excludeRangeIndex1 = codePhase - samplesPerCodeChip;
     excludeRangeIndex2 = codePhase + samplesPerCodeChip;
@@ -146,70 +145,93 @@ for PRN = signalSettings.acqSatelliteList
         
         % Indicate PRN number of the detected signal 
         fprintf('%02d ', PRN);
-         if (strcmp(signalSettings.signal,'gale1b')==1 || strcmp(signalSettings.signal,'gale1c') == 1)
-            if max(resultsE1B(:)) > max(resultsE1C(:))
-                results = resultsE1B;
-            else
-                results = resultsE1C;
-            end
-            [peakSize, frequencyBinIndex] = max(max(results, [], 2));
-            [peakSize, codePhase] = max(results(frequencyBinIndex,:));
-         end
-       
-        % Copy results
-        acqResults.channel(chIndex).codePhase = codePhase;
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
-        %%%% Update for unusual multipath dopper seen in Galileo constellation;
-        %%%% The current solution now looks for multipath dopper, i.e., 
-        %%%% multiple peaks in carrier domain; if they exist, the estimated 
-        %%%% doppler is carefully chosen: in this case, the lowest 
-        %%%% point in the valley between the two peaks
-        firstMaxPeak = peakSize;
-        firstMaxPeakInd = frequencyBinIndex;
-        [candidatePeaksInd] = find(results(:,codePhase)>0.8*firstMaxPeak);
-        candidatePeaksVal = results(candidatePeaksInd,codePhase);
-        if length(candidatePeaksInd)>1
-            multiplePeaksYes = 0;
-            for jj=1:length(candidatePeaksInd)
-                if (candidatePeaksInd(jj) ~= firstMaxPeakInd)
-                    if candidatePeaksVal(jj)>results(candidatePeaksInd(jj)-1,codePhase) ...
-                            && candidatePeaksVal(jj)>results(candidatePeaksInd(jj)+1,codePhase)
-                        secondMaxPeak = candidatePeaksVal(jj);
-                        secondMaxPeakInd = candidatePeaksInd(jj);
-                        multiplePeaksYes = 1;
-                    end
-                end
-            end
-            if multiplePeaksYes == 1
-                if firstMaxPeakInd<=secondMaxPeakInd
-                    [minVal minInd] = min(results(firstMaxPeakInd:secondMaxPeakInd,codePhase));
-                    finalFrequencyBinIndex = firstMaxPeakInd + minInd -1;
-                else
-                    [minVal minInd] = min(results(secondMaxPeakInd:firstMaxPeakInd,codePhase));
-                    finalFrequencyBinIndex = secondMaxPeakInd + minInd -1;
-                end
-            else
-                finalFrequencyBinIndex = frequencyBinIndex;
-            end
-        else
-            finalFrequencyBinIndex = frequencyBinIndex;
-        end
-        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                              
+        acqResults.channel(chIndex).codePhase = codePhase;        
+                   
+        acqResults.channel(chIndex).doppler    =  - freqWindow ...
+                + freqStep * (frequencyBinIndex - 1);
         acqResults.channel(chIndex).carrFreq    = centerFreq - freqWindow ...
-                                   + freqStep * (finalFrequencyBinIndex - 1);                         
+                                   + freqStep * (frequencyBinIndex - 1);
         acqResults.channel(chIndex).bFound = true;
 
+        %Estimate fine doppler     
+        %%Fine Doppler estimation is carried out with a second stage acquisition around +/-X Hz 
+        %%of estimated Doppler at the first acquisition stage. In order to get the full signal energy 
+        %%(i.e, in order to avoid mid-bit transition withing 4 ms chunk), the incoming signal is  
+        %%advanced to the value estimated by the codePhase in samples at the first acquisition stage. 
+        %%This is working fine, and we will see how it performs with many other data sets. 
+
+        %Change the frequency search range, frequency bin size and coherent and non-coherent integration number for fine frequency search            
+        %Save first the old user-defined values for restoring those later            
+        cohIntNumber = signalSettings.cohIntNumber;        
+        nonCohIntNumber = signalSettings.nonCohIntNumber;         
+        freqWindow = signalSettings.maxSearchFreq; % One sided        
+        intermediateFreq = signalSettings.intermediateFreq;        
+        codeLengthMs = signalSettings.codeLengthMs;                                                                             
+        signalSettings.maxSearchFreq=1000; % One sided        
+        signalSettings.intermediateFreq = signalSettings.intermediateFreq + acqResults.channel(chIndex).doppler;        
+             
+        if (strcmp(signalSettings.signal(1:5),'gale1')==1)    
+            signalSettings.cohIntNumber = 1;                     
+            signalSettings.nonCohIntNumber = 1;     
+            signalSettings.codeLengthMs =20; %use 20 in order to have better resolution  
+            % Number of the frequency bins for the given acquisition band        
+            freqStepFineEstimation = 1000/(2*signalSettings.codeLengthMs*signalSettings.cohIntNumber);        
+            % Number of the frequency bins for the given acquisition band (500Hz steps)        
+            numberOfFrqBinsFineEstimation = floor(2 * signalSettings.maxSearchFreq/freqStepFineEstimation + 1);
+            frqBins = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep - ...
+                               signalSettings.maxSearchFreq + ...
+                               freqStepFineEstimation * [1:1:numberOfFrqBinsFineEstimation];   
+            dataResultsFine = searchFreqCodePhase(upSampledCodeE1B, signalSettings, pRfData(codePhase-1:end), PRN);
+            pilotResultsFine = searchFreqCodePhase(upSampledCodeE1C, signalSettings, pRfData(codePhase-1:end), PRN);
+            [peakSizeData, frequencyBinIndexData] = max(max(dataResultsFine, [], 2));
+            [peakSizePilot, frequencyBinIndexPilot] = max(max(pilotResultsFine, [], 2));
+            searchResults = dataResultsFine + abs(pilotResultsFine);            
+        else
+            if  (strcmp(signalSettings.signal(1:5),'beib1')==1)
+                %In case of GEO satellites, use higher non-coherent
+                %integration due to faster bit rate (500 bps)
+                if PRN<5
+                    signalSettings.cohIntNumber = 2 ;                     
+                    signalSettings.nonCohIntNumber = 5;                    
+                else
+                    signalSettings.cohIntNumber = 1 ;                     
+                    signalSettings.nonCohIntNumber = 3;                   
+                end
+            else
+                signalSettings.cohIntNumber = 2 ;                     
+                signalSettings.nonCohIntNumber = 5;   
+            end
+            signalSettings.codeLengthMs = 20;
+            % Number of the frequency bins for the given acquisition band        
+            freqStepFineEstimation = 1000/(2*signalSettings.codeLengthMs*signalSettings.cohIntNumber);        
+            % Number of the frequency bins for the given acquisition band (500Hz steps)        
+            numberOfFrqBinsFineEstimation = floor(2 * signalSettings.maxSearchFreq/freqStepFineEstimation + 1);
+            frqBins = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep - ...
+                               signalSettings.maxSearchFreq + ...
+                               freqStepFineEstimation * [1:1:numberOfFrqBinsFineEstimation];   
+            searchResults = searchFreqCodePhase(upSampledCode, signalSettings, pRfData(codePhase:end), PRN);        
+        end
+            %Find the code phase peak: should be around the first sample        
+            [peakVal codePhase] = max(max(searchResults(:,:)));        
+            [fineDopplerIndexVal fineDopplerIndex] = max(searchResults(:,codePhase));                   
+            fineDoppler = frqBins(fineDopplerIndex) - signalSettings.intermediateFreq - (PRN-8)*signalSettings.frequencyStep;                 
+            %Restore original acquisition parameters                    
+            signalSettings.cohIntNumber=cohIntNumber;        
+            signalSettings.nonCohIntNumber = nonCohIntNumber;         
+            signalSettings.maxSearchFreq = freqWindow; % One sided        
+            signalSettings.intermediateFreq = intermediateFreq;
+            signalSettings.codeLengthMs = codeLengthMs;        
+            %fineDoppler = searchFreqCodePhaseFineEstimation(upSampledCode(1,:), signalSettings, pRfData(codePhase:end), PRN, acqResults.channel(chIndex).doppler);
+            acqResults.channel(chIndex).doppler    = acqResults.channel(chIndex).doppler + fineDoppler;
+            acqResults.channel(chIndex).carrFreq    = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep + acqResults.channel(chIndex).doppler;                
     else
         % No signal with this PRN 
         fprintf('.. ');
-
         acqResults.channel(chIndex).codePhase = NaN;
         acqResults.channel(chIndex).carrFreq  = NaN;
-       acqResults.channel(chIndex).bFound = false;
-    end
-    
+        acqResults.channel(chIndex).bFound = false;
+    end    
     acqResults.nrObs = chIndex;
-
     % Increment channel index
     chIndex = chIndex + 1;
 end

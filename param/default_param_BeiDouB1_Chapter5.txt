@@ -38,10 +38,10 @@ sys,msToProcess,60000,       % Number of ms to process in total from data file. 
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
-sys,loadDataFile,true,     % Defines if data file is to be loaded
+sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_BeiDouB1_Chapter5.mat',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_BeiDouB1_Chapter5.mat',  % Data file for storing output
+sys,dataFileOut,'D:\Mat Data\trackData_v2.0.0_BeiDouB1_Chapter5.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -92,27 +92,24 @@ beib1,acqThreshold,10,             % Threshold for the signal presence decision 
 beib1,maxSearchFreq,6000,          % Maximum search frequency in one direction 
 
 % Tracking parameters
-beib1,fllNoiseBandwidthWide,300,        % FLL noise BW wide[Hz]
-beib1,fllNoiseBandwidthNarrow,100,   % FLL noise BW narrow [Hz]
-beib1,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
+beib1,fllNoiseBandwidthWide,100,        % FLL noise BW wide[Hz]
+beib1,fllNoiseBandwidthNarrow,50,   % FLL noise BW narrow [Hz]
+beib1,fllNoiseBandwidthVeryNarrow,10,   % FLL noise BW narrow [Hz]
 beib1,fllDampingRatio,1.5,         % PLL damping ratio
 beib1,fllLoopGain,0.7,             % PLL loop gain
 beib1,pllNoiseBandwidthWide,15,        % PLL noise BW [Hz]
 beib1,pllNoiseBandwidthNarrow,15,        % PLL noise BW [Hz]
 beib1,pllNoiseBandwidthVeryNarrow,10,        % PLL noise BW [Hz]
-beib1,pllDampingRatio,0.7,          % PLL damping ratio
-beib1,pllLoopGain,0.1,              % PLL loop gain
+beib1,pllDampingRatio,0.5,          % PLL damping ratio
+beib1,pllLoopGain,0.2,              % PLL loop gain
 beib1,dllDampingRatio,0.7,          % DLL damping ratio
 beib1,dllNoiseBandwidth,1,          % DLL noise BW [Hz]
-beib1,M,20,                             % Number of blocks to use for computing wide band power
-beib1,K,50,                             % Averaging over M number of blocks 
 beib1,Nc,0.001,                         % integration time in seconds for DLL 
 beib1,corrFingers,[-2 -0.1 0 0.1],    % Correlator finger positions [chips]
 beib1,earlyFingerIndex,2,               % Index of early finger
 beib1,promptFingerIndex,3,              % Index of prompt finger
 beib1,lateFingerIndex,4,                % Index of late finger
-beib1,noiseFingerIndex,1,               % Index of fingers for measuring noise level
-beib1,CN0Coeff,1,
+beib1,noiseFingerIndex,1,               % Index of fingers for measuring noise levelbeib1,CN0Coeff,1,
 beib1,pllWideBandLockIndicatorThreshold,0.5,               % PLL lock indicator threshold for DLL unlocked => locked
 beib1,pllNarrowBandLockIndicatorThreshold,0.8,               % PLL lock indicator threshold for DLL unlocked => locked
 beib1,runningAvgWindowForLockDetectorInMs, 20

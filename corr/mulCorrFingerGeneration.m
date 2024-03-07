@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [fingers,tR] = corrFingerGeneration(signalSettings,tR,ch)
+function [fingers,tR] = mulCorrFingerGeneration(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generates all the correlator fingers
 %
@@ -43,8 +43,9 @@ blockSize = trackChannelData.blockSize(loopCnt);
 Code = trackChannelData.codeReplica(1,:);
 scalingFactor = signalSettings.modulationFactor;
 
-nrOfFingers = length(trackChannelData.corrFingers);
-corrFingers = trackChannelData.corrFingers;
+
+nrOfFingers = length(trackChannelData.mulCorrFingers);
+corrFingers = trackChannelData.mulCorrFingers;
 
 % Get first and last finger
 negOffset = abs(corrFingers(1)); % [-2 -0.25 0 0.25],

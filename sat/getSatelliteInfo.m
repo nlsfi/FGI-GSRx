@@ -64,11 +64,20 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             sat.(signal).channel(channelNr).Accuracy = Accuracy;
             
             % Temporary variable for one epehemeris
+            
             e=ephData.(signal);
             
             % Set week number from ephemeris
-            if isfield(e, 'weekNumber') % TBA If GLONASS, no week number
-                obs.(signal).channel(channelNr).week = e(prn).weekNumber;
+            if strcmp(signal, 'glol1')~=1 % TBA If GLONASS, no week number
+                if strcmp(signal,'gale1b')==1
+                    %Since weekNumber does not change for 1 week, we can
+                    %fairly take the data from the first available
+                    %subframe, and use it for the whole data: it can be
+                    %changed later
+                    obs.(signal).channel(channelNr).week = e(prn).subframe(1).weekNumber;
+                else
+                    obs.(signal).channel(channelNr).week = e(prn).weekNumber;
+                end
                 if(obs.(signal).channel(channelNr).week < 1024)
                     obs.(signal).channel(channelNr).week = obs.(signal).channel(channelNr).week + 1024;
                 end

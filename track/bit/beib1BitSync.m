@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = beib1BitSync(tR,ch)
+function tR = beib1BitSync(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bit sync function for Beidou B1 signal
 %
@@ -31,7 +31,7 @@ function tR = beib1BitSync(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 
 if((loopCnt < 200)|| (trackChannelData.bitSync == 1)) || mod(loopCnt,20)~=0
     return; % Nothing to do yet
@@ -39,9 +39,9 @@ end
 
 % TBA later
 if trackChannelData.SvId.satId < 6 % Do only for IGSO and MEO satellites. does not really matter for GEO satellites, as the bit duration is only 2 msec
-   trackChannelData=beiDouGEOBitSync(trackChannelData);   
+   trackChannelData=beiDouGEOBitSync(trackChannelData,loopCnt);   
 else
-    NHcorr = calcCrossCorrelation(sign(trackChannelData.I_P(1:loopCnt)),tR.secondaryCode);
+    NHcorr = calcCrossCorrelation(sign(trackChannelData.I_P(1:loopCnt)),signalSettings.secondaryCode);
     NHcorr = fliplr(NHcorr);
     indexNH20 = find(abs(abs(NHcorr)-20)<0.1);  
     diffIndexVal = indexNH20(end:-1:2)-indexNH20(end-1:-1:1);  
@@ -54,7 +54,7 @@ else
             % Check whether bitSync is really successfull by looking at
             % the I_P correlation values: they should have at least same
             % sign for 20 ms
-            dataBit = trackChannelData.I_P((loopCnt+trackChannelData.bitBoundaryIndex)-40:(loopCnt+trackChannelData.bitBoundaryIndex)-21).*tR.secondaryCode;
+            dataBit = trackChannelData.I_P((loopCnt+trackChannelData.bitBoundaryIndex)-40:(loopCnt+trackChannelData.bitBoundaryIndex)-21).*signalSettings.secondaryCode;
             if abs(sum(sign(dataBit)))==20
                 trackChannelData.bitSync=1;                                                     
                 disp(['   Bit sync for BeiDou prn ', ...

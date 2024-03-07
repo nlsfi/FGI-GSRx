@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trackChannel = allocateTrackChannel(trackChannel, signalSettings)
+function trackChannel = allocateTrackChannel(trackChannel, allSettings, signal)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialises parameters for signal tracking
 %
@@ -29,16 +29,20 @@ function trackChannel = allocateTrackChannel(trackChannel, signalSettings)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+dataLength = allSettings.sys.msToProcess - allSettings.sys.msToSkip;
+
+signalSettings = allSettings.(signal);
+
 % Finger values after correlation
 trackChannel.I_E = 0; % I early finger value
-trackChannel.I_P = 0; % I prompt finger value
+trackChannel.I_P = zeros(1,dataLength);  % I prompt finger value
 trackChannel.I_L = 0; % I late finger value
 trackChannel.Q_E = 0; % Q early finger value
-trackChannel.Q_P = 0; % Q prompt finger value
+trackChannel.Q_P = zeros(1,dataLength); % Q prompt finger value
 trackChannel.Q_L = 0; % Q late finger value
 trackChannel.I_E_E = 0; % I very early finger value
 trackChannel.Q_E_E = 0; % Q very early finger value
-trackChannel.absoluteSample = 0; % Sample count from processed file
+trackChannel.absoluteSample =  zeros(1,dataLength); % Sample count from processed file
 trackChannel.prevAbsoluteSample = 0; % Sample count from processed file
 
 % FLL discriminator values
@@ -48,7 +52,7 @@ trackChannel.fllDiscr = 0; % FLL discriminator value
 trackChannel.pllDiscr = 0; % PLL discriminator value
 
 % DLL discriminator values
-trackChannel.dllDiscr = 0; % DLL discriminator value
+trackChannel.dllDiscr = zeros(1,dataLength); % DLL discriminator value
 
 % DLL Loop values
 [trackChannel.tau1code, trackChannel.tau2code] = calcLoopCoef(signalSettings.dllNoiseBandwidth, signalSettings.dllDampingRatio, 1.0);
@@ -65,7 +69,7 @@ trackChannel.fllNoiseBandwidthNarrow = signalSettings.fllNoiseBandwidthNarrow; %
 trackChannel.fllNoiseBandwidthVeryNarrow = signalSettings.fllNoiseBandwidthVeryNarrow; % FLL loop bandwidth for narrow loop
 trackChannel.fllDampingRatio = signalSettings.fllDampingRatio; % FLL loop damping ratio
 trackChannel.fllLoopGain = signalSettings.fllLoopGain; % FLL loop gain
-trackChannel.fllFilter = 0; % FLL loop filter output
+trackChannel.fllFilter = zeros(1,dataLength); % FLL loop filter output
 trackChannel.prevIR11 = 0; % Intermediate value from FLL loop filter from previous round
 
 % PLL Loop values
@@ -79,10 +83,10 @@ trackChannel.prevIR4 = 0; % Intermediate value from PLL loop filter from previou
 
 % phaseFreq Loop values
 [trackChannel.tau1carr, trackChannel.tau2carr] = calcLoopCoef(signalSettings.pllNoiseBandwidthWide, signalSettings.pllDampingRatio, signalSettings.pllLoopGain); % using lower FLL filter parameters, added by ST
-trackChannel.doppler = 0; % Estimated doppler frequency 
+trackChannel.doppler = zeros(1,dataLength); % Estimated doppler frequency 
 trackChannel.prevCarrFreq = 0; % Carrier frequency from previous round
 trackChannel.prevCarrError = 0; % Estimated carrier frequency error from previous round
-trackChannel.carrFreq   = 0; % Carrier frequency 
+trackChannel.carrFreq   = zeros(1,dataLength); % Carrier frequency 
 trackChannel.carrError   = 0; % Estimated carrier frequency error
 trackChannel.estCarrFreqFromAcqBlock = trackChannel.acquiredFreq;
 
@@ -95,23 +99,9 @@ trackChannel.prevCarrPhase = 0; % Carrier phase in correlation
 trackChannel.prevCodePhase = 0; % Code phase in correlation
 
 % estimate CNO from SNR
-trackChannel.noiseCNOfromSNR = 0; % Noise calculated from very early finger
-trackChannel.CN0fromSNR = 0; % CN0 estimated from SNR values
-trackChannel.varianceCNOfromSNR = 0; % Variance of last 1000 CN0 from SNR values
-trackChannel.meanCN0fromSNR = 0; % Mean of last 1000 CN0 from SNR values
-
-% estimate CNO from Narrow/Wide power
-trackChannel.kIndex = 1; % Index for final output. Increments only when estimation is calculated
-trackChannel.M = signalSettings.M; % First update rate (high) of estimator
-trackChannel.K = signalSettings.K; % Second udate rate of estimator (low) 
-trackChannel.Nc = signalSettings.Nc; % Coefficient 1 for estimator 
-trackChannel.CN0Coeff = signalSettings.CN0Coeff; % Coefficient 2 for estimator 
-trackChannel.CN0fromNarrowWide = 0; % CNO value from Narrow and Wide band power             
-trackChannel.wideBandPower = 0; % Calculated wide bandwidth power
-trackChannel.narrowBandPower = 0; % Calculated narrow bandwidth power
-trackChannel.normalizedPower = 0; % Narrow over Wide power
-trackChannel.meanNormalizedPower = 0; % Moving average of Narrow over Wide power
-trackChannel.powerError = 0;                   
+trackChannel.noiseCNOfromSNR = zeros(1,dataLength); % Noise calculated from very early finger
+trackChannel.CN0fromSNR = zeros(1,dataLength); % CN0 estimated from SNR values
+trackChannel.meanCN0fromSNR = zeros(1,dataLength); % Mean of last 1000 CN0 from SNR values
 
 % Bit Sync scripts
 trackChannel.bitSync = 0;
@@ -141,17 +131,15 @@ else
 end
 
 % FLL lock detector
-trackChannel.fllLockIndicator = 0;
+trackChannel.fllLockIndicator = zeros(1,dataLength);
 trackChannel.fllWideBandLockIndicatorThreshold=signalSettings.fllWideBandLockIndicatorThreshold;
 trackChannel.fllNarrowBandLockIndicatorThreshold=signalSettings.fllNarrowBandLockIndicatorThreshold;
 trackChannel.runningAvgWindowForLockDetectorInMs=signalSettings.runningAvgWindowForLockDetectorInMs;
 % PLL lock detector
-trackChannel.pllLockIndicator = 0;
+trackChannel.pllLockIndicator = zeros(1,dataLength);
 trackChannel.pllWideBandLockIndicatorThreshold=signalSettings.pllWideBandLockIndicatorThreshold;
 trackChannel.pllNarrowBandLockIndicatorThreshold=signalSettings.pllNarrowBandLockIndicatorThreshold;
 
-trackChannel.bithist = zeros(1,20);
-trackChannel.bitLock = 0;
 trackChannel.bitSyncConfidenceLevel = signalSettings.bitSyncConfidenceLevel;
 
 

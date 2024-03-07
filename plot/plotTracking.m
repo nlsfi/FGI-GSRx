@@ -42,7 +42,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     % Loop over all channels
     for channelNr=1:tR.(signal).nrObs
         tC = tR.(signal).channel(channelNr);
-        sampleSpacing = tC.PDIcarr*1000;
+        sampleSpacing = tR.(signal).PDIcarr*1000;
         timeAxisInMs = sampleSpacing:sampleSpacing:length(tC.I_P); % create the time vector for the x-axis        
         % The number 200 is added just for more convenient handling of the open
         % figure windows, when many figures are closed and reopened.
@@ -57,97 +57,94 @@ for signalNr = 1:allSettings.sys.nrOfSignals
 
 %% Draw axes ==============================================================
         % Row 1
-        figureHandle(1, 1) = subplot(3, 3, 1);
-        figureHandle(1, 2) = subplot(3, 3, [2 3]);
+        handles(1, 1) = subplot(3, 3, 1);
+        handles(1, 2) = subplot(3, 3, [2 3]);
         % Row 2
-        figureHandle(2, 1) = subplot(3, 3, 4);
-        figureHandle(2, 2) = subplot(3, 3, [5 6]);
+        handles(2, 1) = subplot(3, 3, 4);
+        handles(2, 2) = subplot(3, 3, [5 6]);
         % Row 3
-        figureHandle(3, 1) = subplot(3, 3, 7);
-        figureHandle(3, 2) = subplot(3, 3, 8);
-        figureHandle(3, 3) = subplot(3, 3, 9);
+        handles(3, 1) = subplot(3, 3, 7);
+        handles(3, 2) = subplot(3, 3, 8);
+        handles(3, 3) = subplot(3, 3, 9);
 
 %% Plot all figures =======================================================
         %----- Discrete-Time Scatter Plot ---------------------------------
-        plot(figureHandle(1, 1), tC.I_P(timeAxisInMs),...
+        plot(handles(1, 1), tC.I_P(timeAxisInMs),...
                             tC.Q_P(timeAxisInMs), ...
                             '.');
 
-        grid  (figureHandle(1, 1));
-        axis  (figureHandle(1, 1), 'equal');
-        title (figureHandle(1, 1), 'Discrete-Time Scatter Plot');
-        xlabel(figureHandle(1, 1), 'I prompt');
-        ylabel(figureHandle(1, 1), 'Q prompt');
+        grid  (handles(1, 1));
+        axis  (handles(1, 1), 'equal');
+        title (handles(1, 1), 'Discrete-Time Scatter Plot');
+        xlabel(handles(1, 1), 'I prompt');
+        ylabel(handles(1, 1), 'Q prompt');
 
-        %----- Navigation bits ---------------------------------------------------
-        plot  (figureHandle(1, 2), timeAxisInMs/1000, ...
+        %----- Nav bits ---------------------------------------------------
+        plot  (handles(1, 2), timeAxisInMs/1000, ...
                               tC.I_P(timeAxisInMs), ...
                               timeAxisInMs/1000, ...
                               tC.Q_P(timeAxisInMs));
 
-        grid  (figureHandle(1, 2));
-        title (figureHandle(1, 2), 'In-phase (I_P) and Quad-phase (Q_P) component of the received signal');
-        xlabel(figureHandle(1, 2), 'Time (s)');
-        axis  (figureHandle(1, 2), 'tight');
-        legendHandle = legend(figureHandle(1, 2), '${I_P}$','${Q_P}$');
-        
-        set(legendHandle, 'Interpreter', 'Latex');            
-        
+        grid  (handles(1, 2));
+        title (handles(1, 2), 'In-phase (I_P) and Quad-phase (Q_P) component of the received signal');
+        xlabel(handles(1, 2), 'Time (s)');
+        axis  (handles(1, 2), 'tight');
+        hLegend = legend(handles(1, 2), '${I_P}$','${Q_P}$');
+        %set interpreter from tex to latex. This will draw \sqrt correctly
+        set(hLegend, 'Interpreter', 'Latex');            
         %----- PLL discriminator unfiltered--------------------------------
-        plot  (figureHandle(2, 1), timeAxisInMs/1000, ...
+        plot  (handles(2, 1), timeAxisInMs/1000, ...
                               tC.doppler(timeAxisInMs), 'r');      
 
-        grid  (figureHandle(2, 1));
-        axis  (figureHandle(2, 1), 'tight');
-        xlabel(figureHandle(2, 1), 'Time (s)');
-        ylabel(figureHandle(2, 1), 'Doppler');
-        title (figureHandle(2, 1), 'Estimated Doppler');
+        grid  (handles(2, 1));
+        axis  (handles(2, 1), 'tight');
+        xlabel(handles(2, 1), 'Time (s)');
+        ylabel(handles(2, 1), 'Doppler');
+        title (handles(2, 1), 'Estimated Doppler');
 
-        %----- Early, Prompt and Late Correlation Output-------------------
-        plot(figureHandle(2, 2), timeAxisInMs/1000, ...
-                            [sqrt(tC.I_E(timeAxisInMs).^2 + ...
-                                  tC.Q_E(timeAxisInMs).^2)', ...
-                             sqrt(tC.I_P(timeAxisInMs).^2 + ...
-                                  tC.Q_P(timeAxisInMs).^2)', ...
-                             sqrt(tC.I_L(timeAxisInMs).^2 + ...
-                                  tC.Q_L(timeAxisInMs).^2)'],'-*');
+        %----- Correlation ------------------------------------------------
+        plot(handles(2, 2), timeAxisInMs/1000, ...
+                            [sqrt(tC.I_P(timeAxisInMs).^2 + ...
+                                  tC.Q_P(timeAxisInMs).^2)'], '-*');
 
-        grid  (figureHandle(2, 2));
-        title (figureHandle(2, 2), 'Correlation results');
-        xlabel(figureHandle(2, 2), 'Time (s)');
-        axis  (figureHandle(2, 2), 'tight');
+        grid  (handles(2, 2));
+        title (handles(2, 2), 'Correlation results');
+        xlabel(handles(2, 2), 'Time (s)');
+        axis  (handles(2, 2), 'tight');
         
-        legendHandle = legend(figureHandle(2, 2), '$\sqrt{I_{E}^2 + Q_{E}^2}$', ...
-                                        '$\sqrt{I_{P}^2 + Q_{P}^2}$', ...
-                                        '$\sqrt{I_{L}^2 + Q_{L}^2}$');
-                                
-        set(legendHandle, 'Interpreter', 'Latex');
-        %----- PLL Lock Indicator------------------------------------------
-        plot  (figureHandle(3, 1), timeAxisInMs/1000, tC.pllLockIndicator(timeAxisInMs), 'b');      
+        hLegend = legend(handles(2, 2),'$\sqrt{I_{P}^2 + Q_{P}^2}$');
+                          
+        %set interpreter from tex to latex. This will draw \sqrt correctly
+        set(hLegend, 'Interpreter', 'Latex');
 
-        grid  (figureHandle(3, 1));
-        axis  (figureHandle(3, 1), 'tight');
-        xlabel(figureHandle(3, 1), 'Time (s)');
-        ylabel(figureHandle(3, 1), 'Amplitude');
-        title (figureHandle(3, 1), 'PLL Lock Indicator');
+        %----- PLL Lock Indicator----------------------------------
+        plot  (handles(3, 1), timeAxisInMs/1000, ...
+                              tC.pllLockIndicator(timeAxisInMs), 'b');      
 
-        %----- Unfiltered DLL discriminator--------------------------------
-        plot  (figureHandle(3, 2), timeAxisInMs/1000,tC.dllDiscr(timeAxisInMs), 'r');      
+        grid  (handles(3, 1));
+        axis  (handles(3, 1), 'tight');
+        xlabel(handles(3, 1), 'Time (s)');
+        ylabel(handles(3, 1), 'Amplitude');
+        title (handles(3, 1), 'PLL Lock Indicator');
 
-        grid  (figureHandle(3, 2));
-        axis  (figureHandle(3, 2), 'tight');
-        xlabel(figureHandle(3, 2), 'Time (s)');
-        ylabel(figureHandle(3, 2), 'Amplitude');
-        title (figureHandle(3, 2), 'Raw DLL discriminator');
+        %----- DLL discriminator unfiltered--------------------------------
+        plot  (handles(3, 2), timeAxisInMs/1000, ...
+                              tC.dllDiscr(timeAxisInMs), 'r');      
 
-        %----- FLL Lock Indicator------------------------------------------
-        plot  (figureHandle(3, 3), timeAxisInMs/1000, ...
+        grid  (handles(3, 2));
+        axis  (handles(3, 2), 'tight');
+        xlabel(handles(3, 2), 'Time (s)');
+        ylabel(handles(3, 2), 'Amplitude');
+        title (handles(3, 2), 'Raw DLL discriminator');
+
+        %----- DLL discriminator filtered----------------------------------
+        plot  (handles(3, 3), timeAxisInMs/1000, ...
                               tC.fllLockIndicator(timeAxisInMs), 'b');      
-        grid  (figureHandle(3, 3));
-        axis  (figureHandle(3, 3), 'tight');
-        xlabel(figureHandle(3, 3), 'Time (s)');
-        ylabel(figureHandle(3, 3), 'Amplitude');
-        title (figureHandle(3, 3), 'FLL Lock Indicator');
+        grid  (handles(3, 3));
+        axis  (handles(3, 3), 'tight');
+        xlabel(handles(3, 3), 'Time (s)');
+        ylabel(handles(3, 3), 'Amplitude');
+        title (handles(3, 3), 'FLL Lock Indicator');
     end % for channelNr 
     
     figure; hold on; grid on;        
@@ -155,7 +152,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     dispind = 1;
     for channelNr=1:tR.(signal).nrObs
         tC = tR.(signal).channel(channelNr);
-        sampleSpacing = tC.PDIcarr*1000;
+        sampleSpacing = tR.(signal).PDIcarr*1000;
         timeAxisInMs = sampleSpacing:sampleSpacing:length(tC.I_P); % create the time vector for the x-axis
         plot(timeAxisInMs/1000,round(tC.meanCN0fromSNR(timeAxisInMs)),displayPattern(dispind,:)); hold on; grid on;  
         dispind=dispind+1;

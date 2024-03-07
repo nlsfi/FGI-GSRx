@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trackChannelData = plotMultiFingerTracking(trackChannelData)
+function trackChannelData = plotMultiFingerTracking(trackChannelData,loopCnt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Plot results for multi finger tracking.
 %
@@ -31,15 +31,10 @@ function trackChannelData = plotMultiFingerTracking(trackChannelData)
 % TBA: Check this function
 
 % Temporary variables
-loopCnt = trackChannelData.loopCnt;
-I_E = trackChannelData.I_E(loopCnt);
-Q_E = trackChannelData.Q_E(loopCnt);
-I_L = trackChannelData.I_L(loopCnt);
-Q_L = trackChannelData.Q_L(loopCnt);
 
-plot(trackChannelData.corrFingers,trackChannelData.corrFingersOut,'b-o'); hold on; grid on;             
+plot(trackChannelData.mulCorrFingers,trackChannelData.mulCorrFingersOut(loopCnt,:)/max(trackChannelData.mulCorrFingersOut(loopCnt,:)),'b-o'); hold on; grid on;             
 xlabel('Code delay [chips]');
 ylabel('Normalized Correlation Function');
-title('Correlation function'); drawnow;
+title(['Correlation function for PRN ',num2str(trackChannelData.SvId.satId)]); drawnow;
 hold off;        
-trackChannelData.corrFingersOut = zeros(1,length(trackChannelData.corrFingers));  
+ 

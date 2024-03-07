@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tC = getCorrelatorFingers(tC,fingerParams)
+function tC = getCorrelatorFingers(tC,allSettings,signal)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Copy correlator finger configuration to tracking structure
 %
@@ -29,12 +29,17 @@ function tC = getCorrelatorFingers(tC,fingerParams)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-tC.corrFingers = fingerParams.corrFingers;
-tC.earlyFingerIndex = fingerParams.earlyFingerIndex;
-tC.promptFingerIndex = fingerParams.promptFingerIndex;
-tC.lateFingerIndex = fingerParams.lateFingerIndex;
-tC.noiseFingerIndex = fingerParams.noiseFingerIndex;
+tC.corrFingers = allSettings.(signal).corrFingers;
+tC.earlyFingerIndex = allSettings.(signal).earlyFingerIndex;
+tC.promptFingerIndex = allSettings.(signal).promptFingerIndex;
+tC.lateFingerIndex = allSettings.(signal).lateFingerIndex;
+tC.noiseFingerIndex = allSettings.(signal).noiseFingerIndex;
 tC.corrFingersOut = zeros(1,length(tC.corrFingers));
+dataLength = allSettings.sys.msToProcess - allSettings.sys.msToSkip;
+if (allSettings.sys.enableMultiCorrelatorTracking == true)
+    tC.mulCorrFingers = allSettings.sys.mulCorrFingers;
+    tC.mulCorrFingersOut = zeros(dataLength,length(allSettings.sys.mulCorrFingers));
+end
 
 
 

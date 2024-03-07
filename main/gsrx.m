@@ -34,6 +34,7 @@ close all;
 clc;
 clearvars -except varargin
 
+profile on;
 % Set number format
 format ('compact');
 format ('long', 'g');
@@ -85,19 +86,35 @@ if(settings.sys.saveDataFile == true)
     save(settings.sys.dataFileOut,'settings','acqData','ephData');
 end
 
+
+
 % Execute tracking if results not allready available
 if(~exist('trackData'))
-    trackData = doTracking(acqData, settings);    
+    tic;
+    if (settings.sys.parallelChannelTracking)
+        if (~exist('trackResults'))
+            trackDataFileName = initializeAndSplitTrackingPerChannel(acqData, settings); 
+            doTrackingParallel(trackDataFileName,settings);    
+            return;
+        else
+            trackData = combineSingleTrackChannelData(settings);
+        end
+    else
+        trackData = doTracking(acqData, settings);   
+    end
+    trackData.trackingRunTime = toc;
 end
+% Save results so far to file
+if(settings.sys.saveDataFile == true)
+    save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData');
+end
+
+
 % Plot tracking results
 if settings.sys.plotTracking == 1                
     plotTracking(trackData, settings);    
 end
 
-% Save results so far to file
-if(settings.sys.saveDataFile == true)
-    save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData');
-end
 
 % Convert track data to usefull observations for navigation if data not allready available
 if(~exist('obsData'))
@@ -134,6 +151,7 @@ statResults.hor
 statResults.ver
 statResults.dop
 statResults.RMS3D
-
+profile off
+profile viewer
 
 

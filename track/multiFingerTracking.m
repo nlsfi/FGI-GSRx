@@ -35,6 +35,7 @@ trackChannelData = tR.channel(ch);
 iBasebandSignal = trackChannelData.iBasebandSignal;
 qBasebandSignal = trackChannelData.qBasebandSignal;
 nrOfFingers = size(fingers.Code,1);
+loopCnt = tR.loopCnt;
 
 % Let's generate all fingers
 for i=1:nrOfFingers
@@ -42,7 +43,7 @@ for i=1:nrOfFingers
 end
 
 % Copy to structure
-trackChannelData.corrFingersOut = trackChannelData.corrFingersOut + corr_out_all;
+trackChannelData.mulCorrFingersOut(loopCnt,:) = corr_out_all;
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;

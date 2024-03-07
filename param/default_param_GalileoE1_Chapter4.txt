@@ -38,10 +38,10 @@ sys,msToProcess,100000,       % Number of ms to process in total from data file.
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
-sys,loadDataFile,true,     % Defines if data file is to be loaded
+sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_GalileoE1_Chapter4.mat',          % Datafile to load of enabled
-sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_GalileoE1_Chapter4.mat',  % Data file for storing output
+sys,saveDataFile,false,     % Defines if data should be stored to file
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_v2.0.0_GalileoE1_Chapter4.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -107,15 +107,12 @@ gale1b,pllDampingRatio,0.7,         % PLL damping ratio
 gale1b,pllLoopGain,0.2,             % PLL loop gain
 gale1b,dllDampingRatio,0.7,         % DLL damping ratio
 gale1b,dllNoiseBandwidth,1,         % DLL noise BW [Hz]
-gale1b,M,25,                        % Number of blocks to use for computing wide band power
-gale1b,K,10,                        % Averaging over M number of blocks 
 gale1b,Nc,0.004,                    % integration time in seconds for DLL 
 gale1b,corrFingers,[-2 -0.1 0 0.1],     % Correlator finger positions [chips]
 gale1b,earlyFingerIndex,2,              % Index of early finger
 gale1b,promptFingerIndex,3,             % Index of prompt finger
 gale1b,lateFingerIndex,4,               % Index of late finger
 gale1b,noiseFingerIndex,1,              % Index of fingers for measuring noise level
-gale1b,CN0Coeff,2.5,
 gale1b,pllWideBandLockIndicatorThreshold,0.5,               % PLL lock indicator threshold for DLL unlocked => locked
 gale1b,pllNarrowBandLockIndicatorThreshold,0.8,               % PLL lock indicator threshold for DLL unlocked => locked
 gale1b,runningAvgWindowForLockDetectorInMs, 40

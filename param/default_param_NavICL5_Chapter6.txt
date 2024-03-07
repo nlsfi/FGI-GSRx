@@ -38,10 +38,10 @@ sys,msToProcess,120000,       % Number of ms to process in total from data file.
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
-sys,loadDataFile,true,     % Defines if data file is to be loaded
+sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_NavICL5_Chapter6.mat',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_NavICL5_Chapter6.mat',  % Data file for storing output
+sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_v2.0.0_NavICL5_Chapter6.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -95,16 +95,16 @@ gpsl1,acqThreshold,9,             % Threshold for the signal presence decision r
 gpsl1,maxSearchFreq,6000,          % Maximum search frequency in one direction 
 
 % Tracking parameters
-gpsl1,fllNoiseBandwidthWide,200, 	% FLL noise BW wide[Hz]
-gpsl1,fllNoiseBandwidthNarrow,100,   % FLL noise BW narrow [Hz]
-gpsl1,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
-gpsl1,fllDampingRatio,1.5,         % PLL damping ratio
+gpsl1,fllNoiseBandwidthWide,100, 	% FLL noise BW wide[Hz]
+gpsl1,fllNoiseBandwidthNarrow,50,   % FLL noise BW narrow [Hz]
+gpsl1,fllNoiseBandwidthVeryNarrow,10,   % FLL noise BW narrow [Hz]
+gpsl1,fllDampingRatio,1.8,         % PLL damping ratio
 gpsl1,fllLoopGain,0.7,             % PLL loop gain
 gpsl1,pllNoiseBandwidthWide,15,        % PLL noise BW [Hz]
 gpsl1,pllNoiseBandwidthNarrow,15,        % PLL noise BW [Hz]
 gpsl1,pllNoiseBandwidthVeryNarrow,10,        % PLL noise BW [Hz]
-gpsl1,pllDampingRatio,0.7,          % PLL damping ratio
-gpsl1,pllLoopGain,0.1,              % PLL loop gain
+gpsl1,pllDampingRatio,0.5,          % PLL damping ratio
+gpsl1,pllLoopGain,0.2,              % PLL loop gain
 gpsl1,dllDampingRatio,0.7,          % DLL damping ratio
 gpsl1,dllNoiseBandwidth,1,          % DLL noise BW [Hz]
 gpsl1,M,20,                         % Number of blocks to use for computing wide band power
@@ -152,15 +152,15 @@ navicl5,acqThreshold,9,              % Threshold for the signal presence decisio
 navicl5,maxSearchFreq,6000,           % Maximum search frequency in one direction 
 
 % Tracking parameters
-navicl5,fllNoiseBandwidthWide,200, 	% FLL noise BW wide[Hz]
-navicl5,fllNoiseBandwidthNarrow,100,   % FLL noise BW narrow [Hz]
+navicl5,fllNoiseBandwidthWide,100, 	% FLL noise BW wide[Hz]
+navicl5,fllNoiseBandwidthNarrow,50,   % FLL noise BW narrow [Hz]
 navicl5,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
-navicl5,fllDampingRatio,1.5,         % PLL damping ratio
+navicl5,fllDampingRatio,1.8,         % PLL damping ratio
 navicl5,fllLoopGain,0.7,             % PLL loop gain
 navicl5,pllNoiseBandwidthWide,15,        % PLL noise BW [Hz]
 navicl5,pllNoiseBandwidthNarrow,15,        % PLL noise BW [Hz]
 navicl5,pllNoiseBandwidthVeryNarrow,10,        % PLL noise BW [Hz]
-navicl5,pllDampingRatio,0.7,         % PLL damping ratio
+navicl5,pllDampingRatio,0.5,         % PLL damping ratio
 navicl5,pllLoopGain,0.2,             % PLL loop gain
 navicl5,dllDampingRatio,0.7,         % DLL damping ratio
 navicl5,dllNoiseBandwidth,1,         % DLL noise BW [Hz]

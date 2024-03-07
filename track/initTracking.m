@@ -36,33 +36,29 @@ for i = 1:allSettings.sys.nrOfSignals
     signal = allSettings.sys.enabledSignals{i};
     signalSettings = allSettings.(signal);
 
+    % Loop counters
+    trackResults.(signal).loopCnt = 0;    
     % Set signal specific parameters, i.e. non channel specific
     trackResults.(signal).nrObs = sum([acqResults.(signal).channel.bFound]);
     trackResults.(signal).signal = signalSettings.signal;
     trackResults.(signal).fid = 0;
-    
-    trackResults.(signal) = getFreqPlanParameters(trackResults.(signal),signalSettings);
+    % Update rates in sec
+    trackResults.(signal).PDIcarr = signalSettings.Nc;
+    trackResults.(signal).PDIcode = signalSettings.Nc;
+
+    %trackResults.(signal) = getFreqPlanParameters(trackResults.(signal),signalSettings);
     trackResults.(signal).numberOfBytesToSkip = signalSettings.numberOfBytesToSkip;
-    trackResults.(signal).numberOfBytesToRead = signalSettings.numberOfBytesToRead;
-    
+    trackResults.(signal).numberOfBytesToRead = signalSettings.numberOfBytesToRead;   
+
     trackResults.(signal).enableMultiCorrelatorTracking = allSettings.sys.enableMultiCorrelatorTracking;
-    trackResults.(signal).multiCorrelatorTrackingRate = allSettings.sys.multiCorrelatorTrackingRate;
-    
+    trackResults.(signal).multiCorrelatorTrackingRate = allSettings.sys.multiCorrelatorTrackingRate;   
     % Set channel specific parameters
     ind = 1;
     for k=1:acqResults.(signal).nrObs
         if(acqResults.(signal).channel(k).bFound == true)
             trackChannel = allocateTrackChannelHeader(acqResults.(signal), k, allSettings);
-            trackChannel = allocateTrackChannel(trackChannel,signalSettings);
-
-            % Mode specific configuration
-            if ((allSettings.sys.enableMultiCorrelatorTracking == true) && ...
-                    (ind == allSettings.sys.multiCorrelatorTrackingChannel))
-                trackChannel = getCorrelatorFingers(trackChannel,allSettings.sys);
-            else
-                trackChannel = getCorrelatorFingers(trackChannel,signalSettings);
-            end
-
+            trackChannel = allocateTrackChannel(trackChannel,allSettings,signal);
+            trackChannel = getCorrelatorFingers(trackChannel,allSettings,signal);                       
             trackResults.(signal).channel(ind) = trackChannel;
             ind = ind + 1;
         end

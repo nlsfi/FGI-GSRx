@@ -16,31 +16,33 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = gale1bBitHandling(tR,ch)
+function trackDataFile = initializeAndSplitTrackingPerChannel(acqResults, allSettings)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Extract Galileo bits
+% This function takes input of acquisition results and performs tracking.
 %
 % Inputs:
-%   tR             - Results from signal tracking for one signals
-%   ch             - Channel index
+%   acqResults      - Results from signal acquisition for all signals
+%   allSettings     - Receiver settings
 %
 % Outputs:
-%   tR             - Results from signal tracking for one signals
+%   trackResults    - Results from signal tracking for all signals
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Set local variables
-trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
 
-% Set bit value based on prompt correlator finger
-if trackChannelData.I_P(loopCnt)>0
-    trackChannelData.bitValue(loopCnt) = 1;
-else
-    trackChannelData.bitValue(loopCnt) = -1;
-end 
-
-% Copy updated local variables
-tR.channel(ch) = trackChannelData;
-
-
+% Initialise tracking structure
+trackResults = initTracking(acqResults, allSettings);  
+acqData = acqResults;
+%Split Tracking for each signal with one satellite per trackResults
+trackDataFilePath = allSettings.sys.trackDataFilePath;
+for signalNr = 1:allSettings.sys.nrOfSignals % Loop over all signals
+    signal = allSettings.sys.enabledSignals{signalNr};    
+    for channelNr = 1:trackResults.(signal).nrObs % Loop over all channels           
+        trackResultsSingle.(signal) = trackResults.(signal);
+        trackResultsSingle.(signal).channel = trackResults.(signal).channel(channelNr);
+        trackResultsSingle.(signal).nrObs = 1;        
+        trackResultsSingle.signal= signal;
+        trackDataFile.(signal).channel(channelNr).name = [trackDataFilePath,'trackData_',signal,'_Satellite_ID_',num2str([trackResults.(signal).channel(channelNr).SvId.satId]),'.mat'];
+        save(trackDataFile.(signal).channel(channelNr).name, 'trackResultsSingle','allSettings','acqData');
+    end
+end

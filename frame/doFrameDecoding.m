@@ -79,16 +79,14 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
                 end                
             end
 
-            % Decode ephemerides
-            [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
-
-
-            if parityCheck == false            
+            % Decode ephemerides if parity check is successful
+            if (parityCheck == true)
+                [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
+                obs.(signal).channel(channelNr).bParityOk = true;
+            else
                 % Now we know wheterh parity is ok or not            
                 obs.(signal).channel(channelNr).bParityOk = false; 
                 obs.(signal).channel(channelNr).bEphOk = false; 
-            else
-                obs.(signal).channel(channelNr).bParityOk = true;
             end
             
             % Set observation to valid when ephemeris has been obtained

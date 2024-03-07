@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function showTrackStatus(tR, allSettings, loop)
+function showTrackStatusSingle(tR, allSettings, loop)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Prints the status of all track channels to the command window
 %
@@ -39,7 +39,7 @@ fprintf(  '*======*===========*=====*===============*===========*========*======
 for signalNr = 1:allSettings.sys.nrOfSignals
     
     % Extract signal acronym
-    signal = allSettings.sys.enabledSignals{signalNr};    
+    signal = tR.signal;    
     
     % Loop over all channels
     for channelNr = 1:tR.(signal).nrObs 

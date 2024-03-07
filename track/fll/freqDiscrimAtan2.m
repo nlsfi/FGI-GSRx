@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = freqDiscrimAtan2(tR,ch)
+function tR = freqDiscrimAtan2(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Atan2 frequency discriminator function
 %
@@ -31,16 +31,16 @@ function tR = freqDiscrimAtan2(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 IP_2 = trackChannelData.I_P(loopCnt);
 QP_2 = trackChannelData.Q_P(loopCnt);
-step = trackChannelData.Nc*1000;
+step = signalSettings.Nc*1000;
 if(trackChannelData.bInited)
     IP_1 = trackChannelData.I_P(loopCnt-step);
     QP_1 = trackChannelData.Q_P(loopCnt-step);    
 else
-    IP_1 = trackChannelData.Nc;
-    QP_1 = trackChannelData.Nc;    
+    IP_1 = signalSettings.Nc;
+    QP_1 = signalSettings.Nc;    
 end
 
 
@@ -53,9 +53,9 @@ freqError = atan2(cross,dot)/(2.0*pi);
 
 % Accumulate FLL discriminator
 if(trackChannelData.bInited)
-    trackChannelData.fllDiscr(loopCnt) = freqError;    
+    trackChannelData.fllDiscr = freqError;    
 else
-    trackChannelData.fllDiscr(loopCnt) = 0;
+    trackChannelData.fllDiscr = 0;
 end
 
 

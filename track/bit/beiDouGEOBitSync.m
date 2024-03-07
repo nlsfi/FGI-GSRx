@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trackChannelData = beiDouGEOBitSync(trackChannelData)
+function trackChannelData = beiDouGEOBitSync(trackChannelData,loopCnt)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Bit sync function for Beidou GEO
 %
@@ -28,7 +28,6 @@ function trackChannelData = beiDouGEOBitSync(trackChannelData)
 %       trackChannelData - track data for one channel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-loopCnt = trackChannelData.loopCnt;
 
 if((loopCnt < 800)|| (trackChannelData.bitSync == 1))
     return; % Nothing to do yet

@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [tR]= GNSSTracking(tR,ch)
+function [tR]= GNSSTracking(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Performs state-based tracking for the received signal
 %
@@ -31,16 +31,16 @@ function [tR]= GNSSTracking(tR,ch)
 
 % Set local variable
 table = tR.channel(ch).trackTable;
+loopCnt = tR.loopCnt;
 
 % Calculate number of functions to execute for loop
 nrfunctions = size(table,1);
 funct = cellstr(table(:,1));
 for i=1:nrfunctions
-    cnt = table{i,2}; % Update rate from table
-    loopCnt = tR.channel(ch).loopCnt;
+    cnt = table{i,2}; % Update rate from table    
     if (mod(loopCnt,cnt) == 0)
         fh = str2func(funct{i});
-        tR = fh(tR,ch);
+        tR = fh(signalSettings,tR,ch);
     end
 end
 

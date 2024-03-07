@@ -63,12 +63,8 @@ tC.twoChipEarlyCode = 0;
 tC.qBasebandSignal = 0;
 tC.iBasebandSignal = 0;
 
-% Update rates in sec
-tC.PDIcarr = signalSettings.Nc;
-tC.PDIcode = signalSettings.Nc;
 
-% Loop counters
-tC.loopCnt = 0;
+
 
 
 

@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = codeLoopFilter(tR,ch)
+function tR = codeLoopFilter(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Code tracking loop filter
 %
@@ -31,7 +31,7 @@ function tR = codeLoopFilter(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 if(trackChannelData.bInited)
     oldCodeNco   = trackChannelData.prevCodeNco;
     oldCodeError = trackChannelData.prevCodeError;    
@@ -41,8 +41,8 @@ else
 end
 tau1code = trackChannelData.tau1code;
 tau2code = trackChannelData.tau2code;
-PDIcode = trackChannelData.PDIcode;
-codeFreqBasis = tR.codeFreqBasis;
+PDIcode = tR.PDIcode;
+codeFreqBasis = signalSettings.codeFreqBasis;
 
 % Calculate code error from discriminator function
 codeError = trackChannelData.dllDiscr(loopCnt);
@@ -51,11 +51,11 @@ trackChannelData.codeError = codeError;
 % Calculate NCO feedback
 codeNco = oldCodeNco + (tau2code/tau1code) * ...
     (codeError - oldCodeError) + codeError * (PDIcode/tau1code);
-trackChannelData.codeNco(loopCnt) = codeNco;            
+trackChannelData.codeNco = codeNco;            
 
 % Calcualte code frequency
 codeFreq = codeFreqBasis - codeNco + ( (trackChannelData.carrFreq(loopCnt) - trackChannelData.intermediateFreq)/trackChannelData.carrToCodeRatio );
-trackChannelData.codeFreq(loopCnt) = codeFreq;
+trackChannelData.codeFreq = codeFreq;
 trackChannelData.prevCodeFreq = codeFreq;
 
 % Store values for next round

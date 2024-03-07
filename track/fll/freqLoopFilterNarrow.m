@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function tR = freqLoopFilterNarrow(tR,ch)
+function tR = freqLoopFilterNarrow(signalSettings,tR,ch)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Narrow bandwidth FLL loop filter for tracking for all signals
 %
@@ -31,14 +31,14 @@ function tR = freqLoopFilterNarrow(tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = trackChannelData.loopCnt;
+loopCnt = tR.loopCnt;
 BWFLL = trackChannelData.fllNoiseBandwidthNarrow;
 dampingRatioFLL = trackChannelData.fllDampingRatio;
 loopGainFLL = trackChannelData.fllLoopGain;
-PDIcarr = trackChannelData.PDIcarr;
+PDIcarr = tR.PDIcarr;
 
 % Calculate frequency error from discriminator function
-fllDiscr = trackChannelData.fllDiscr(loopCnt);
+fllDiscr = trackChannelData.fllDiscr;
 
 % Freuqency locked loop filter (narrow band)
 Wn = (8*dampingRatioFLL*BWFLL)/(4*dampingRatioFLL^2 + 1);
@@ -57,7 +57,7 @@ IR11 = IR8 + IR10;
 IR12 = IR11 + IR10;
 IR13 = 0.5*IR12;
 IR14 = IR13 + IR9;
-trackChannelData.fllFilter(loopCnt)   = IR14;
+trackChannelData.fllFilter   = IR14;
 
 % Store values for next round
 trackChannelData.prevIR11 = IR11;
