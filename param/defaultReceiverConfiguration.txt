@@ -57,6 +57,7 @@ sys,parallelChannelTracking, false, %if it is true, it will look for the saved t
 sys,currentWorkingDirectoryForFGIGSRx,'D:\ZB Oct23\FGI-GSRx-OS 10Nov23\',
 sys,trackDataFilePath,'D:\Raw IQ Data\OSNMA data\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
+sys,matlabpath,'C:\Program Files\MATLAB\R2023b\bin\matlab', %Matlab path to be provided in case matlab is not defined as a system variable in the general windows settings
 
 % Multi correlator tracking parameters
 sys,enableMultiCorrelatorTracking,false, 	% Disable or enable multi correlator tracking 
@@ -81,7 +82,7 @@ nav,trueHeight,47.248,
 
 % GPS L1 Settings
 % Input RF file
-gpsl1,rfFileName,'.\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_GPSL1GalileoE1B_Chapter7.dat',            % Name of RF data file used for GPS L1 signal
+gpsl1,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_GPSL1GalileoE1B_Chapter7.dat',            % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 gpsl1,centerFrequency,1575.42e6, % Radio center frequency [Hz]
@@ -125,7 +126,7 @@ gpsl1,fllNarrowBandLockIndicatorThreshold,0.7,               % FLL narrow band l
 
 % Galileo E1B Settings
 % Input RF file
-gale1b,rfFileName,'',               % Name of RF data file used for Galileo E1B signal
+gale1b,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_GPSL1GalileoE1B_Chapter7.dat',               % Name of RF data file used for Galileo E1B signal
 % Radio front end configurations
 gale1b,centerFrequency,1575.42e6,   % Radio center frequency [Hz]
 gale1b,samplingFreq,26e6,           % Sampling frequency [Hz]
@@ -179,7 +180,7 @@ gale1b,ionexFile,''                     % Filename for ionex file if ionomodel i
 
 % Galileo E1C Settings
 % Input RF file
-gale1c,rfFileName,'.\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_GPSL1GalileoE1B_Chapter7.dat',               % Name of RF data file used for Galileo E1B signal
+gale1c,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_GPSL1GalileoE1B_Chapter7.dat',               % Name of RF data file used for Galileo E1B signal
 % Radio front end configurations
 gale1c,centerFrequency,1569030000,   % Radio center frequency [Hz]
 gale1c,samplingFreq,26e6,           % Sampling frequency [Hz]
@@ -232,7 +233,7 @@ gale1c,ionexFile,''                     % Filename for ionex file if ionomodel i
 % Beidou B1 Settings
 
 % Input RF file
-beib1,rfFileName,'.\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_BeiDouB1_Chapters5_7.dat',
+beib1,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_BeiDouB1_Chapters5_7.dat',
 
 % Radio front end configurations
 beib1,centerFrequency,1554598000,    % Radio center frequency [Hz]
@@ -388,6 +389,3 @@ navicl5,enableIonoCorrections,true,       % Use iono corrections or not
 navicl5,enableTropoCorrections,true,      % Use tropo corrections or not
 navicl5,ionomodel,'default',              % Iono model to use (default,gale1b,gale1b,beib1,navicl5, ionex)
 navicl5,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
-
-
-
