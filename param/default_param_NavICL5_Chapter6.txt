@@ -39,9 +39,9 @@ sys,msToSkip,0,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
-sys,dataFileIn,'.\FGI-GSRx Example Matlab Data Files\trackData_NavICL5_Chapter6.mat',          % Datafile to load of enabled
-sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'.\FGI-GSRx Example Matlab Data Files\trackData_v2.0.0_NavICL5_Chapter6.mat',  % Data file for storing output
+sys,dataFileIn,'',          % Datafile to load of enabled
+sys,saveDataFile,false,     % Defines if data should be stored to file
+sys,dataFileOut,'D:\Mat Data\trackData_v2.0.0_NavICL5_Chapter6.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -50,6 +50,13 @@ sys,plotSpectra,true,              % If set to true plot spectrum and histogram 
 sys,plotAcquisition,true,          % If set to true plot acquisition results
 sys,plotTracking,true,             % If set to true plot tracking results
 sys,showTrackingOutput,true,        % If set to true show the tracking output
+
+%Tracking option: parallel vs sequential
+sys,parallelChannelTracking,false,
+sys,currentWorkingDirectoryForFGIGSRx,'D:\ZB Oct23\FGI-GSRx-v2.0.0\',
+sys,trackDataFilePath,'D:\Mat Data\', %This is for parallel tracking
+sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
+sys,matlabpath,'C:\Program Files\MATLAB\R2023b\bin\matlab', %Matlab path to be provided in case matlab is not defined as a system variable in the general windows settings
 
 % Multi correlator tracking parameters
 sys,enableMultiCorrelatorTracking,false, 	% Disable or enable multi correlator tracking 
@@ -75,7 +82,7 @@ nav,trueHeight,54.1640000026673,
 % GPS L1 Settings
 
 % Input RF file
-gpsl1,rfFileName,'.\FGI-GSRx Raw IQ Data\NavICL5\RawData_GPSL1_Chapter6.dat',            % Name of RF data file used for GPS L1 signal
+gpsl1,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\NavICL5\RawData_GPSL1_Chapter6.dat',            % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 % For GTEC RFFE Config 
@@ -133,7 +140,7 @@ gpsl1,ionexFile,''                      % Filename for ionex file if ionomodel i
 % NAVIC L5 Settings
 
 % Input RF file
-navicl5,rfFileName,'.\FGI-GSRx Raw IQ Data\NavICL5\RawData_NavICL5_Chapter6.dat',
+navicl5,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\NavICL5\RawData_NavICL5_Chapter6.dat',
 
 % Radio front end configurations
 navicl5,centerFrequency,1176.45e6,    % Radio center frequency [Hz]
@@ -184,5 +191,3 @@ navicl5,enableIonoCorrections,true,       % Use iono corrections or not
 navicl5,enableTropoCorrections,true,      % Use tropo corrections or not
 navicl5,ionomodel,'default',              % Iono model to use (default,gpsl1,gale1b,beib1,glol1, ionex)
 navicl5,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
-
-
