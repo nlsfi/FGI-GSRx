@@ -33,6 +33,7 @@ function doTrackingParallel(trackDataFileName, allSettings)
 %Create BacthFile
 currentWorkingDirectoryForFGIGSRx = allSettings.sys.currentWorkingDirectoryForFGIGSRx;
 batchFileName=[currentWorkingDirectoryForFGIGSRx, 'main\' allSettings.sys.batchFileNameToRunParallelTracking];
+matlabpath=allSettings.sys.matlabpath;
 fid = fopen(batchFileName, 'wt' );
 if (fid == -1)
    error('Failed to open data file for tracking!');
@@ -42,17 +43,10 @@ for signalNr = 1:allSettings.sys.nrOfSignals % Loop over all signals
     signal = allSettings.sys.enabledSignals{signalNr};                 
     for channelNr = 1:length(trackDataFileName.(signal).channel) % Loop over all channels            
         trackDataFileNameForEachSignal = trackDataFileName.(signal).channel(channelNr).name;        
-        load(trackDataFileNameForEachSignal);              
-        %matlab -nosplash -nodesktop -minimize -r "addpath(genpath('D:/ZB Oct23/FGI-GSRx-OS 10Nov23/')); cd('D:/ZB Oct23/FGI-GSRx-OS 10Nov23/'); load 'D:\Raw IQ Data\OSNMA data\trackDataSingleChannel_1.mat'; doTrackingSingleChannel(trackResultsSingle,allSettings)"                     
+        load(trackDataFileNameForEachSignal);                      
         runMATLABcommand = ['matlab -nosplash -nodesktop -minimize -r ', '"','addpath(genpath(''',currentWorkingDirectoryForFGIGSRx,''')); load ''',trackDataFileNameForEachSignal,'''; doTrackingSingleChannel(acqData,trackResultsSingle,allSettings);"'];        
+        runMATLABcommand = ['"',matlabpath,'"',' -nosplash -nodesktop -minimize -r ', '"','addpath(genpath(''',currentWorkingDirectoryForFGIGSRx,''')); load ''',trackDataFileNameForEachSignal,'''; doTrackingSingleChannel(acqData,trackResultsSingle,allSettings);"'];        
         fprintf(fid,'%s\n', runMATLABcommand);        
     end          
 end % Loop over all epochs         
 fclose(fid);
-
-% trackDataFileName = ['D:\Raw IQ Data\OSNMA data\trackDataSatellite_ID_',num2str(trackResults.(signal).channel.SvId.satId),'.mat'];
-% save(trackDataFileName, 'trackResults', 'allSettings');
-% % Notify user tracking is over
-% disp(['   Tracking is over (elapsed time ', datestr(now - trackStartTime, 13), ')']) 
-
-
