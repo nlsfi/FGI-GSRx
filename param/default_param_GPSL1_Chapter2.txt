@@ -52,7 +52,7 @@ sys,plotTracking,true,             % If set to true plot tracking results
 sys,showTrackingOutput,true,        % If set to true show the tracking output
 
 %Tracking option: parallel vs sequential
-sys,parallelChannelTracking,false, %if it is true, it will look for the saved track Data files, it will be enough to offer any single single channel's track data file, the receiver will automatically combine the necessary trackdata files into one combined big file for navigation processing
+sys,parallelChannelTracking,false, 
 sys,currentWorkingDirectoryForFGIGSRx,'D:\ZB Oct23\FGI-GSRx-v2.0.0\',
 sys,trackDataFilePath,'D:\Mat Data\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
