@@ -374,7 +374,10 @@ for i=1:(length(bits)/240)
         % at the beginning of the bitbuffer.
         % Also we need to subtract one sec since our data starts with odd page and
         % frames starts with even page
-        TOW = TOW_5 - (2*(ind_TOW_5-1)) - 1 +  shifttow;
+        if (i/15)==1 % We are currently doing it for the first decoded subframe
+            TOW = TOW_5 - (2*(ind_TOW_5-1)) - 1 +  shifttow;
+            obsCh.tow = TOW;    
+        end
         %If the first subframe decoding (15 pages) is successful, we can
         %use the first subframe just to get some form of navigation: It can
         %be changed based on the requirements from the user application (in 
@@ -382,7 +385,7 @@ for i=1:(length(bits)/240)
         if (eph.subframe(1).subframeOk)
             obsCh.bEphOk = true;
         end
-        obsCh.tow = TOW;    
+        
     end
 end
 
