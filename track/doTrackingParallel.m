@@ -43,8 +43,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals % Loop over all signals
     signal = allSettings.sys.enabledSignals{signalNr};                 
     for channelNr = 1:length(trackDataFileName.(signal).channel) % Loop over all channels            
         trackDataFileNameForEachSignal = trackDataFileName.(signal).channel(channelNr).name;        
-        load(trackDataFileNameForEachSignal);                      
-        runMATLABcommand = ['matlab -nosplash -nodesktop -minimize -r ', '"','addpath(genpath(''',currentWorkingDirectoryForFGIGSRx,''')); load ''',trackDataFileNameForEachSignal,'''; doTrackingSingleChannel(acqData,trackResultsSingle,allSettings);"'];        
+        load(trackDataFileNameForEachSignal);                              
         runMATLABcommand = ['"',matlabpath,'"',' -nosplash -nodesktop -minimize -r ', '"','addpath(genpath(''',currentWorkingDirectoryForFGIGSRx,''')); load ''',trackDataFileNameForEachSignal,'''; doTrackingSingleChannel(acqData,trackResultsSingle,allSettings);"'];        
         fprintf(fid,'%s\n', runMATLABcommand);        
     end          
