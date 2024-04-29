@@ -76,9 +76,8 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             epoch = ind_min - obs.(signal).channel(channelNr).firstSubFrame; 
             
             phase = (samplecnt - obs.(signal).channel(channelNr).sampleCount(ind_min)) / (obs.(signal).channel(channelNr).sampleCount(ind_max) - obs.(signal).channel(channelNr).sampleCount(ind_min));
-            codediff = (obs.(signal).channel(channelNr).codePhase(ind_max) - obs.(signal).channel(channelNr).codePhase(ind_min));
-
-            obs.(signal).channel(channelNr).transmitTime = tow + epoch/1000 + stepsize * phase/1000;  
+            codediff = (obs.(signal).channel(channelNr).codePhase(ind_max) - obs.(signal).channel(channelNr).codePhase(ind_min));            
+            obs.(signal).channel(channelNr).transmitTime = tow + epoch/1000 + stepsize * phase/1000 + stepsize/1000
             obs.(signal).channel(channelNr).codephase = (obs.(signal).channel(channelNr).codePhase(ind_min) + codediff * phase)/codephasecoeff;         
             obs.(signal).channel(channelNr).doppler = obs.(signal).channel(channelNr).carrFreq(ind_min)...
                  * SPEED_OF_LIGHT/obs.(signal).channel(channelNr).carrierFreq;
