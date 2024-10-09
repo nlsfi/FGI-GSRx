@@ -92,6 +92,15 @@ for PRN = signalSettings.acqSatelliteList
         resultsE1B = searchFreqCodePhase(upSampledCodeE1B, signalSettings, pRfData, PRN);
         resultsE1C = searchFreqCodePhase(upSampledCodeE1C, signalSettings, pRfData, PRN);      
         results = resultsE1B + abs(resultsE1C);        
+	elseif strcmp(signalSettings.signal,'gpsl1c')==1
+        % Generate ranging code
+        PrnCodeL1CP = gpsl1cPGeneratePrnCode(PRN);
+        % Add code modulation
+        modulatedCodeL1CP = gpsl1cPModulatePrnCode(PrnCodeL1CP, signalSettings);
+        % Upsample code to sampling frequency
+        upSampledCodeL1CP = upSampleCode(modulatedCodeL1CP, signalSettings);
+        % Perform the parallel code phase search
+        results = searchFreqCodePhase(upSampledCodeL1CP, signalSettings, pRfData, PRN);		
     else
         % Generate ranging code
         generatePrnCodeFunc = str2func([signalSettings.signal,'GeneratePrnCode']);
@@ -185,7 +194,19 @@ for PRN = signalSettings.acqSatelliteList
             pilotResultsFine = searchFreqCodePhase(upSampledCodeE1C, signalSettings, pRfData(codePhase-1:end), PRN);
             [peakSizeData, frequencyBinIndexData] = max(max(dataResultsFine, [], 2));
             [peakSizePilot, frequencyBinIndexPilot] = max(max(pilotResultsFine, [], 2));
-            searchResults = dataResultsFine + abs(pilotResultsFine);            
+            searchResults = dataResultsFine + abs(pilotResultsFine);     
+        elseif strcmp(signalSettings.signal,'gpsl1c')==1
+            signalSettings.cohIntNumber = 1;
+            signalSettings.nonCohIntNumber = 1;
+            signalSettings.codeLengthMs = 40;
+            % Number of the frequency bins for the given acquisition band
+            freqStepFineEstimation = 1000/(2*signalSettings.codeLengthMs*signalSettings.cohIntNumber);
+            % Number of the frequency bins for the given acquisition band
+            numberOfFrqBinsFineEstimation = floor(2 * signalSettings.maxSearchFreq/freqStepFineEstimation + 1);
+            frqBins = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep - ...
+                signalSettings.maxSearchFreq + ...
+                freqStepFineEstimation * [1:1:numberOfFrqBinsFineEstimation];
+            searchResults = searchFreqCodePhase(upSampledCodeL1CP, signalSettings, pRfData(codePhase-1:end), PRN);            
         else
             if  (strcmp(signalSettings.signal(1:5),'beib1')==1)
                 %In case of GEO satellites, use higher non-coherent
