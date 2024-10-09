@@ -81,7 +81,11 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
             % Decode ephemerides if parity check is successful
             if (parityCheck == true)
-                [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
+                if strcmp(signalSettings.signal,'gpsl1c')
+                    [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.gpsl1c.channel(channelNr).dataI_P], prn, signalSettings, allSettings.const);
+                else
+                    [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
+                end
                 obs.(signal).channel(channelNr).bParityOk = true;
             else
                 % Now we know wheterh parity is ok or not            

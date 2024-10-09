@@ -36,16 +36,19 @@ function [obs] = findPreambles(tR, obs, signalSettings)
 % to avoid noise due to tracking loop transients 
 searchStartOffset = 0;
 
-% Generate the preamble pattern 
-preamble_bits = signalSettings.preamble;
-
-% "Upsample" the preamble - make 20 values per one bit. The preamble must be
-% found with precision of a sample.
-preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
-preambleInterval = signalSettings.preambleIntervall;
-preambleCorrThr = signalSettings.preambleCorrThr;
 % Loop over all tracking channels
 for k=1:tR.nrObs
+    % Generate the preamble pattern
+    if strcmp(signalSettings.signal,'gpsl1c')==1
+        preamble_bits = gpsl1cGenerateOverlay(tR.channel(k).SvId.satId);
+    else
+        preamble_bits = signalSettings.preamble;
+    end
+    % "Upsample" the preamble - make 20 values per one bit. The preamble must be
+    % found with precision of a sample.
+    preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
+    preambleInterval = signalSettings.preambleIntervall;
+    preambleCorrThr = signalSettings.preambleCorrThr;
 
     if strcmp(signalSettings.signal,'beib1')==1
         if tR.channel(k).SvId.satId<6
@@ -59,7 +62,7 @@ for k=1:tR.nrObs
             preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
             preambleInterval = signalSettings.preambleIntervall;
             preambleCorrThr = signalSettings.preambleCorrThr;
-        end
+        end        
     end
     % Decode navigation bits from tracking prompt finger. 
     navigationBits = tR.channel(k).I_P(signalSettings.codeLengthMs + searchStartOffset : ...
@@ -71,7 +74,7 @@ for k=1:tR.nrObs
 
     %Consider processing first few messages within one minute or so:
     %specially helpful for long data set
-    firstNbits = navigationBits(1:preambleInterval*10);
+    firstNbits = navigationBits(1:min(preambleInterval*10,length(navigationBits)));
 
     %Correlate tracking output with the preamble
     tlmXcorrResult = calcCrossCorrelation(firstNbits, preamble_ms);
@@ -100,7 +103,7 @@ for k=1:tR.nrObs
                     % the rest of preamble pattern checking for this channel
                     % and process next channel.
                     obs.channel(k).firstSubFrame = index(i);
-                    
+                    obs.channel(k).preambleSign = sign(tlmXcorrResult(index(i) + xcorrLength - 1));
                     obs.channel(k).bPreambleOk = true;
                     
                     if strcmp(signalSettings.signal,'navicl5')==1
@@ -109,8 +112,7 @@ for k=1:tR.nrObs
                     else
                         disp(['Preamble found for ', obs.signal ,' prn ', ...
                             num2str(obs.channel(k).SvId.satId),'!'])
-                    end
-                    
+                    end                    
                     break;
                 end
                 
