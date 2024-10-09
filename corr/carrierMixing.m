@@ -65,6 +65,10 @@ trackChannelData.Q_L = sum(trackChannelData.lateCode   .* qBasebandSignal);
 trackChannelData.I_E_E = sum(trackChannelData.twoChipEarlyCode  .* iBasebandSignal);
 trackChannelData.Q_E_E = sum(trackChannelData.twoChipEarlyCode  .* qBasebandSignal);
 
+if strcmp(signalSettings.signal,'gpsl1c')
+    trackChannelData.dataI_P(loopCnt) = sum(trackChannelData.promptDataCode .* iBasebandSignal);
+end
+
 % Copy data 
 trackChannelData.prevCarrPhase = rem(trigarg(blockSize+1), (2 * pi)); 
 trackChannelData.carrPhase(loopCnt) = rem(trigarg(blockSize+1), (2 * pi)); 

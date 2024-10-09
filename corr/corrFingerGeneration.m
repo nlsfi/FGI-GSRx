@@ -90,6 +90,14 @@ trackChannelData.lateCode = fingers.Code(trackChannelData.lateFingerIndex,:);
 trackChannelData.promptCode = fingers.Code(trackChannelData.promptFingerIndex,:);
 trackChannelData.twoChipEarlyCode = fingers.Code(trackChannelData.noiseFingerIndex,:);
 
+% Data channel correlator for GPS L1C
+if strcmp(signalSettings.signal,'gpsl1c')
+    dataCode = trackChannelData.codeReplicaL1CD(1,:);
+    longDataCode = [dataCode(end-add_data+1:end) dataCode dataCode(1:add_data)];
+    tDataCode       = ceil((codePhase : codePhaseStep : ((blockSize-1)*codePhaseStep+codePhase))*scalingFactor + add_data);
+    trackChannelData.promptDataCode = longDataCode(tDataCode); 
+end
+
 % Calculate code phase
 codePhase = (fingers.tcode(blockSize) + trackChannelData.codePhaseStep) - signalSettings.codeLengthInChips;
 trackChannelData.codePhase(loopCnt) = codePhase; % Copy for use in next round
