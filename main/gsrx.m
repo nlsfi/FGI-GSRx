@@ -34,7 +34,6 @@ close all;
 clc;
 clearvars -except varargin
 
-profile on;
 % Set number format
 format ('compact');
 format ('long', 'g');
@@ -151,7 +150,5 @@ statResults.hor
 statResults.ver
 statResults.dop
 statResults.RMS3D
-profile off
-profile viewer
 
 
