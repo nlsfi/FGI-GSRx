@@ -43,14 +43,25 @@ tC.acquiredCodePhase    = acqChannel.codePhase;
 
 % Set state related variables
 tC.bInited       = false;
-tC.trackState = 'STATE_PULL_IN';        
+tC.trackState = 'STATE_PULL_IN';  
 
 % Add code replica
-prnFunc = str2func([signal,'GeneratePrnCode']);
-Code = prnFunc(prn);
-modulateFunc = str2func([signal,'ModulatePrnCode']);
-modulatedCode = modulateFunc(Code, signalSettings);
-tC.codeReplica = modulatedCode;
+if strcmp(signal, 'gpsl1c')
+    % Pilot channel code
+    Code = gpsl1cPGeneratePrnCode(prn);
+    tC.codeReplica = gpsl1cPModulatePrnCode(Code(1,:), signalSettings);    
+    % Data channel code
+    CodeL1Cd = gpsl1cDGeneratePrnCode(prn);
+    tC.codeReplicaL1CD = gpsl1cDModulatePrnCode(CodeL1Cd(1,:), signalSettings);
+    tC.promptCodeL1CD = 0;
+else
+    prnFunc = str2func([signal,'GeneratePrnCode']);
+    Code = prnFunc(prn);
+    modulateFunc = str2func([signal,'ModulatePrnCode']);
+    modulatedCode = modulateFunc(Code, signalSettings);
+    tC.codeReplica = modulatedCode;
+end
+
 % Set tracking table
 trackTableFunc = str2func([signalSettings.signal,'setTrackingTable']);
 tC = trackTableFunc(tC,tC.trackState);
@@ -63,6 +74,9 @@ tC.twoChipEarlyCode = 0;
 tC.qBasebandSignal = 0;
 tC.iBasebandSignal = 0;
 
+if strcmp(signalSettings.signal,'gpsl1c')
+    tC.promptDataCode = 0;
+end
 
 
 

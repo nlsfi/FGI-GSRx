@@ -45,6 +45,9 @@ trackChannel.Q_E_E = 0; % Q very early finger value
 trackChannel.absoluteSample =  zeros(1,dataLength); % Sample count from processed file
 trackChannel.prevAbsoluteSample = 0; % Sample count from processed file
 
+if strcmp(signalSettings.signal,'gpsl1c')
+    trackChannel.dataI_P = zeros(1,dataLength); % I data channel prompt finger value
+end
 % FLL discriminator values
 trackChannel.fllDiscr = 0; % FLL discriminator value
 
