@@ -76,6 +76,23 @@ settings.gpsl1.frequencyStep = 0;
 settings.gpsl1.modulationFactor = 1;		 % Modulation factor. For GPS it is one.
 settings.gpsl1.bitSyncConfidenceLevel = 6;
 
+settings.gpsl1c.codeLengthInChips=10230;
+settings.gpsl1c.codeFreqBasis=1.023e6;
+settings.gpsl1c.carrierFreq=1575.42e6;
+settings.gpsl1c.numberOfChannels=12;
+settings.gpsl1c.bitDuration = 1;                % Length of data bit [epochs]
+settings.gpsl1c.frequencyStep = 0;
+settings.gpsl1c.preambleCorrThr = 1700;         % Overlay code length - 100
+settings.gpsl1c.preambleIntervall = 1800;       % Data frame length
+settings.gpsl1c.secondaryCode = 1;              % Overlay code is only utilized for frame synch so secondary code is set to 1
+settings.gpsl1c.frameLength = 1800;             % (52 TOI bits + 1748 NAV message bits) * 10 ms/bit
+if (strcmp(settings.gpsl1c.modType,'TMBOC'))
+    settings.gpsl1c.modulationFactor = 12; 
+else
+    settings.gpsl1c.modulationFactor = 2;
+end
+settings.gpsl1c.bitSyncConfidenceLevel = 6;
+
 settings.gale1b.codeLengthInChips=4092;
 settings.gale1b.codeFreqBasis=1.023e6;
 settings.gale1b.carrierFreq=1575.42e6;
@@ -172,6 +189,8 @@ settings.const.EARTH_FLATTENING = 1/298.257223563;
 settings.const.EARTH_GRAVCONSTANT = 3.986005e14; 
 settings.const.EARTH_WGS84_ROT = 7.2921151467E-5; 
 settings.const.C20 = -1082.62575e-6; % 2nd zonal harmonic of ellipsoid
+settings.const.A_REF = 26559710;                        % CNAV2 Reference semi-major axis (meters)
+settings.const.OMEGA_REFDOT = -2.6e-9*3.1415926535898;  % CNAV2 Reference rate of right ascension
 
 settings.sys.nrOfChannels = 0;
 

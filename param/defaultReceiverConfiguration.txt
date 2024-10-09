@@ -124,6 +124,73 @@ gpsl1,runningAvgWindowForLockDetectorInMs, 20
 gpsl1,fllWideBandLockIndicatorThreshold,0.5,               % FLL wide band lock indicator threshold for DLL unlocked => locked
 gpsl1,fllNarrowBandLockIndicatorThreshold,0.7,               % FLL narrow band lock detector threshold for DLL unlocked => locked
 
+% Signal specific observation parameters
+gpsl1,enableIonoCorrections,false,      % Use iono corrections or not
+gpsl1,enableTropoCorrections,false,     % Use tropo corrections or not
+gpsl1,ionomodel,'default',              % Iono model to use (default,gpsl1,gale1b,beib1,glol1,ionex)
+gpsl1,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
+
+gpsl1,enableInterferenceDetector,false,
+gpsl1,enableNotchFilter,false,
+
+% GPS L1C Settings
+
+% Input RF file
+gpsl1c,rfFileName,'C:\skydelL1band_290923.iq',    % Name of RF data file used for GPS L1 signal
+
+% Radio front end configurations
+gpsl1c,centerFrequency,1575.42e6,       % Radio center frequency [Hz]
+gpsl1c,samplingFreq,25e6                % Sampling frequency [Hz]
+gpsl1c,bandWidth,20e6,                  % Bandwidth of the front end [Hz]
+gpsl1c,sampleSize,32,                   % Number of bits for one sample. For complex data this is the size for I+Q.
+gpsl1c,complexData,true,                % Complex or real data
+gpsl1c,iqSwap,false,                    % Complex or real data
+
+%Signal Modulation
+gpsl1c,modType,'TMBOC', 		% Can take input either of the two types: 'TMBOC' or 'SinBOC'
+
+% Acquisition parameters
+gpsl1c,acqSatelliteList,[1:32],         % Specify what GPS satellites to search for [PRN numbers]          
+gpsl1c,nonCohIntNumber,1,               % Number of non-coherent integration rounds for signal acquisition
+gpsl1c,cohIntNumber,1,                  % Coherent integration time for signal acquisition [ms]
+gpsl1c,acqThreshold,9,                  % Threshold for the signal presence decision rule
+gpsl1c,maxSearchFreq,6000,              % Maximum search frequency in one direction 
+
+% Tracking parameters
+gpsl1c,fllNoiseBandwidthWide,50, 	    % FLL noise BW wide[Hz]
+gpsl1c,fllNoiseBandwidthNarrow,15,      % FLL noise BW narrow [Hz]
+gpsl1c,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
+gpsl1c,fllDampingRatio,0.7,             % PLL damping ratio
+gpsl1c,fllLoopGain,0.5,                 % PLL loop gain
+gpsl1c,pllNoiseBandwidthWide,3,         % PLL noise BW [Hz]
+gpsl1c,pllNoiseBandwidthNarrow,5,       % PLL noise BW [Hz]
+gpsl1c,pllNoiseBandwidthVeryNarrow,5,   % PLL noise BW [Hz]
+gpsl1c,pllDampingRatio,0.8,             % PLL damping ratio
+gpsl1c,pllLoopGain,0.2,                 % PLL loop gain
+gpsl1c,dllDampingRatio,0.7,             % DLL damping ratio
+gpsl1c,dllNoiseBandwidth,1,             % DLL noise BW [Hz]
+gpsl1c,Nc,0.010,                        % integration time in seconds for DLL
+gpsl1c,corrFingers,[-2 -0.04 0 0.04],   % Correlator finger positions [chips]
+gpsl1c,earlyFingerIndex,2,              % Index of early finger
+gpsl1c,promptFingerIndex,3,             % Index of prompt finger
+gpsl1c,lateFingerIndex,4,               % Index of late finger
+gpsl1c,noiseFingerIndex,1,              % Index of fingers for measuring noise level
+
+gpsl1c,pllWideBandLockIndicatorThreshold,0.5,       % PLL lock indicator threshold for DLL unlocked => locked
+gpsl1c,pllNarrowBandLockIndicatorThreshold,0.8,     % PLL lock indicator threshold for DLL unlocked => locked
+gpsl1c,runningAvgWindowForLockDetectorInMs,80,
+gpsl1c,fllWideBandLockIndicatorThreshold,0.5,       % FLL wide band lock indicator threshold for DLL unlocked => locked
+gpsl1c,fllNarrowBandLockIndicatorThreshold,0.7,     % FLL narrow band lock detector threshold for DLL unlocked => locked
+
+% Signal specific observation parameters
+gpsl1c,enableIonoCorrections,false,      % Use iono corrections or not
+gpsl1c,enableTropoCorrections,false,      % Use tropo corrections or not
+gpsl1c,ionomodel,'default',              % Iono model to use (default,gpsl1,gale1b,beib1,glol1,ionex)
+gpsl1c,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
+
+gpsl1c,enableInterferenceDetector,false,
+gpsl1c,enableNotchFilter,false,
+
 % Galileo E1B Settings
 % Input RF file
 gale1b,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\MultiGNSS\rawData_GPSL1GalileoE1B_Chapter7.dat',               % Name of RF data file used for Galileo E1B signal
