@@ -8,7 +8,7 @@
 %
 % 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function ls3wToIQ(ls3w_filepath, ini_filepath, out_filepath, msToSkip, msToParse)
+function ls3wToIQ(ls3w_filepath, ini_filepath, out_filepath, sToSkip, sToParse)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This is a function to parses LabSat 3 Wideband ls3w-files into 8 + 8 bit I/Q format
 %
@@ -16,8 +16,8 @@ function ls3wToIQ(ls3w_filepath, ini_filepath, out_filepath, msToSkip, msToParse
 %   ls3w_filepath       - Filepath to a LabSat 3 Wideband ls3w-file
 %   ini_filepath        - Filepath to a LabSat .ini-file
 %   out_filepath        - Path where the output IQ files are stored to
-%   msToSkip            - Number of milliseconds to skip at the beginning of the file
-%   msToParse           - Set to 0 to parse the whole file after an initial skip; A few extra ms may be parsed by the program
+%   sToSkip            - Number of seconds to skip at the beginning of the file
+%   sToParse           - Set to 0 to parse the whole file after an initial skip; A few extra ms may be parsed by the program
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -51,7 +51,7 @@ num_samples_per_register = floor(64 / (quantization * 2 * num_channels));   % Nu
 outputPaths     = string([]);   % Initialize output iq-file paths
 
 % Extract file name
-[~,out_filename,~] = fileparts("C:\Data\CleanSignalFGI13122024\File_014.LS3W");
+[~,out_filename,~] = fileparts("C:\Data\IQFile_.LS3W");
 
 % Display information about the file
 fprintf('Sample Rate: %d Sps\n', sample_rate);
@@ -71,7 +71,26 @@ if fid == -1
 end
 input = dir(ls3w_filepath);                         % Total number of bytes
 totalRegisters = input.bytes/8;                     % Total number of registers assuming 8-byte registers
-nrIter = floor(totalRegisters/registersPerIter);    % Total number of iterations to parse the file                           
+
+nrIter_max = floor(totalRegisters/registersPerIter);    % Maximum number of iterations to parse the file
+nrIter_skip = (sample_rate/(registersPerIter*num_samples_per_register))*(sToSkip);   %e.g. 900sec  % Number of iterations to skip in the file as provided by the user
+nrIter_parse = round((sample_rate/(registersPerIter*num_samples_per_register))*(sToParse+sToSkip));    % Number of iterations to parse the file  as provided by the user
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if nargin < 4 
+    totalBytesSkipped=0;    % Total number of bytes to skip in the file
+else
+    totalBytesSkipped=nrIter_skip*(registersPerIter*8); % Total number of bytes to skip in the file assuming 8-byte registers
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if nargin < 5 
+    nrIter = nrIter_max;    % Total number of iterations to parse the file
+else
+    nrIter = nrIter_parse;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 % Open output files
 for chIdx = 1:num_channels
@@ -100,29 +119,19 @@ end
 % Buffer matrix to hold parsed samples; To be written into a file
 writeMatrix = zeros(2*registersPerIter*num_samples_per_register, 1, "int8");
 
-% Maximum file length to parse
-msToParseMax = round(nrIter*registersPerIter*num_samples_per_register/sample_rate*1000)-msToSkip;
-if ~msToParse
-    msToParse = msToParseMax;                   % Parse the whole file if the msToParse is set to zero
-else
-    msToParse = min(msToParse, msToParseMax);   % Limit the parsing time to the total file length
-end
-
-% End time for parsing
-endTimeMs = msToSkip + msToParse;
-
 % Iterate over the input file and write parsed registers to output
 for iterIdx = 1:nrIter
 
     % Parsed file length so far
     parsedLengthInMs = round((iterIdx-1)*registersPerIter*num_samples_per_register/sample_rate*1000);
-
-    % Skip some iterations
-    if parsedLengthInMs < msToSkip || parsedLengthInMs >= endTimeMs
+    if parsedLengthInMs < (sToSkip*1000)
+        % Load in data as ls3w registers
+        raw_data = fread(fid, registersPerIter, 'uint64=>uint64');
+        fprintf('Processing data please wait parsing will begin soon!\n');
         continue
     end
-
-    % Load in data as ls3w registers
+  
+    % % Load in data as ls3w registers
     raw_data = fread(fid, registersPerIter, 'uint64=>uint64');
 
     % Decode the registers
@@ -140,7 +149,7 @@ for iterIdx = 1:nrIter
 
     % Print a update to see progress
     parsedLengthInMs = round(iterIdx*registersPerIter*num_samples_per_register/sample_rate*1000);
-    fprintf("Parsed: %d / %d ms\n", parsedLengthInMs-msToSkip, msToParse);
+    fprintf("Parsed: %d / %d ms\n", (parsedLengthInMs-(sToSkip*1000)), sToParse*1000);
 end
 
 % End of processing; Close input and output files
