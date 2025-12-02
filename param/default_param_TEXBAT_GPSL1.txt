@@ -82,18 +82,6 @@ nav,trueLat,60.182260,
 nav,trueLong,24.828537,
 nav,trueHeight,47.248,
 
-%OSNMA parameters
-osnma,enableOSNMAdetection,false,		% Disable or enable OSNMA detection
-osnma,osnmaFileName,"osnma-cli.py",		% -p {sbf,ascii}, --protocol {sbf,ascii}
-osnma,publicKeyName," -k osnma-key-aug.pem", 	%file name should be written after .\
-osnma,inputFileType," -p ascii", 		%Input file type acii or sbf. Default is ascii
-osnma,rootKeyPath,'',
-osnma,merkleTree,'',
-osnma,readOutputFile,true,
-osnma,useexternalrootkey,true,
-osnma,externalosnmarootkey," -r kroot_1257_80",		% -r rootkeyfilename
-
-
 % GPS L1 Settings
 
 % Input RF file
