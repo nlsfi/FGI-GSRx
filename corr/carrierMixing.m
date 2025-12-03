@@ -21,7 +21,6 @@ function [tR]  = carrierMixing(signalSettings,tR, ch, pRfData)
 % Carrier and code mixing (correlation)
 %
 % Inputs:
-%   signalSettings  - Settings for one signal
 %   tR              - Results from signal tracking for one signals
 %   ch              - Channel index
 %   pRfData         - RF data from file
@@ -50,23 +49,24 @@ time    = (0:blockSize) ./ signalSettings.samplingFreq;
 trigarg = -((carrFreq * 2.0 * pi) .* time) + carrPhase;
 
 % Compute the carrier replica signal
-carrSignal = exp(1i .* trigarg(1:blockSize));
+carrSignal = exp(1i.*trigarg(1:blockSize));
 
 % Mix signal to baseband
 iBasebandSignal = real(carrSignal .* pRfData);
 qBasebandSignal = imag(carrSignal .* pRfData);
 
-% Mix with code replicas
-trackChannelData.I_E = sum(trackChannelData.earlyCode  .* iBasebandSignal);
-trackChannelData.I_P(loopCnt) = sum(trackChannelData.promptCode      .* iBasebandSignal);
-trackChannelData.I_L = sum(trackChannelData.lateCode   .* iBasebandSignal);
-trackChannelData.Q_E = sum(trackChannelData.earlyCode  .* qBasebandSignal);
-trackChannelData.Q_P(loopCnt) = sum(trackChannelData.promptCode      .* qBasebandSignal);
-trackChannelData.Q_L = sum(trackChannelData.lateCode   .* qBasebandSignal);     
-trackChannelData.I_E_E = sum(trackChannelData.twoChipEarlyCode  .* iBasebandSignal);
-trackChannelData.Q_E_E = sum(trackChannelData.twoChipEarlyCode  .* qBasebandSignal);
+% Correlate the baseband signal with local replica early, prompt, late, and very early codes
+trackChannelData.I_E            = sum(real(trackChannelData.earlyCode)  .* iBasebandSignal) + sum(imag(trackChannelData.earlyCode) .* qBasebandSignal);
+trackChannelData.I_P(loopCnt)   = sum(real(trackChannelData.promptCode) .* iBasebandSignal) + sum(imag(trackChannelData.promptCode) .* qBasebandSignal);
+trackChannelData.I_L            = sum(real(trackChannelData.lateCode)   .* iBasebandSignal) + sum(imag(trackChannelData.lateCode)   .* qBasebandSignal);
+trackChannelData.Q_E            = sum(real(trackChannelData.earlyCode)  .* qBasebandSignal) - sum(imag(trackChannelData.earlyCode)  .* iBasebandSignal);
+trackChannelData.Q_P(loopCnt)   = sum(real(trackChannelData.promptCode) .* qBasebandSignal) - sum(imag(trackChannelData.promptCode) .* iBasebandSignal);
+trackChannelData.Q_L            = sum(real(trackChannelData.lateCode)   .* qBasebandSignal) - sum(imag(trackChannelData.lateCode)   .* iBasebandSignal);
+trackChannelData.I_E_E  = sum(real(trackChannelData.twoChipEarlyCode) .* iBasebandSignal) + sum(imag(trackChannelData.twoChipEarlyCode)  .* qBasebandSignal);
+trackChannelData.Q_E_E  = sum(real(trackChannelData.twoChipEarlyCode) .* qBasebandSignal) - sum(imag(trackChannelData.twoChipEarlyCode)  .* iBasebandSignal);
 
-if strcmp(signalSettings.signal,'gpsl1c')
+% In addition, correlate data channel codes for GPS L1C and Beidou B1C signals
+if strcmp(signalSettings.signal,'gpsl1c') || strcmp(signalSettings.signal,'beib1c')
     trackChannelData.dataI_P(loopCnt) = sum(trackChannelData.promptDataCode .* iBasebandSignal);
 end
 

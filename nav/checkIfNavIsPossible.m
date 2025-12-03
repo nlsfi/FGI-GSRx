@@ -63,13 +63,14 @@ end
 % We need to count number of satellites for all signals - 1
 % observations/signal for all signals except one (one observation is needed
 % to get the clock offset compared to the other signals). 
-numberOfUsefulObservations = sum(validObs) - length(validObs) + 1;
+numberOfUsefullObservations = sum(validObs) - length(validObs) + 1;
 
-% We can not navigate unless we have at least 4 useful observations
-% (x, y, z and clock offset)
-if(numberOfUsefulObservations < 4)
+% We can not navigate unless we have at least 2 observations from any system
+if(numberOfUsefullObservations < 4)
     return; 
 end
 
 % If we end up here we can navigate
 trynav = true;
+
+

@@ -21,7 +21,7 @@ function settings = readParamFile(filename,settings)
 % Function reads a parameter file and updates the settings structure
 % 
 % Input:
-%   filename     - Name of parameter file to read
+%   filename   -   Name of parameter file to read
 %   settings     - Receiver settings. 
 %
 % Output:
@@ -55,4 +55,4 @@ while(~feof(fid))
 end
  
 % Close file
-fclose(fid);
+ fclose(fid);

@@ -46,7 +46,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     signalSettings = allSettings.(signal);
     
     % Open file for reading
-    [fid, ~] = fopen(signalSettings.rfFileName, 'rb');
+    [fid, message] = fopen(signalSettings.rfFileName, 'rb');
     if (fid == -1)
        error('Failed to open data file for tracking!');
        return;

@@ -80,13 +80,13 @@ NAVvariances = temp_NAVvariances;
 crcPoly = [1,1,0,0,0,0,1,1,0,0,1,0,0,1,1,0,0,1,1,1,1,1,0,1,1]; 
 
 % Subframe 2
-H2 = load("H2.mat").H2;
+H2 = load("gpsl1cH2.mat").H2;
 decoded_sf2 = reallyFastLDPCdecoder(H2,NAVsymbols(1:1200)',30,NAVvariances(1:1200)')'; % LDPC FEC
 subframe2 = decoded_sf2(1:600);     % Data bits with CRC
 check2 = crcDecode(subframe2(1:576),subframe2(577:600), crcPoly);   
 
 % Subframe 3
-H3 = load("H3.mat").H3;
+H3 = load("gpsl1cH3.mat").H3;
 decoded_sf3 = reallyFastLDPCdecoder(H3,NAVsymbols(1201:1748)',30,NAVvariances(1201:1748)')'; % LDPC FEC
 subframe3 = decoded_sf3(1:274);     % Data bits with CRC
 check3 = crcDecode(subframe3(1:250), subframe3(251:274), crcPoly);   

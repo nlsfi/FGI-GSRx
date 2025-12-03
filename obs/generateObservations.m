@@ -56,6 +56,7 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         obsResults.(signal).channel(i).SvId = tR.(signal).channel(i).SvId;
         obsResults.(signal).channel(i).CN0 = tR.(signal).channel(i).meanCN0fromSNR;
         obsResults.(signal).channel(i).carrFreq = tR.(signal).channel(i).carrFreq - tR.(signal).channel(i).intermediateFreq;
+        obsResults.(signal).channel(i).sampleCount = tR.(signal).channel(i).absoluteSample;
         obsResults.(signal).channel(i).codePhase = tR.(signal).channel(i).codePhase;
 
         obsResults.(signal).channel(i).receiverTow = NaN;
@@ -82,3 +83,6 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         obsResults.(signal).channel(i).dopplerResid = NaN;
     end
 end
+
+
+

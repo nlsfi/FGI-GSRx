@@ -22,15 +22,15 @@ function [obs, sat, navSolution] = getNavSolution(obs, sat, navSolution, allSett
 %
 % Inputs:
 %   obs             - Observations for one epoch
-%   sat             - Satellite positions and velocities for one epoch
+%   sat             - satellite positions and velocities for one epoch
 %   navSolution     - Current navigation solution 
-%   allSettings     - Receiver settings
+%   allSettings     - receiver settings.
+%   ephData         -  ephemeris data for all systems
 %
 % Outputs:
-%   obs             - Observations for one epoch
-%   sat             - Satellite positions and velocities for one epoch
-%   navSolution     - Output from navigation (position, velocity, time,
-%   dop etc)
+%   obsSingle       - Observations for one epoch
+%   satSingle       - satellite positions and velocities for one epoch
+%   navSolutions    - Output from navigation (position, velocity, time,
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -61,27 +61,28 @@ else
     % There are not enough satellites to find 3D position 
     disp(': Not enough information for position solution.');
 
-    % Copy whatever data we have and set rest to NaN
-    lengthdop = 4 + allSettings.sys.nrOfSignals;
-
-    Pos.xyz  = zeros(1,3);
-    Pos.LLA = zeros(1, 3);
-    Pos.fom = NaN;
-    Pos.dop = zeros(1, lengthdop);
-    Pos.trueRange = NaN;
-    Pos.rangeResid = NaN;
-    Pos.nrSats = NaN;
-    Pos.dt = NaN;
-    Pos.bValid = false;
-    Pos.Flag = NaN;
-    Pos.signals = NaN;
-
-    Vel.xyz = zeros(1,3);
-    Vel.fom = NaN;
-    Vel.dopplerResid = NaN;
-    Vel.nrSats = NaN;
-    Vel.df = NaN;
-    Vel.bValid = false;
+    if(allSettings.osnma.enableOSNMA==0)
+        % Copy whatever data we have and set rest to NaN
+        lengthdop = 4 + allSettings.sys.nrOfSignals;
+       
+        Pos.xyz  = zeros(1,3);
+        Pos.LLA = zeros(1, 3);
+        Pos.fom = NaN;
+        Pos.dop = zeros(1, lengthdop);
+        Pos.trueRange = NaN;
+        Pos.rangeResid = NaN;
+        Pos.nrSats = NaN;
+        Pos.dt = NaN;
+        Pos.bValid = false;
+        Pos.Flag = NaN;
+    
+        Vel.xyz = zeros(1,3);
+        Vel.fom = NaN;
+        Vel.dopplerResid = NaN;
+        Vel.nrSats = NaN;
+        Vel.df = NaN;
+        Vel.bValid = false;
+    end
 
     Time.receiverTow = NaN;
 end
@@ -89,3 +90,5 @@ end
 navSolution.Pos = Pos;
 navSolution.Vel = Vel;
 navSolution.Time = Time;
+
+

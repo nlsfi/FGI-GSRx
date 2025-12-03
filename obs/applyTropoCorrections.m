@@ -25,7 +25,7 @@ function obsSingle = applyTropoCorrections(const, signalSettings, obsSingle, sat
 %   signalSettings      - receiver configuration settings
 %   obsSingle           - Observations for one epoch
 %   satSingle           - satellite positions and velocities for one epoch
-%   navSolution        - Output from navigation (position, velocity, time,
+%   navSolutions        - Output from navigation (position, velocity, time,
 %   dop etc)
 %
 % Outputs:
@@ -50,3 +50,11 @@ dTropo_HD = -ZHD_Saas * SimpleMap;
 % Copy data
 obsSingle.tropoCorr = dTropo_HD;
 obsSingle.corrP = obsSingle.corrP + obsSingle.tropoCorr;
+
+
+
+
+
+
+
+

@@ -22,14 +22,13 @@ function obs = checkObservations(obs,sat,allSettings,navSolution)
 % navigation
 %
 % Inputs:
-%   obs             - structure with observations for one measurement epoch
-%   sat             - structure with satellite info for one epoch
+%   obs             - structure with observations for one measurement epochs
+%   sat             - structure with satellite info for one epochs
 %   allSettings     - configuration parameters
-%   navSolution    - Output from navigation (position, velocity, time,
-%   dop etc)
-%
+%   navSolutions    - Output from navigation (position, velocity, time,
+%   currMeasNr      - Time index
 % Outputs:
-%   obs             - structure with observations for one measurement epoch
+%   obs             - structure with observations for one measurement epochs
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -46,19 +45,30 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     
     % Loop over all channels
     for channelNr = 1:obs.(signal).nrObs
-        if(obs.(signal).channel(channelNr).bObsOk)
-            if((sat.(signal).channel(channelNr).elev < allSettings.nav.elevationMask))
-                obs.(signal).channel(channelNr).bObsOk = false;
-            end            
-    %SNR limit        
-            if(obs.(signal).channel(channelNr).SNR < allSettings.nav.snrMask)
-                obs.(signal).channel(channelNr).bObsOk = false;
-            end            
+        if(obs.(signal).channel(channelNr).bObsOk)         
+                if((sat.(signal).channel(channelNr).elev < allSettings.nav.elevationMask))
+                    obs.(signal).channel(channelNr).bObsOk = false;
+                end            
+                %SNR limit        
+                if(obs.(signal).channel(channelNr).SNR < allSettings.nav.snrMask)
+                    obs.(signal).channel(channelNr).bObsOk = false;
+                end             
         end
     end
 end
 
 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %Check OSNMA status
+% % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%OSNMA check
+%Initialize ToW to get OSNMA authentication start time 
+if(allSettings.osnma.enableOSNMA==1)
+   if strcmp(signal,'gale1b') %Extra check to ensure only GalE1 signals are checked
+       obs = checkOSNMAObservations(obs,sat);   
+   end
+end
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 

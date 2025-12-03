@@ -84,7 +84,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     for channelNr = 1:obs.nrObs
         if(obs.channel(channelNr).bObsOk)
             diff = obs.channel(channelNr).sampleCount - startSampleCount;
-            [~,I] = sort(abs(diff));
+            [Y,I] = sort(abs(diff));
             obs.channel(channelNr).channelStartIndex = min(I(1),I(2));        
         end
     end
@@ -93,7 +93,8 @@ end
 
 % Init navData structure
 navData.Pos.xyz  = zeros(1,3);
-navData.Pos.LLA = zeros(1, 3);
+navData.Pos.enu = zeros(1,3);
+navData.Pos.lla = zeros(1,3);
 navData.Pos.fom = NaN;
 navData.Pos.dop = zeros(1,5);
 navData.Pos.trueRange = NaN;
@@ -102,13 +103,16 @@ navData.Pos.nrSats = NaN;
 navData.Pos.dt = NaN;
 navData.Pos.bValid = false;
 navData.Pos.Flag = NaN;
-navData.Pos.signals = NaN;
 
 navData.Vel.xyz = zeros(1,3);
 navData.Vel.fom = NaN;
 navData.Vel.dopplerResid = NaN;
-navData.Vel.nrSats = NaN;
+navData.Vel.nrSats = 0;
 navData.Vel.df = NaN;
 navData.Vel.bValid = false;
 
 navData.Time.receiverTow = NaN;
+
+
+
+

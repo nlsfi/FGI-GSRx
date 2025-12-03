@@ -21,7 +21,7 @@ function [] = gsrx(varargin)
 % Main function for the FGI-GSRx matlab software receiver
 %
 % Input (optional):
-%   varargin   -   Name of user parameter file
+%   vararging   -   Name of user parameter file
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -63,12 +63,12 @@ if settings.sys.plotSpectra == 1
 end
 
 % Define ephData if not available
-if(~exist('ephData', 'var'))
+if(~exist('ephData'))
     ephData = [];
 end
 
-% Execute acquisition if results not already available
-if(~exist('acqData', 'var'))
+% Execute acquisition if results not allready available
+if(~exist('acqData'))
     acqData = doAcquisition(settings);         
 end
 
@@ -80,17 +80,18 @@ if settings.sys.plotAcquisition == 1
         plotAcquisition(acqData.(signal),settings, char(signal)); 
     end         
 end
-
 % Save available results so far to file
 if(settings.sys.saveDataFile == true)
     save(settings.sys.dataFileOut,'settings','acqData','ephData');
 end
 
+
+
 % Execute tracking if results not allready available
-if(~exist('trackData', 'var'))
+if(~exist('trackData'))
     tic;
     if (settings.sys.parallelChannelTracking)
-        if (~exist('trackResults', 'var'))
+        if (~exist('trackResults'))
             trackDataFileName = initializeAndSplitTrackingPerChannel(acqData, settings); 
             doTrackingParallel(trackDataFileName,settings);    
             return;
@@ -107,13 +108,15 @@ if(settings.sys.saveDataFile == true)
     save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData');
 end
 
+
 % Plot tracking results
 if settings.sys.plotTracking == 1                
     plotTracking(trackData, settings);    
 end
 
-% Convert track data to useful observations for navigation if data not already available
-if(~exist('obsData', 'var'))
+
+% Convert track data to usefull observations for navigation if data not allready available
+if(~exist('obsData'))
     obsData = generateObservations(trackData, settings);
 end
 
@@ -135,9 +138,9 @@ end
 
 % Calculate and output statistics
 % True values
-trueLat = settings.nav.trueLat; 
-trueLong = settings.nav.trueLong;
-trueHeight = settings.nav.trueHeight;
+trueLat=settings.nav.trueLat; 
+trueLong=settings.nav.trueLong;
+trueHeight=settings.nav.trueHeight;
 
 % Calculate statistics
 statResults = calcStatistics(navData,[trueLat trueLong trueHeight],settings.nav.navSolPeriod,settings.const);  
@@ -147,3 +150,5 @@ statResults.hor
 statResults.ver
 statResults.dop
 statResults.RMS3D
+
+

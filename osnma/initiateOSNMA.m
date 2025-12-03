@@ -1,0 +1,89 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Land Survey of Finland. This file is part of FGI-GSRx software-defined
+%% receiver. FGI-GSRx is a free software: you can redistribute it and/or
+%% modify it under the terms of the GNU General Public License as published
+%% by the Free Software Foundation, either version 3 of the License, or any
+%% later version. FGI-GSRx software receiver is distributed in the hope
+%% that it will be useful, but WITHOUT ANY WARRANTY, without even the
+%% implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+%% See the GNU General Public License for more details. You should have
+%% received a copy of the GNU General Public License along with FGI-GSRx
+%% software-defined receiver. If not, please visit the following website 
+%% for further information: https://www.gnu.org/licenses/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function [obsCh]= initiateOSNMA(obsCh,allSettings)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% This function takes input of obs data, time required for first
+% authentication fix and initate FGI-OSNMA Python software package to
+% generate and prepare obs data for OSNMA-based position authentication
+%
+% Inputs:
+%   obsCh          - Observation for all signals
+%   allSettings    - Receiver settings
+%
+% Outputs:
+%   obsCh           - Observations for a specific signal
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
+osnmaPRNHexAll =[];
+
+%Preparing the intial data by combining OSNMAHEX from all PRNs togather
+for i = 1: length(obsCh.channel)
+    if(obsCh.channel(i).bObsOk) 
+        osnmaPRNHexAll = vertcat(osnmaPRNHexAll, obsCh.channel(i).OSNMA.osnmaHEX);
+    end
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+HEXfile ='.\\osnma\\OSNMA_HEX_STR.txt';
+
+fileID = fopen(HEXfile, 'w');                       %Writing the HEXputput to a file
+for i = 1:size(osnmaPRNHexAll, 1)
+    if(~anymissing(osnmaPRNHexAll(i,:)))            %Check to ensure there is no missing data
+        fprintf(fileID, '%s,%s,%s,%s\n', osnmaPRNHexAll(i,:));
+    end
+end
+fclose(fileID);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%           
+              
+%FGIOSNMA reads the data based on time stamps. It is therefore important to
+%sort the data based on time. The following code sorts the HEX data based
+%on time stamps.
+T=readtable(HEXfile);
+T = sortrows(T,3);     
+writetable(T, HEXfile, 'WriteVariableNames', 0);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+%%%Call python block OSNMA
+inputFileName=' -i .\\osnma\\OSNMA_HEX_STR.txt';   %Hardcoding the input HEX file for FGIOSNMA input
+osnmaFileName= '.\\osnma\\app\\osnma-cli.py';      %FGIOSNMA main function path
+inputFileType=' -p ascii';                          %ASCII format is supported by FGIOSNMA and FGI-GSRx
+rootKeyPath='';                                     %Not used but optional input for FGI-OSNMA
+merkleTree='';                                      %Not used but optional input for FGI-OSNMA
+
+%If external root key validation is needed
+if(allSettings.osnma.externalTESLARootKey==1)
+    OSNMApath=strcat(osnmaFileName,inputFileName,inputFileType,allSettings.osnma.publicKeyName,rootKeyPath,merkleTree,allSettings.osnma.externalTESLARootkeyFilename);
+    flag_kroot=1;
+else
+%If rootkey is valided from signal in space
+    OSNMApath=strcat(allSettings.osnma.osnmaFileName,allSettings.osnma.inputFileName,allSettings.osnma.inputFileType,allSettings.osnma.publicKeyName,allSettings.osnma.rootKeyPath,allSettings.osnma.merkleTree); flag_kroot=0;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+dfile ='.\\osnma\\OSNMAoutput.txt';                            %File to write output generated from FGI-OSNMA
+if exist(dfile, 'file')                                         %FGI-GSRX would automatically overwrite the output file
+    delete(dfile); 
+end
+pyrun("import sys; sys.path.insert(0, './osnma')");            %Command to include the python library paths for FGI-OSNMA
+diary(dfile)                                                   %Recording the FGI-OSNMA output to the text file
+diary on
+pyrunfile(OSNMApath);                                          %Run the FGI-OSNMA python block
+diary off
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+
+[OSNMA_tab, flag_kroot] = doOSNMAAnalysis(dfile,flag_kroot);   %Call the doOSNMAAnalysis function for detailed analysis of the output file generated by FGI-OSNMA
+[obsCh] = doOSNMAUpdate(obsCh,OSNMA_tab,flag_kroot);           %Merging the OSNMA analysis to the trackdata for each satellite
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
+       

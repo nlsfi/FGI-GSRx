@@ -43,7 +43,7 @@ iBeta2 = corrIonoData.beta2;
 iBeta3 = corrIonoData.beta3;
 
 % Calculate helping coordinates
-[dLat,dLon,~] = wgsxyz2lla(const, pos(1:3)');
+[dLat,dLon,dAlt] = wgsxyz2lla(const, pos(1:3)');
 dEle = satSingle.elev/180*pi;
 dAzi = satSingle.azim/180*pi;
 dwTowMs = refTime * 1000;
@@ -85,7 +85,7 @@ else
         phi = 0.416;
     elseif (phi < -0.416)
         phi = -0.416;
-    end
+    end;
 
     % Compute subionospheric longitude lmi (semicircles).
     lmi = lmu + psi * sin(dAzi) / cos(phi*pi);
@@ -101,7 +101,7 @@ else
     elseif (tlocal < 0.0)
         lMultiples = floor((abs(tlocal)) / SECONDS_IN_DAY) + 1;
         tlocal = tlocal + SECONDS_IN_DAY * (lMultiples);
-    end
+    end;
 
     % Compute subionospheric geomagnetic latitude phm (semicircles).
     phm = phi + 0.064 * cos((lmi - 1.617) * pi);
@@ -114,17 +114,17 @@ else
            
     if (suma < 0.0)
            suma = 0.0;
-    end
+    end;
 
     if (sumb < 72000.0)
           sumb = 72000.0;
-    end
+    end;
 
     if (sumb ~= 0.0) 
          xtemp = 2.0 * pi * (tlocal - 50400.0) / sumb;
     else 
          xtemp = 0.0;
-    end
+    end;
 
     if (abs(xtemp) < 1.57)
          x2 = xtemp * xtemp;
@@ -133,5 +133,9 @@ else
          dIono = f * (5.0e-9 + suma * temp) * SPEED_OF_LIGHT + 0.5;
     else 
          dIono = f * 5.0e-9 * SPEED_OF_LIGHT;
-    end
-end  
+    end;
+end;    
+
+
+
+

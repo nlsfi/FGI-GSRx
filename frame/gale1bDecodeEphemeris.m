@@ -35,7 +35,7 @@ function [eph, obsCh] = gale1bDecodeEphemeris(obsCh, I_P, prn, signalSettings, c
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 obsCh.bEphOk = false;
 eph = [];
-
+signalSettings.osnma=1;
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%Assign NaN to all temporary variables: that will help in case of bit
@@ -125,7 +125,7 @@ navBits( navBitsSamples <= 0) = -1;
 
 % Calculate cross correlation between nav bits and preamble: In case of
 % Navigation bits, take only 15 pages: 15*2*250 symbols
-corrValPreamble = calcCrossCorrelation(navBits(1:250*2*15),signalSettings.preamble);
+corrValPreamble = calcCrossCorrelation(navBits(1:250*2*24),signalSettings.preamble);
 
 % Find peaks in CC values
 indPositiveCorrelation = find(corrValPreamble>=10);
@@ -168,7 +168,21 @@ else
 end
 
 foundPages = 0;
-
+%NEW%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%OSNMA
+%Initialization of OSNMA parameters
+if(signalSettings.osnma==1)
+    hk_Ind = 0;
+    mk_Ind = 0;
+    HKROOT = [];
+    MACK = [];
+    WN_0 = [];
+    TOW_NMA= [];
+    TOW_OS =[];
+    nav_counter=0;
+    OSNMA_counter = 0;
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for i=1:(length(bits)/240)
     subframeOk = true;
     bitsArrangedPageWise = bits((i-1)*240+1: i*240);
@@ -181,7 +195,8 @@ for i=1:(length(bits)/240)
         disp(['CRC check fails for subframe number ', i,' of ', obsCh.signal ,' prn ', ...
         int2str(prn)]);  
         obsCh.bEphOk = false;
-        subframeOk = false;        
+        subframeOk = false;    
+        break;
     end
     
     % Arrange bits
@@ -196,13 +211,41 @@ for i=1:(length(bits)/240)
         wordType(i,:) = 7; % This is a hack. Othervise we will get funny page numbers. To be checked. SS
     end
     
-    % Decode data words
+
+    %NEW%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     %OSNMA
+     if(signalSettings.osnma==1)
+         if (~isempty (WN_0))
+                week_OSNMA (i)= WN_0;
+                if (~isempty (TOW_NMA))
+                    if isempty(TOW_OS)
+                        TOW_OS = TOW_NMA;
+                    end
+                   TOW_OS = TOW_OS+2;
+                   nav_counter=nav_counter+1; 
+                   navHex(nav_counter,4) = string(dec2hex(bin2dec(reshape(bitsArrangedPageWise,4,[]).')).');
+                   navHex(nav_counter,1) = prn;
+                   navHex(nav_counter,3) = TOW_OS;
+                   navHex(nav_counter,2) = WN_0;
+                   
+                end
+         end
+     end
+     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%      
+
+   % Decode data words
     switch wordType(i,:) 
         case 0 % Word Type 0
             time =  bin2dec(bitsArrangedWordWise(7:8));
             if time == 2
                 WN_0 = bin2dec(bitsArrangedWordWise(97:108));
                 TOW_0 = bin2dec(bitsArrangedWordWise(109:128));
+                %NEW%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %OSNMA
+                if(signalSettings.osnma==1)
+                                TOW_NMA= TOW_0-1;
+                end
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             else
                 fprintf('No valid WN & TOW');
             end
@@ -285,12 +328,43 @@ for i=1:(length(bits)/240)
             A_1G = bin2dec(bitsArrangedWordWise(103:114)) * 2^(-51);            
             t_0G = bin2dec(bitsArrangedWordWise(115:122)) * 3600;            
             WN_0G = bin2dec(bitsArrangedWordWise(123:128));            
-            foundPages = bitset(foundPages,11);            
+            foundPages = bitset(foundPages,11);
+        case 16 %Reduced Clock and Ephemeris Data (CED) parameters
+            ;
+            % delta_Ared = bin2dec(bitsArrangedWordWise(7:11));
+            % e_xred = bin2dec(bitsArrangedWordWise(12:24));
+            % e_yred = bin2dec(bitsArrangedWordWise(25:37));
+            % delta_i_0_red = bin2dec(bitsArrangedWordWise(38:54));
+            % omega_0_red = bin2dec(bitsArrangedWordWise(55:77));
+            % delta_0_red = bin2dec(bitsArrangedWordWise(78:100));
+            % af0_red = bin2dec(bitsArrangedWordWise(101:122));
+            % af1_red = bin2dec(bitsArrangedWordWise(120:128));
+        case 17 %FEC2 Reed-Solomon for Clock and Ephemeris Data (CED)
+            ;
+            % FEC2_17_1 = bin2dec(bitsArrangedWordWise(7:14));
+            % LSB_17 = bin2dec(bitsArrangedWordWise(15:16));
+            % FEC2_17_2 = bin2dec(bitsArrangedWordWise(17:128));   %large number and needs further analysis of how to convert to dec
+        case 18 %FEC2 Reed-Solomon for Clock and Ephemeris Data (CED)
+            ;
+            % FEC2_18_1 = bin2dec(bitsArrangedWordWise(7:14));
+            % LSB_18 = bin2dec(bitsArrangedWordWise(15:16));
+            % FEC2_18_2 = bin2dec(bitsArrangedWordWise(17:128)); %large number and needs further analysis of how to convert to dec
+        case 19 %FEC2 Reed-Solomon for Clock and Ephemeris Data (CED)
+            ;
+            % FEC2_19_1 = bin2dec(bitsArrangedWordWise(7:14));
+            % LSB_19 = bin2dec(bitsArrangedWordWise(15:16));
+            % FEC2_19_2 = bin2dec(bitsArrangedWordWise(17:128)); %large number and needs further analysis of how to convert to dec
+        case 20 %FEC2 Reed-Solomon for Clock and Ephemeris Data (CED)
+            ;
+            % FEC2_20_1 = bin2dec(bitsArrangedWordWise(7:14));
+            % LSB_20 = bin2dec(bitsArrangedWordWise(15:16));
+            % FEC2_20_2 = bin2dec(bitsArrangedWordWise(17:128)); %large number and needs further analysis of how to convert to dec 
         case 63 % Dummy data word: Type 63
             ;
         otherwise
             ;%fprintf('Word type: %d has not yet been decoded!\n',wordType(i));
     end    
+
     if mod(i,15)==0
         % Word type 0
         eph.subframe(i/15).weekNumber = WN_0;    
@@ -366,6 +440,8 @@ for i=1:(length(bits)/240)
             eph.subframe(i/15).t_0G = NaN;
             eph.subframe(i/15).WN_0G = NaN;
         end
+
+ 
         % TOW_5 is from the last decoded wordtype = 5.
         % The index tells us in which word this was.
         % Each word corresponds to 2 seconds in TOW.
@@ -378,6 +454,18 @@ for i=1:(length(bits)/240)
             TOW = TOW_5 - (2*(ind_TOW_5-1)) - 1 +  shifttow;
             obsCh.tow = TOW;    
         end
+        %NEW%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %OSNMA
+        if(signalSettings.osnma==1)
+            if (~isempty (WN_0))
+                    OSNMA_counter = OSNMA_counter + 15;
+                        eph.subframe(i/15).HKROOT=HKROOT;
+                        eph.subframe(i/15).MACK=MACK;
+                        eph.subframe(i/15).osnmaHEX = navHex(1:end, :);
+                        clear navHex; nav_counter=0;
+            end
+        end
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
         %If the first subframe decoding (15 pages) is successful, we can
         %use the first subframe just to get some form of navigation: It can
         %be changed based on the requirements from the user application (in 
@@ -385,7 +473,7 @@ for i=1:(length(bits)/240)
         if (eph.subframe(1).subframeOk)
             obsCh.bEphOk = true;
         end
-        
+        obsCh.tow = TOW;    
     end
 end
 

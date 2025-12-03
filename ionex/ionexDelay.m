@@ -51,8 +51,7 @@ if size(svPosition,1) > 1
 end
 
 % TEC units in IONEX files. One TECU is 1e16.
-ionexTecu = 1e16;
-ionexScalingFactor = 0.1; % Please check details from literature
+ionexTecu = 1e15;
 % Find the piercing point
 height = ionexTables.height;
 try
@@ -62,7 +61,7 @@ try
     % Compute the slant TEC value
     slantTec =  vtec / sin(angle/180*pi);
     % Compute the delay in meters
-    delay = (40.30 * slantTec * ionexTecu * ionexScalingFactor) / (frequency^2);
+    delay = 40.30 * slantTec * ionexTecu / frequency^2;
 catch
     delay = 0;
 end
@@ -90,7 +89,7 @@ while counter < 15 && abs(height - targetHeight) > 10
   losStep = losStep * (targetHeight - height) / (height - previousHeight);
 end
 
-if abs(height - targetHeight) > 10
+if abs(height - targetHeight > 10)
   error('Could not find a suitable piercing point');
 end
 
@@ -118,7 +117,6 @@ OmegaEDot = 7.2921151467e-5;
 % Find the bordering latitudes
 [adjLat, latDiff] = findAdjacent(ionexTables.latitudes, lat, 2);
 % Compute TEC values to tow bordering time values
-tecs = zeros(1, 2);
 for i=[1,2]
   % Rotate the longitudes to the new time
   % i.e., if time increases, smaller longitude values correspond to TEC

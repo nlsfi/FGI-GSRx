@@ -39,9 +39,9 @@ sys,msToSkip,0e3,                   % Number of ms to skip from beginning of fil
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
-sys,dataFileIn,'D:\Mat Data\trackData_gpsl1c_Satellite_ID_4.mat',          % Data file to load if enabled
+sys,dataFileIn,'D:\Mat Data\trackData_gpsl1c_Satellite_ID_4.mat',          % Datafile to load of enabled
 sys,saveDataFile,false,     % Defines if data should be stored to file
-sys,dataFileOut,'D:\Mat Data\trackData_v2.0.0_ParallelProcessing_GPSL1C_simulatedData_2Oct24.mat',  % Data file for storing output if enabled
+sys,dataFileOut,'D:\Mat Data\trackData_v2.0.0_ParallelProcessing_GPSL1C_simulatedData_2Oct24.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -91,10 +91,10 @@ gpsl1c,samplingFreq,25e6                % Sampling frequency [Hz]
 gpsl1c,bandWidth,20e6,                  % Bandwidth of the front end [Hz]
 gpsl1c,sampleSize,16,                   % Number of bits for one sample. For complex data this is the size for I+Q.
 gpsl1c,complexData,true,                % Complex or real data
-gpsl1c,iqSwap,false,                    % Is the data IQ-swapped (QI) or not (IQ)?
+gpsl1c,iqSwap,false,                    % Complex or real data
 
 %Signal Modulation
-gpsl1c,modType,'TMBOC', 			    %Can take input either of the two types: 'TMBOC' or 'SinBOC'
+gpsl1c,modType,'TMBOC', 		% Can take input either of the two types: 'TMBOC' or 'SinBOC'
 
 % Acquisition parameters
 gpsl1c,acqSatelliteList,[1:32],         % Specify what GPS satellites to search for [PRN numbers]          
@@ -104,7 +104,7 @@ gpsl1c,acqThreshold,9,                  % Threshold for the signal presence deci
 gpsl1c,maxSearchFreq,6000,              % Maximum search frequency in one direction 
 
 % Tracking parameters
-gpsl1c,fllNoiseBandwidthWide,50, 	    % FLL noise BW wide[Hz]
+gpsl1c,fllNoiseBandwidthWide,50, 	% FLL noise BW wide[Hz]
 gpsl1c,fllNoiseBandwidthNarrow,15,      % FLL noise BW narrow [Hz]
 gpsl1c,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
 gpsl1c,fllDampingRatio,0.7,             % PLL damping ratio
@@ -131,7 +131,7 @@ gpsl1c,fllNarrowBandLockIndicatorThreshold,0.7,     % FLL narrow band lock detec
 
 % Signal specific observation parameters
 gpsl1c,enableIonoCorrections,false,      % Use iono corrections or not
-gpsl1c,enableTropoCorrections,false,      % Use tropo corrections or not
+gpsl1c,enableTropoCorrections,false,     % Use tropo corrections or not
 gpsl1c,ionomodel,'default',              % Iono model to use (default,gpsl1,gale1b,beib1,glol1,ionex)
 gpsl1c,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
 

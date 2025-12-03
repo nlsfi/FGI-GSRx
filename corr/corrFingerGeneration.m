@@ -21,7 +21,6 @@ function [fingers,tR] = corrFingerGeneration(signalSettings,tR,ch)
 % Generates all the correlator fingers
 %
 % Inputs:
-%   signalSettings  - Settings for one signal
 %   tR              - Track data for all channels
 %   ch              - Channel number for processing
 %
@@ -48,46 +47,40 @@ nrOfFingers = length(trackChannelData.corrFingers);
 corrFingers = trackChannelData.corrFingers;
 
 % Get first and last finger
-negOffset = abs(corrFingers(1)); % [-2 -0.25 0 0.25],
+negOffset = abs(corrFingers(1));
 posOffset = corrFingers(end);
 
 % Calculate biggest offset and number of fingers
 dataToAdd = max(negOffset,posOffset);
 
-
-
-% We need to fill in data on both sides of the code replica 
-% in order to be able to generate the finger data
-add_data = dataToAdd + 100; % Add some extra data at both ends
-add_data = floor(add_data);
+% We need to fill in data on both sides of the code replica in order to be able to generate the finger data
+add_data = floor(dataToAdd + 100); % Add some extra data at both ends
 
 % This is the long code with data added on both sides
 longCode = [Code(end-add_data+1:end) Code Code(1:add_data)];
 
-% Time stamps for prompt finger (TBA: DO we need this)
-tcode       = ((codePhase) : ...
-              codePhaseStep : ...
-              ((blockSize-1)*codePhaseStep+codePhase))*scalingFactor;         
+% Time stamps for for prompt finger (TBA: DO we need this)
+tcode = ((codePhase) : codePhaseStep : ((blockSize-1)*codePhaseStep+codePhase))*scalingFactor;         
 tcode(blockSize) = tcode(blockSize)./scalingFactor;
 fingers.tcode = tcode;
+
+fingers.Code = zeros(nrOfFingers,blockSize);
 
 % Let's generate all early and late fingers
 for i=1:nrOfFingers
     pos = corrFingers(i); % Offset for finger 
     
     % Time code for given offset
-    tcode       = ((codePhase+pos) : ...
-                  codePhaseStep : ...
-                  ((blockSize-1)*codePhaseStep+codePhase+pos))*scalingFactor;
+    tcode       = ((codePhase+pos) : codePhaseStep : ((blockSize-1)*codePhaseStep+codePhase+pos))*scalingFactor;
     tcode2      = ceil(tcode + add_data); % Add data also for time stamps TBA: Why ?
     
     % Generate codes
-    fingers.Code(i,:)   = longCode(tcode2);   
+    fingers.Code(i,:) = longCode(tcode2);   
 end
 
 % Copy data
-trackChannelData.earlyCode = fingers.Code(trackChannelData.earlyFingerIndex,:);
-trackChannelData.lateCode = fingers.Code(trackChannelData.lateFingerIndex,:);
+trackChannelData.earlyCode  = fingers.Code(trackChannelData.earlyFingerIndex,:);
+trackChannelData.lateCode   = fingers.Code(trackChannelData.lateFingerIndex,:);
 trackChannelData.promptCode = fingers.Code(trackChannelData.promptFingerIndex,:);
 trackChannelData.twoChipEarlyCode = fingers.Code(trackChannelData.noiseFingerIndex,:);
 
@@ -96,6 +89,14 @@ if strcmp(signalSettings.signal,'gpsl1c')
     dataCode = trackChannelData.codeReplicaL1CD(1,:);
     longDataCode = [dataCode(end-add_data+1:end) dataCode dataCode(1:add_data)];
     tDataCode       = ceil((codePhase : codePhaseStep : ((blockSize-1)*codePhaseStep+codePhase))*scalingFactor + add_data);
+    trackChannelData.promptDataCode = longDataCode(tDataCode); 
+end
+
+% Data channel correlator for BDS B1C
+if strcmp(signalSettings.signal,'beib1c')
+    dataCode = trackChannelData.codeReplicaB1CD(1,:);
+    longDataCode = [dataCode(end-add_data+1:end) dataCode dataCode(1:add_data)];
+    tDataCode = ceil((codePhase : codePhaseStep : ((blockSize-1)*codePhaseStep+codePhase))*scalingFactor + add_data);
     trackChannelData.promptDataCode = longDataCode(tDataCode); 
 end
 

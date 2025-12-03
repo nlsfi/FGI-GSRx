@@ -21,6 +21,7 @@ function trackDataCombined = combineSingleTrackChannelData(allSettings)
 % This function takes input of acquisition results and performs tracking.
 %
 % Inputs:
+%   acqResults      - Results from signal acquisition for all signals
 %   allSettings     - Receiver settings
 %
 % Outputs:

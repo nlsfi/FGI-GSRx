@@ -33,14 +33,12 @@ function x=calcStatistics(nav,true,navSolPeriod,const)
 % Note that this function uses only lat, lon and height as input and calculates
 % all other coordinate transformations itself.
 
-ind = 0;
+ind = 1;
 
 % Get data to temporary structures
 
 for i=1:length(nav)
-    if (nav{i}.Pos.bValid==1)
-        ind = ind + 1;
-
+    if (nav{i}.Pos.bValid==1)    
         x.VX(ind) =nav{i}.Vel.xyz(1);        
         x.VY(ind) =nav{i}.Vel.xyz(2);        
         x.VZ(ind) =nav{i}.Vel.xyz(3);
@@ -56,12 +54,10 @@ for i=1:length(nav)
         x.height(ind) =nav{i}.Pos.LLA(3);        
         dop(ind,:) =nav{i}.Pos.dop;            
         fom(ind) =nav{i}.Pos.fom;          
-        nSat(ind)=sum(nav{i}.Pos.nrSats); 
+        nSat(ind)=sum(nav{i}.Pos.nrSats);
+        ind = ind +1;        
     end    
 end
-
-nrOfValidEpochs = ind;
-
 % Set true position
 x.trueLat=true(1);
 x.trueLong=true(2);
@@ -77,7 +73,7 @@ x.truez = xyz(3);
 smoothingInterval = 1000/navSolPeriod;
 
 j=1;
-for i=1:smoothingInterval:nrOfValidEpochs-smoothingInterval
+for i=1:smoothingInterval:length(nav)-smoothingInterval
     X(j) =mean(x.X(i:i+smoothingInterval-1)); 
     Y(j) =mean(x.Y(i:i+smoothingInterval-1)); 
     Z(j) =mean(x.Z(i:i+smoothingInterval-1));     
@@ -87,7 +83,7 @@ for i=1:smoothingInterval:nrOfValidEpochs-smoothingInterval
     noOfUsedSat(j) =mean(nSat(i:i+smoothingInterval-1));
     j=j+1;
 end
-
+clear x.X; clear x.Y; clear x.Z; clear x.latitude; clear x.longitude; clear x.height;
 x.X = X;
 x.Y = Y;
 x.Z = Z;
@@ -278,9 +274,9 @@ x.ppp.true.dev_cep95_u = a(x.Index95);
 x.ppp.true.dev_max_u = max(abs(su));
 
 figure;
-plot(1:1:length(x.se),x.se,'b-*'); hold on; grid on;
-plot(1:1:length(x.sn),x.sn,'g-+'); 
-plot(1:1:length(x.su),x.su,'r-o');  
+plot([1:1:length(x.se)],x.se,'b-*'); hold on; grid on;
+plot([1:1:length(x.sn)],x.sn,'g-+'); 
+plot([1:1:length(x.su)],x.su,'r-o');  
 legend('E','N','U');
 xlabel('Time (s)');
 ylabel('Deviation (m)');

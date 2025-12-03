@@ -21,8 +21,8 @@ function showTrackStatusSingle(tR, allSettings, loop)
 % Prints the status of all track channels to the command window
 %
 % Inputs:
-%   tR              - Results from signal tracking for all signals
 %   allSettings     - Receiver settings
+%   tR              - Results from signal tracking for all signals
 %   loop            - Epoch counter value
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -54,15 +54,15 @@ for i = 1:allSettings.sys.nrOfSignals
     trackResults.(signal).multiCorrelatorTrackingRate = allSettings.sys.multiCorrelatorTrackingRate;   
     % Set channel specific parameters
     ind = 1;
-    for k=1:acqResults.(signal).nrObs
-        if(acqResults.(signal).channel(k).bFound == true)
-            trackChannel = allocateTrackChannelHeader(acqResults.(signal), k, allSettings);
+    for k=1:length(allSettings.(signal).acqSatelliteList)
+        id = allSettings.(signal).acqSatelliteList(k);
+        if(acqResults.(signal).channel(id).bFound == true)
+            trackChannel = allocateTrackChannelHeader(acqResults.(signal), id, allSettings);
             trackChannel = allocateTrackChannel(trackChannel,allSettings,signal);
             trackChannel = getCorrelatorFingers(trackChannel,allSettings,signal);                       
             trackResults.(signal).channel(ind) = trackChannel;
             ind = ind + 1;
-        end
-        
+        end       
     end
 end
 

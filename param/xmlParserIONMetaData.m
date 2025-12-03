@@ -21,10 +21,10 @@ function mData = xmlParserIONMetaData(metaDataFileIn)
 % Functions sets any missing parameters in the settings structure
 %
 %  Inputs: 
-%       metaDataFileIn - ION meta data path
+%       settings - Receiver settings 
 %
 %  Outputs:
-%       mData          - parsed meta data
+%       settings - Updated receiver settings
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -94,7 +94,9 @@ for i=1:noOfStreams
     elseif length(strfind(bandID,'L5')) && length(strfind(bandID,'E5a'))>0
         signalTable = [signalTable; {'gpsl5I'}; {'gale5a'};];  
     elseif length(strfind(bandID,'L5')) && length(strfind(bandID,'E5'))>0
-        signalTable = [signalTable; {'gpsl5I'}; {'gale5aI'}; {'gale5bI'};];
+        signalTable = [signalTable; {'gpsl5I'}; {'gale5aI'}; {'gale5bI'};];          
+    else
+        ;
     end
 
    %RateFactor parsing in order to calculate sampling frequency

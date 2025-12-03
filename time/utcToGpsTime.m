@@ -49,6 +49,7 @@ SECONDS_IN_DAY = const.SECONDS_IN_DAY;
 SECONDS_IN_WEEK = const.SECONDS_IN_WEEK;
 
 % Temporary variables
+SecWithinDay = 3600 * hour + 60 * min + sec;
 yero = year - 1980;
 DaysOfLeap = floor(yero/4 + 1);
 
@@ -86,3 +87,7 @@ end
 
 gpsTime = tow;
 gpsWeek = iWeek;
+
+
+
+

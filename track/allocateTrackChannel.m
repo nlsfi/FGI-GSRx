@@ -22,8 +22,7 @@ function trackChannel = allocateTrackChannel(trackChannel, allSettings, signal)
 %
 % Inputs:
 %   trackChannel    - Data structure for one tracking channel
-%   allSettings     - receiver settings
-%   signal          - signal acronym
+%   signalSettings  - receiver settings for one signal
 %
 % Outputs:
 %   trackChannel    - Updated data structure for one tracking channel
@@ -46,7 +45,7 @@ trackChannel.Q_E_E = 0; % Q very early finger value
 trackChannel.absoluteSample =  zeros(1,dataLength); % Sample count from processed file
 trackChannel.prevAbsoluteSample = 0; % Sample count from processed file
 
-if strcmp(signalSettings.signal,'gpsl1c')
+if strcmp(signalSettings.signal,'gpsl1c') || strcmp(signalSettings.signal,'beib1c')
     trackChannel.dataI_P = zeros(1,dataLength); % I data channel prompt finger value
 end
 % FLL discriminator values
@@ -145,3 +144,6 @@ trackChannel.pllWideBandLockIndicatorThreshold=signalSettings.pllWideBandLockInd
 trackChannel.pllNarrowBandLockIndicatorThreshold=signalSettings.pllNarrowBandLockIndicatorThreshold;
 
 trackChannel.bitSyncConfidenceLevel = signalSettings.bitSyncConfidenceLevel;
+
+
+

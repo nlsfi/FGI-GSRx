@@ -41,22 +41,26 @@ for k=1:tR.nrObs
     % Generate the preamble pattern
     if strcmp(signalSettings.signal,'gpsl1c')==1
         preamble_bits = gpsl1cGenerateOverlay(tR.channel(k).SvId.satId);
+    elseif strcmp(signalSettings.signal,'beib1c')==1
+        preamble_bits = beib1cGenerateSecCode(tR.channel(k).SvId.satId);
     else
         preamble_bits = signalSettings.preamble;
     end
-    % "Upsample" the preamble - make 20 values per one bit. The preamble must be
-    % found with precision of a sample.
+
+    % "Upsample" the preamble - make 20 values per one bit. The preamble must be found with precision of a sample.
     preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
     preambleInterval = signalSettings.preambleIntervall;
     preambleCorrThr = signalSettings.preambleCorrThr;
 
     if strcmp(signalSettings.signal,'beib1')==1
         if tR.channel(k).SvId.satId<6
-            secondaryCode = [1 1];  %%As one data bit lasts for 2 msec for GEO satellites and does not have any NH code modulation
+            secondaryCode = [1 1];      % As one data bit lasts for 2 msec for GEO satellites and does not have any NH code modulation
+            clear preamble_ms;
             preamble_ms = kron(preamble_bits, secondaryCode);
-            preambleInterval = 600; %% Preamble interval for GEO satellites is 0.6 seconds
-            preambleCorrThr = 20; %%%% Preamble correlation threshold for GEO satellites (10 times less than MEO)
+            preambleInterval = 600;     % Preamble interval for GEO satellites is 0.6 seconds
+            preambleCorrThr = 20;       % Preamble correlation threshold for GEO satellites (10 times less than MEO)
         else
+            clear preamble_ms;
             preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
             preambleInterval = signalSettings.preambleIntervall;
             preambleCorrThr = signalSettings.preambleCorrThr;
@@ -77,7 +81,8 @@ for k=1:tR.nrObs
     %Correlate tracking output with the preamble
     tlmXcorrResult = calcCrossCorrelation(firstNbits, preamble_ms);
 
-    % Find all starting points of all preamble like patterns
+    % Find all starting points of all preamble like patterns 
+    clear index
     xcorrLength = (length(tlmXcorrResult) +  1) /2;
     index = find(abs(tlmXcorrResult(xcorrLength : xcorrLength * 2 - 1)) >= preambleCorrThr)' + searchStartOffset;    
     

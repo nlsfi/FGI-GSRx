@@ -37,7 +37,7 @@ SPEED_OF_LIGHT = allSettings.const.SPEED_OF_LIGHT;
 % Loop over all signals
 for signalNr = 1:allSettings.sys.nrOfSignals
         
-    % Extract signal acronym
+    % Extract block of parameters for one signal from settings
     signal = allSettings.sys.enabledSignals{signalNr};    
 
     % Loop over all channels for one signal
@@ -85,3 +85,4 @@ for signalNr = 1:allSettings.sys.nrOfSignals
         end
     end
 end
+

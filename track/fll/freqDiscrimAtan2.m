@@ -21,7 +21,6 @@ function tR = freqDiscrimAtan2(signalSettings,tR,ch)
 % Atan2 frequency discriminator function
 %
 % Inputs:
-%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %

@@ -22,7 +22,6 @@ function trackChannelData = plotMultiFingerTracking(trackChannelData,loopCnt)
 %
 % Inputs:
 %   trackChannelData - track data for one channel
-%   loopCnt          - the number of ms processed
 %
 % Output:
 %   trackChannelData - track data for one channel
@@ -33,10 +32,9 @@ function trackChannelData = plotMultiFingerTracking(trackChannelData,loopCnt)
 
 % Temporary variables
 
-plot(trackChannelData.mulCorrFingers,trackChannelData.mulCorrFingersOut(loopCnt,:)/max(trackChannelData.mulCorrFingersOut(loopCnt,:)),'b-o');
-hold on; grid on;             
+plot(trackChannelData.mulCorrFingers,trackChannelData.mulCorrFingersOut(loopCnt,:)/max(trackChannelData.mulCorrFingersOut(loopCnt,:)),'b-o'); hold on; grid on;             
 xlabel('Code delay [chips]');
 ylabel('Normalized Correlation Function');
-title(['Correlation function for PRN ',num2str(trackChannelData.SvId.satId)]);
-drawnow;
+title(['Correlation function for PRN ',num2str(trackChannelData.SvId.satId)]); drawnow;
 hold off;        
+ 

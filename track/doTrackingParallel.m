@@ -21,8 +21,8 @@ function doTrackingParallel(trackDataFileName, allSettings)
 % This function takes input of acquisition results and performs tracking.
 %
 % Inputs:
-%   trackDataFileName   - Track data file name
-%   allSettings         - Receiver settings
+%   acqResults      - Results from signal acquisition for all signals
+%   allSettings     - Receiver settings
 %
 % Outputs:
 %   trackResults    - Results from signal tracking for all signals

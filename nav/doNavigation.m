@@ -28,9 +28,9 @@ function [obs, sat, nav] = doNavigation(obsData, allSettings, ephData)
 %   ephData         - ephemeris data for all systems
 %
 % Outputs:
-%   obs         - structure with observations for all measurement epochs
-%   sat         - structure with satellite info for all epochs
-%   nav         - Navigation solution for all epochs
+%   obsData         - strcture with observations for all measurement epochs
+%   satData         - structure with satellite info for all epochs
+%   navData         - Navigation solution for all epochs
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -38,11 +38,19 @@ function [obs, sat, nav] = doNavigation(obsData, allSettings, ephData)
 [obsData, nrOfEpochs, startSampleCount, navData, samplesPerMs] = initNavigation(obsData, allSettings);
 
 % Flag for initial round
-bInit = true;
+bInit = true; 
+
+%Initialize satData structure for future use
+satData = [];
+
 
 %Idea here is to generate correction data that can be applied to different models 
 %depending on the correction type (for ionosphere, it can be broadcast iono data to be applied to generate ionosphere correction data)         
 [corrInputData] = generateCorrectionInputData(obsData,ephData, allSettings);
+
+
+% Index for nav solution
+fixIndex = 1;
 
 % Loop over all epochs
 for currMeasNr = 1:nrOfEpochs
@@ -67,42 +75,36 @@ for currMeasNr = 1:nrOfEpochs
          obsData = updateReceiverTimeEstimate(obsData, allSettings);        
     end
 
-    % Calcualte pseudoranges from transmission times and receiver time 
-    obsData = calculatePseudoRanges(obsData, allSettings);
+     % Calcualte pseudoranges from transmission times and receiver time 
+     obsData = calculatePseudoRanges(obsData, allSettings);
     
-    % Here we get all the info on the satellites
-    [obsData, satData] = getSatelliteInfo(obsData, ephData, navData, allSettings);     
-    
-    % Here we apply all known corrections to the observations (not SSR
-    % corrections)
-    obsData = applyObservationCorrections(allSettings, obsData, satData, navData, corrInputData);   
-      
-    % Finally we do some checks to decide what observations to use (elev, azim, RAIM etc)
-    obsData = checkObservations(obsData,satData,allSettings,navData);
+     % Here we get all the info on the satellites
+     [obsData, satData] = getSatelliteInfo(obsData, ephData, navData, allSettings);     
+     
+     % Here we apply all known corrections to the observations (not SSR
+     % corrections)
+     obsData = applyObservationCorrections(allSettings, obsData, satData, navData, corrInputData);   
+       
+     % Finally we do some checks to decide what observations to use (elev, azim, RAIM etc)
+     obsData = checkObservations(obsData,satData,allSettings,navData);
 
-    % Now finally we calculate the actual navigation solution
-    [obsData, satData, navData] = getNavSolution(obsData, satData, navData, allSettings);
-    
+     % Now finally we calculate the actual navigation solution
+     [obsData, satData, navData] = getNavSolution(obsData, satData, navData, allSettings);
+     
     % Then we update the state of the navigation
-    navData = updateNavState(navData);
+     navData = updateNavState(navData);
 
-    % Update output to UI 
-    showNavStatus(allSettings, currMeasNr, navData, obsData, satData);
-    
-    % Create a copy of obsData to be saved
-    obsToSave = obsData;
+     % Update output to UI 
+     showNavStatus(allSettings, currMeasNr, navData, obsData, satData);
+     
+     % Copy to new structure that holds data for all measuremenet epochs
+     obs{fixIndex} = obsData;
+     sat{fixIndex} = satData;
+     nav{fixIndex} = navData;
 
-    % Loop over all signals
-    for i = 1:allSettings.sys.nrOfSignals
-        % Fetch signal acronym
-        signal = allSettings.sys.enabledSignals{i};
-        
-        % Remove some redundant fields from the channels (satellites)
-        obsToSave.(signal).channel = rmfield(obsData.(signal).channel, {'CN0', 'codePhase', 'sampleCount', 'carrFreq'});
-    end
-
-    % Copy to new structure that holds data for all measuremenet epochs
-    obs{currMeasNr} = obsToSave;
-    sat{currMeasNr} = satData;
-    nav{currMeasNr} = navData;
+     fixIndex = fixIndex + 1;
+     
 end
+
+
+

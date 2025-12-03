@@ -143,6 +143,23 @@ settings.beib1.preamble = [1 1 1 -1 -1 -1 1 -1 -1 1 -1];
 settings.beib1.modulationFactor = 1;		 % Modulation factor. 
 settings.beib1.bitSyncConfidenceLevel = 6;
 
+settings.beib1c.codeLengthInChips=10230;
+settings.beib1c.codeFreqBasis=1.023e6;
+settings.beib1c.carrierFreq=1575.42e6;
+settings.beib1c.numberOfChannels=12;
+settings.beib1c.bitDuration = 1;                % Length of data bit [epochs]
+settings.beib1c.frequencyStep = 0;
+settings.beib1c.preambleCorrThr = 1700;         % Secondary code length - 100
+settings.beib1c.preambleIntervall = 1800;       % Data frame length
+settings.beib1c.secondaryCode = 1;              % Overlay code is only utilized for frame synch so secondary code is set to 1
+settings.beib1c.frameLength = 1800;
+if strcmp(settings.beib1c.modType,'QMBOC')
+    settings.beib1c.modulationFactor = 12;
+else
+    settings.beib1c.modulationFactor = 2;
+end
+settings.beib1c.bitSyncConfidenceLevel = 6;
+
 settings.glol1.codeLengthInChips=511;
 settings.glol1.codeFreqBasis=0.511e6;
 settings.glol1.carrierFreq=1602e6;
@@ -190,6 +207,14 @@ settings.const.C20 = -1082.62575e-6; % 2nd zonal harmonic of ellipsoid
 settings.const.A_REF = 26559710;                        % CNAV2 Reference semi-major axis (meters)
 settings.const.OMEGA_REFDOT = -2.6e-9*3.1415926535898;  % CNAV2 Reference rate of right ascension
 
+% BDS parameters
+settings.const.A_REF_BDS = 27906100;
+settings.const.BDCS_SEMIMAJORAXIS = 6378137; 
+settings.const.BDCS_FLATTENING = 1/298.257222101;
+settings.const.BDCS_EARTH_ROT = 7.2921150e-5;
+settings.const.BDCS_GRAVCONSTANT = 3.986005e14; 
+
+% Number of signal channels
 settings.sys.nrOfChannels = 0;
 
 % Total number of signals enabled
@@ -243,3 +268,4 @@ for i = 1:settings.sys.nrOfSignals
 
     disp(strcat(signal,' Enabled'));
 end
+

@@ -24,7 +24,7 @@ function Pos = calcPosLSE(obs, sat, allSettings, Pos)
 %   obs             - Observations for one epoch
 %   sat             - Satellite positions and velocities for one epoch
 %   allSettings     - receiver settings
-%   Pos             - Initial position for the LSE 
+%   pos             - Initial position for the LSE 
 %
 % Outputs:
 %   Pos             - receiver position and receiver clock error
@@ -39,7 +39,8 @@ Pos.bValid = false;
 WGS84oe = allSettings.const.EARTH_WGS84_ROT;
 SPEED_OF_LIGHT = allSettings.const.SPEED_OF_LIGHT;
 
-% Maximum number of iterations for Least Squares
+% Temporary variables
+rcvr_clock_corr = 0;
 nmbOfIterations = 10;
 
 % Total number of signals enabled
@@ -47,6 +48,8 @@ nrOfSignals = allSettings.sys.nrOfSignals;
 
 % Init clock elements in pos vector
 pos(4:3+nrOfSignals) = zeros;
+
+%nrSatsUsed = zeros(1,length(obs));
 
 % Iteratively find receiver position 
 for iter = 1:nmbOfIterations
@@ -61,37 +64,37 @@ for iter = 1:nmbOfIterations
         % Loop over all channels
         for channelNr = 1:obs.(signal).nrObs
             if(obs.(signal).channel(channelNr).bObsOk)
-                % Index for valid obervations
-                ind = ind + 1;
-
-                % Get corrected pseudorange
-                pseudo_range = obs.(signal).channel(channelNr).corrP;
+                ind = ind + 1; % Index for valid obervations                                
+                pseudo_range(ind) = obs.(signal).channel(channelNr).corrP;
                             
                 % Calculate range to satellite
-                dx = sat.(signal).channel(channelNr).Pos(1) - pos(1);
-                dy = sat.(signal).channel(channelNr).Pos(2) - pos(2);
-                dz = sat.(signal).channel(channelNr).Pos(3) - pos(3);                
-                range(ind) = sqrt(dx^2 + dy^2 + dz^2); % This is the calculated range to the satellites
+                dx=sat.(signal).channel(channelNr).Pos(1)-pos(1);
+                dy=sat.(signal).channel(channelNr).Pos(2)-pos(2);
+                dz=sat.(signal).channel(channelNr).Pos(3)-pos(3);                
+                range(ind)=sqrt(dx^2+dy^2+dz^2); % This is the calculated range to the satellites
 
                 % Direction cosines
                 sv_matrix(ind,1) = dx/range(ind);
                 sv_matrix(ind,2) = dy/range(ind);
                 sv_matrix(ind,3) = dz/range(ind);
-                sv_matrix(ind, 3 + signalNr) = 1;
+                sv_matrix(ind,3+signalNr) = 1;
+                
+                % Total clock correction term (m). */
+                %clock_correction = c*(sv_pos.dDeltaTime - eph(info.PRN).group_delay);
+                clock_correction = 0;
                 
                 % First compute the SV's earth rotation correction
                 rhox = sat.(signal).channel(channelNr).Pos(1) - pos(1);
                 rhoy = sat.(signal).channel(channelNr).Pos(2) - pos(2);
-                EarthRotCorr = WGS84oe / SPEED_OF_LIGHT * (sat.(signal).channel(channelNr).Pos(2)*rhox-sat.(signal).channel(channelNr).Pos(1)*rhoy);
+                EarthRotCorr(ind) = WGS84oe / SPEED_OF_LIGHT * (sat.(signal).channel(channelNr).Pos(2)*rhox-sat.(signal).channel(channelNr).Pos(1)*rhoy);
 
                 % Total propagation delay.
-                propagation_delay = range(ind) + EarthRotCorr;
+                propagation_delay(ind) = range(ind) + EarthRotCorr(ind) - clock_correction;
 
-                % (Observed) corrected pseudorange minus computed range
-                dRange(ind) = pseudo_range - propagation_delay;
-
-                % Calculate residual
-                Res(ind) = dRange(ind) - pos(3 + signalNr)*SPEED_OF_LIGHT;                
+                % Correct the pseudoranges also (because we corrected rcvr stamp)
+                pseudo_range(ind)  = pseudo_range(ind) - SPEED_OF_LIGHT*rcvr_clock_corr;
+                omp.dRange(ind)    = pseudo_range(ind) - propagation_delay(ind);
+                Res(ind) = omp.dRange(ind) - pos(3 + signalNr)*SPEED_OF_LIGHT;                
                 
             end
         end
@@ -99,30 +102,19 @@ for iter = 1:nmbOfIterations
     end
      
     % This is the actual solutions to the LSE optimisation problem
-    H = sv_matrix;
-    dR = dRange;
-    DeltaPos = (H'*H)^(-1)*H'*dR';
-    
-    % Calculate how much the position components will change (norm)
-    posChange = norm(DeltaPos(1:3));
-
-    % Calculate how much the time components will change (absolute value)
-    absDtChange = abs(pos(4:end)' - DeltaPos(4:end)/SPEED_OF_LIGHT);
+    clear H;
+    clear dR;    
+    H=sv_matrix;%(1:5,:);
+    dR=omp.dRange;%(1:5);
+    DeltaPos=(H'*H)^(-1)*H'*dR';
 
     % Updating the position with the solution
-    pos(1) = pos(1) - DeltaPos(1);
-    pos(2) = pos(2) - DeltaPos(2);
-    pos(3) = pos(3) - DeltaPos(3);
-
+    pos(1)=pos(1)-DeltaPos(1);
+    pos(2)=pos(2)-DeltaPos(2);
+    pos(3)=pos(3)-DeltaPos(3);
+    
     % Update the clock offsets for all systems
     pos(4:end) = DeltaPos(4:end)/SPEED_OF_LIGHT; % In seconds
-
-    % If the xyz position changes less than 0.001 m AND
-    % the times dt change less than 1e-14 s (distance less than order 1e-6 m)
-    % then stop iterating
-    if posChange < 0.001 && all(absDtChange < 1e-14)
-        break
-    end
 end    
 
 % Copying data to output data structure
@@ -143,3 +135,8 @@ Pos.fom = norm(Res/length(Res));
 if(Pos.fom < 50)
     Pos.bValid = true;
 end
+ 
+ 
+ 
+
+

@@ -40,9 +40,9 @@ sys,msToSkip,20e3,             % Number of ms to skip from beginning of file
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
-sys,dataFileIn,"",          % Data file to load if enabled
+sys,dataFileIn,"",          % Datafile to load of enabled
 sys,saveDataFile,false,     % Defines if data should be stored to file
-sys,dataFileOut,'',         % Data file for storing output if enabled
+sys,dataFileOut,'',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -90,7 +90,7 @@ gpsl1,samplingFreq,26e6, % Sampling frequency [Hz]
 gpsl1,bandWidth,10e6, % Bandwidth of the front end [Hz]
 gpsl1,sampleSize,16, % Number of bits for one sample. For complex data this is the size for I+Q.
 gpsl1,complexData,true, % Complex or real data
-gpsl1,iqSwap,true, % Is the data IQ-swapped (QI) or not (IQ)?
+gpsl1,iqSwap,true, % Complex or real data
 
 % Acquisition parameters
 gpsl1,acqSatelliteList,[1:32],       % Specify what GPS satellites to search for [PRN numbers]          
@@ -144,10 +144,10 @@ gpsl1c,samplingFreq,25e6                % Sampling frequency [Hz]
 gpsl1c,bandWidth,20e6,                  % Bandwidth of the front end [Hz]
 gpsl1c,sampleSize,32,                   % Number of bits for one sample. For complex data this is the size for I+Q.
 gpsl1c,complexData,true,                % Complex or real data
-gpsl1c,iqSwap,false,                    % Is the data IQ-swapped (QI) or not (IQ)?
+gpsl1c,iqSwap,false,                    % Complex or real data
 
 %Signal Modulation
-gpsl1c,modType,'TMBOC', 			    %Can take input either of the two types: 'TMBOC' or 'SinBOC'
+gpsl1c,modType,'TMBOC', 		        % Can take input either of the two types: 'TMBOC' or 'SinBOC'
 
 % Acquisition parameters
 gpsl1c,acqSatelliteList,[1:32],         % Specify what GPS satellites to search for [PRN numbers]          
@@ -200,16 +200,16 @@ gale1b,samplingFreq,26e6,           % Sampling frequency [Hz]
 gale1b,bandWidth,10e6,              % Bandwidth of the front end [Hz]
 gale1b,sampleSize,16,               % Number of bits for one sample. For complex data this is the size for I+Q.
 gale1b,complexData,true,            % Complex or real data
-gale1b,iqSwap,true,                 % Is the data IQ-swapped (QI) or not (IQ)?
+gale1b,iqSwap,true, 
 
 %Signal Modulation
-gale1b,modType,'CBOC', 			%Can take input either of the two types: 'CBOC' or 'SinBOC'
+gale1b,modType,'CBOC', 			    %Can take input either of the two types: 'CBOC' or 'SinBOC'
 
 % Acquisition parameters
-gale1b,acqSatelliteList,[1:36],       % Specify what GPS satellites to search for [PRN numbers]          
+gale1b,acqSatelliteList,[1:36],     % Specify what GPS satellites to search for [PRN numbers]          
 gale1b,nonCohIntNumber,2,           % Number of non-coherent integration rounds for signal acquisition
 gale1b,cohIntNumber,1,              % Coherent integration time for signal acquisition [ms]
-gale1b,acqThreshold,9,             % Threshold for the signal presence decision rule
+gale1b,acqThreshold,9,              % Threshold for the signal presence decision rule
 gale1b,maxSearchFreq,6000,          % Maximum search frequency in one direction 
 
 % Tracking parameters
@@ -254,7 +254,7 @@ gale1c,samplingFreq,26e6,           % Sampling frequency [Hz]
 gale1c,bandWidth,4.2e6,              % Bandwidth of the front end [Hz]
 gale1c,sampleSize,8,               % Number of bits for one sample. For complex data this is the size for I+Q.
 gale1c,complexData,false,            % Complex or real data
-gale1c,iqSwap,false,                % Is the data IQ-swapped (QI) or not (IQ)?
+gale1c,iqSwap,false, 
 
 %Signal Modulation
 gale1c,modType,'CBOC', 			%Can take input either of the two types: 'CBOC' or 'SinBOC'
@@ -308,7 +308,7 @@ beib1,samplingFreq,26e6,            % Sampling frequency [Hz]
 beib1,bandWidth,8e6,               % Bandwidth of the front end [Hz]
 beib1,sampleSize,8,                % Number of bits for one sample. For complex data this is the size for I+Q.
 beib1,complexData,false,             % Complex or real data
-beib1,iqSwap,false, 	            % Is the data IQ-swapped (QI) or not (IQ)?
+beib1,iqSwap,false, 	            % Complex or real data
 
 % Acquisition parameters
 beib1,acqSatelliteList,[1:35],       % Specify what GPS satellites to search for [PRN numbers]          
@@ -342,14 +342,69 @@ beib1,runningAvgWindowForLockDetectorInMs, 20
 beib1,fllWideBandLockIndicatorThreshold,0.5,               % FLL wide band lock indicator threshold for DLL unlocked => locked
 beib1,fllNarrowBandLockIndicatorThreshold,0.7,               % FLL narrow band lock detector threshold for DLL unlocked => locked
 
-
 % Signal specific observation parameters
 beib1,enableIonoCorrections,true,       % Use iono corrections or not
 beib1,enableTropoCorrections,true,      % Use tropo corrections or not
-beib1,ionomodel,'beib1',              % Iono model to use (default,gale1b,gale1b,beib1,glol1, ionex)
+beib1,ionomodel,'beib1',                % Iono model to use (default,gale1b,gale1b,beib1,glol1, ionex)
 beib1,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
 
+% Beidou B1C Settings
 
+% Input RF file
+beib1c,rfFileName,'C:\skydelL1band_290923.iq',
+
+% Radio front end configurations
+beib1c,centerFrequency,1575.42e6,                   % Radio center frequency [Hz]
+beib1c,samplingFreq,25e6                            % Sampling frequency [Hz]
+beib1c,bandWidth,20e6,                              % Bandwidth of the front end [Hz]
+beib1c,sampleSize,16,                               % Number of bits for one sample. For complex data this is the size for I+Q.
+beib1c,complexData,true,                            % Complex or real data
+beib1c,iqSwap,false,                                % Complex or real data
+
+% Signal Modulation
+beib1c,modType,'QMBOC', 		                    % Can take input either of the two types: 'QMBOC' or 'SinBOC'
+
+% Acquisition parameters
+beib1c,acqSatelliteList,[19:30 32:37 41:46],        % Specify what GPS satellites to search for [PRN numbers]          
+beib1c,nonCohIntNumber,1,                           % Number of non-coherent integration rounds for signal acquisition
+beib1c,cohIntNumber,1,                              % Coherent integration time for signal acquisition [ms]
+beib1c,acqThreshold,9,                              % Threshold for the signal presence decision rule
+beib1c,maxSearchFreq,6000,                          % Maximum search frequency in one direction 
+
+% Tracking parameters
+beib1c,fllNoiseBandwidthWide,50, 	                % FLL noise BW wide[Hz]
+beib1c,fllNoiseBandwidthNarrow,15,                  % FLL noise BW narrow [Hz]
+beib1c,fllNoiseBandwidthVeryNarrow,5,               % FLL noise BW narrow [Hz]
+beib1c,fllDampingRatio,0.7,                         % PLL damping ratio
+beib1c,fllLoopGain,0.5,                             % PLL loop gain
+beib1c,pllNoiseBandwidthWide,3,                     % PLL noise BW [Hz]
+beib1c,pllNoiseBandwidthNarrow,5,                   % PLL noise BW [Hz]
+beib1c,pllNoiseBandwidthVeryNarrow,5,               % PLL noise BW [Hz]
+beib1c,pllDampingRatio,0.8,                         % PLL damping ratio
+beib1c,pllLoopGain,0.2,                             % PLL loop gain
+beib1c,dllDampingRatio,0.7,                         % DLL damping ratio
+beib1c,dllNoiseBandwidth,1,                         % DLL noise BW [Hz]
+beib1c,Nc,0.010,                                    % integration time in seconds for DLL
+beib1c,corrFingers,[-2 -0.04 0 0.04],               % Correlator finger positions [chips]
+beib1c,earlyFingerIndex,2,                          % Index of early finger
+beib1c,promptFingerIndex,3,                         % Index of prompt finger
+beib1c,lateFingerIndex,4,                           % Index of late finger
+beib1c,noiseFingerIndex,1,                          % Index of fingers for measuring noise level
+
+beib1c,pllWideBandLockIndicatorThreshold,0.5,       % PLL lock indicator threshold for DLL unlocked => locked
+beib1c,pllNarrowBandLockIndicatorThreshold,0.8,     % PLL lock indicator threshold for DLL unlocked => locked
+beib1c,runningAvgWindowForLockDetectorInMs,80,
+beib1c,fllWideBandLockIndicatorThreshold,0.5,       % FLL wide band lock indicator threshold for DLL unlocked => locked
+beib1c,fllNarrowBandLockIndicatorThreshold,0.7,     % FLL narrow band lock detector threshold for DLL unlocked => locked
+
+% Signal specific observation parameters
+beib1c,enableIonoCorrections,false,                 % Use iono corrections or not
+beib1c,enableTropoCorrections,false,                % Use tropo corrections or not
+beib1c,ionomodel,'default',                         % Iono model to use (default,gpsl1,gale1b,beib1,glol1,ionex)
+beib1c,ionexFile,''                                 % Filename for ionex file if ionomodel is = ionex
+
+beib1c,enableInterferenceDetector,false,
+beib1c,enableNotchFilter,false,
 
 % Glonass L1 Settings
 
@@ -362,7 +417,7 @@ glol1,samplingFreq,81e6,            % Sampling frequency [Hz]
 glol1,bandWidth,54e6,               % Bandwidth of the front end [Hz]
 glol1,sampleSize,16,                % Number of bits for one sample. For complex data this is the size for I+Q.
 glol1,complexData,true,             % Complex or real data
-glol1,iqSwap,false,                 % Is the data IQ-swapped (QI) or not (IQ)?
+glol1,iqSwap,false, 
 
 % Acquisition parameters
 glol1,acqSatelliteList,[1:14],        % Specify what GPS satellites to search for [PRN numbers]          
@@ -416,7 +471,7 @@ navicl5,samplingFreq,26e6,            % Sampling frequency [Hz]
 navicl5,bandWidth,10e6,               % Bandwidth of the front end [Hz]
 navicl5,sampleSize,16,                % Number of bits for one sample. For complex data this is the size for I+Q.
 navicl5,complexData,true,             % Complex or real data
-navicl5,iqSwap,true,                  % Is the data IQ-swapped (QI) or not (IQ)?
+navicl5,iqSwap,true, 
 
 % Acquisition parameters
 navicl5,acqSatelliteList,[1],        % Specify what GPS satellites to search for [PRN numbers]          

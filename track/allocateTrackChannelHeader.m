@@ -53,7 +53,13 @@ if strcmp(signal, 'gpsl1c')
     % Data channel code
     CodeL1Cd = gpsl1cDGeneratePrnCode(prn);
     tC.codeReplicaL1CD = gpsl1cDModulatePrnCode(CodeL1Cd(1,:), signalSettings);
-    tC.promptCodeL1CD = 0;
+elseif strcmp(signal, 'beib1c')
+    % Pilot channel code
+    Code = beib1cPGeneratePrnCode(prn);
+    tC.codeReplica = beib1cPModulatePrnCode(Code(1,:), signalSettings);    
+    % Data channel code
+    CodeB1Cd = beib1cDGeneratePrnCode(prn);
+    tC.codeReplicaB1CD = beib1cDModulatePrnCode(CodeB1Cd(1,:), signalSettings);
 else
     prnFunc = str2func([signal,'GeneratePrnCode']);
     Code = prnFunc(prn);
@@ -74,7 +80,7 @@ tC.twoChipEarlyCode = 0;
 tC.qBasebandSignal = 0;
 tC.iBasebandSignal = 0;
 
-if strcmp(signalSettings.signal,'gpsl1c')
+if strcmp(signalSettings.signal,'gpsl1c') || strcmp(signalSettings.signal,'beib1c')
     tC.promptDataCode = 0;
 end
 

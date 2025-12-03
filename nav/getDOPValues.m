@@ -40,7 +40,7 @@ dop(2)  = sqrt(Q(1,1) + Q(2,2) + Q(3,3));       % PDOP
 % In order to compute 'HDOP' and 'VDOP', we need to convert from ECEF to
 % LLA
 
-[dphi, dlambda, ~] = convXyz2Geod(const, XYZ);
+[dphi, dlambda, h] = convXyz2Geod(const, XYZ);
  
 % %Conversion from degree to radian
 phi = dphi/180;

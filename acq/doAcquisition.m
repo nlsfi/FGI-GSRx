@@ -22,7 +22,7 @@ function acqResults = doAcquisition(allSettings)
 %
 % Inputs: 
 %   allSettings         - Receiver settings
-%
+
 % Outputs:
 %   acqResults          - Acquisition results
 %
@@ -36,14 +36,20 @@ for i = 1:allSettings.sys.nrOfSignals
     
     % Temporary variables
     signal = allSettings.sys.enabledSignals{i};
+    msToSkip = allSettings.sys.msToSkip;
     
     % Extract block of parameters for one signal from settings
     signalSettings = allSettings.(signal);
     
     % Read RF Data
-    [pRfData,~] = getDataForAcquisition(signalSettings,100);   
+    [pRfData,sampleCount] = getDataForAcquisition(signalSettings,100);   
     
     % Execute acquisition for one signal
     acqResults.(signal) = acquireSignal(pRfData,signalSettings);            
     
 end
+
+
+
+
+

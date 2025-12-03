@@ -21,7 +21,6 @@ function [tR]= GNSSTracking(signalSettings,tR,ch)
 % Performs state-based tracking for the received signal
 %
 % Inputs:
-%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -44,3 +43,4 @@ for i=1:nrfunctions
         tR = fh(signalSettings,tR,ch);
     end
 end
+

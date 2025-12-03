@@ -23,8 +23,7 @@ function showNavStatus(allSettings, epoch, navSolution, obs, sat)
 % Inputs:
 %   allSettings     - receiver configuration settings
 %   epoch           - Current epoch number
-%   navSolution     - Output from navigation (position, velocity, time,
-%   dop etc)
+%   navSolutions    - Output from navigation (position, velocity, time,
 %   obs             - Observations for one epoch
 %   sat             - satellite positions and velocities for one epoch
 %
@@ -52,6 +51,7 @@ end
 
 fprintf('=========================== LSE solution ============================================\n');
 fprintf('\n');
+navSolution.Pos;
 fprintf('Navigation status: %s\n',navSolution.Pos.Flag);
 fprintf('********************Time***************************\n');
 fprintf('* Signal   tow(s)        Bias(ms)    Drift(ms/s) *\n');
@@ -66,7 +66,10 @@ fprintf('* VDOP: %4.2f  TDOP: %4.2f                *\n',navSolution.Pos.dop(4),n
 fprintf('*****************************************\n');
 fprintf('********************Position********************************\n');
 fprintf('* X: %6.2f  Y: %6.2f  Z: %6.2f  Fom: %4.2f   *\n',navSolution.Pos.xyz(1),navSolution.Pos.xyz(2),navSolution.Pos.xyz(3),navSolution.Pos.fom);
+fprintf('* dE: %6.2f  dN: %6.2f  dU: %6.2f   *\n',navSolution.Pos.enu(1),navSolution.Pos.enu(2),navSolution.Pos.enu(3));    
 fprintf('************************************************************\n');
 fprintf('********************Velocity*********************\n');
 fprintf('VX: %6.2f  VY: %6.2f  VZ: %6.2f  Fom: %4.2f   *\n',navSolution.Vel.xyz(1),navSolution.Vel.xyz(2),navSolution.Vel.xyz(3),navSolution.Vel.fom);
 fprintf('*************************************************\n');
+
+

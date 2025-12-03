@@ -28,14 +28,15 @@ function [dphi, dlambda, h] = convXyz2Geod(const, XYZ)
 %  (15.5 degrees not 15 deg 30 min). The output units of h will be the
 %  same as the units of X,Y,Z,a.
 %
+%   Inputs:
 % Inputs:
 %   const   - Constants
 %   xyz     - Cartesian coordinate vector
 %
-% Outputs:
-%   dphi        - latitude
-%   dlambda     - longitude
-%   h           - height above reference ellipsoid
+%   Outputs:
+%       dphi        - latitude
+%       dlambda     - longitude
+%       h           - height above reference ellipsoid
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 a = const.EARTH_SEMIMAJORAXIS;

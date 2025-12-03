@@ -43,7 +43,7 @@ end
 
 % Generate a Hamming window
 xx = seg_len - 1;
-window = 0.54 - 0.46 * cos( (2*pi/xx)*(0:xx).' );
+window = 0.54 - 0.46 * cos( (2*pi/xx)*[0:xx].' );
 
 % Set default overlap as number of samples
 overlap = fix(seg_len * overlap / 100 );
@@ -63,7 +63,7 @@ Pxx = xx;
 % Calulate and add FFT's
 n_ffts = 0;
 x_len = length(x);
-for start_seg = (1:seg_len-overlap:x_len-seg_len+1)
+for start_seg = [1:seg_len-overlap:x_len-seg_len+1]
     end_seg = start_seg+seg_len-1;
 
     xx(1:seg_len) = window .* x(start_seg:end_seg);
@@ -95,4 +95,7 @@ spectra    = zeros(psd_len,1);
 scale = n_ffts * seg_len * Fs * win_meansq;
 spectra(:,1) = Pxx / scale;
 
-freq = (0:psd_len-1).' * ( Fs / Nfft );
+freq = [0:psd_len-1].' * ( Fs / Nfft );
+
+
+

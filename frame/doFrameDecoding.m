@@ -38,23 +38,44 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
     signal = allSettings.sys.enabledSignals{signalIndex};
     signalSettings = allSettings.(signal);
 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %OSNMA 
+           if strcmp(signalSettings.signal,'gale1b')
+                if(allSettings.osnma.enableOSNMA==1)
+                     signalSettings.osnma=1;
+                else
+                     signalSettings.osnma=0;
+                end
+           end
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
     % Find preamble positions 
     [obs.(signal)] = findPreambles(tR.(signal), obs.(signal), signalSettings);
     
     %%Consistency check whether all the subframes point to the same subframe beginning 
-    firstSubFrames = zeros(1, tR.(signal).nrObs);
     for channelNr = 1:tR.(signal).nrObs
         firstSubFrames(channelNr) = obs.(signal).channel(channelNr).firstSubFrame;
     end
-    maxVal = max(firstSubFrames);
-    minVal = min(firstSubFrames);
-    if (maxVal-minVal)>=signalSettings.preambleIntervall %subFrame/page length of each system, for Galileo it is 250 symbols
-        indices = find((maxVal-firstSubFrames)>=signalSettings.preambleIntervall);
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Preamble consistency check
+    obs.(signal) = preambleConsistencyCheck(tR.(signal), obs.(signal), signalSettings);  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
+
+
+
+
+    [maxVal maxInd] = max(firstSubFrames);
+    [minVal minInd] = min(firstSubFrames);
+    if (max(firstSubFrames)-min(firstSubFrames))>=signalSettings.preambleIntervall %subFrame/page length of each system, for Galileo it is 250 symbols
+        indices = find((max(firstSubFrames)-firstSubFrames)>=signalSettings.preambleIntervall);
         firstSubFrames(indices) = firstSubFrames(indices)+signalSettings.preambleIntervall;
         for channelNr = 1:tR.(signal).nrObs
            obs.(signal).channel(channelNr).firstSubFrame = firstSubFrames(channelNr);
         end
     end
+    clear firstSubFrames;
     eph.(signal) = [];
     % Loop over all channels
     for channelNr = 1:obs.(signal).nrObs
@@ -68,7 +89,6 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
             parityCheck = true;
             % TBA. Move parity checking to proper place for each signal
-            parity = zeros(1, 10);
             for i=0:9
                 parity(i+1) = parityFunc(tR.(signal).channel(channelNr), obs.(signal).channel(channelNr).firstSubFrame,i+1);
 
@@ -82,12 +102,16 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
             % Decode ephemerides if parity check is successful
             if (parityCheck == true)
-                if strcmp(signalSettings.signal,'gpsl1c')
-                    [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.gpsl1c.channel(channelNr).dataI_P], prn, signalSettings, allSettings.const);
-                else
-                    [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
-                end
+                [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
                 obs.(signal).channel(channelNr).bParityOk = true;
+  %%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                          
+  if(allSettings.osnma.enableOSNMA==1)    %Saving the OSNMAHEX values for each PRN
+     if strcmp(signalSettings.signal,'gale1b')                        
+        osnmaHEX = vertcat(e(prn).subframe.osnmaHEX);
+        obs.(signal).channel(channelNr).OSNMA.osnmaHEX= osnmaHEX;
+     end
+  end
+   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
             else
                 % Now we know wheterh parity is ok or not            
                 obs.(signal).channel(channelNr).bParityOk = false; 
@@ -100,6 +124,9 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
             else
                 obs.(signal).channel(channelNr).bObsOk = true;
             end
+
+           obs.(signal).codeLengthInMs=allSettings.(signal).Nc*1000; %% Hack to read output processed by V3
+
             obs.(signal).channel(channelNr).firstSubFrame=obs.(signal).channel(channelNr).firstSubFrame*obs.(signal).codeLengthInMs; %% ZB: required to multiply by codeLengthInMs; because the index is generated considering the code length duration as 1 epoch
         end
     end   
@@ -107,4 +134,14 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         eph.(signal) = e;
         clear e;
     end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    if(allSettings.osnma.enableOSNMA==1)
+      if strcmp(signalSettings.signal,'gale1b')% Writing OSNMA HEX in .txt for PythonLiB
+          obs.(signal)= initiateOSNMA(obs.(signal),allSettings);
+      end
+    end   
+
+ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 end

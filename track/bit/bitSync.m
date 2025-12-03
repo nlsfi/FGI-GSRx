@@ -21,7 +21,6 @@ function tR = bitSync(signalSettings,tR,ch)
 % Bit sync function for GPS and GLONASS signal
 %
 % Inputs:
-%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -82,3 +81,4 @@ end
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
+    
