@@ -83,15 +83,12 @@ nav,trueLong,24.828537,
 nav,trueHeight,47.248,
 
 %OSNMA parameters
-osnma,enableOSNMAdetection,false,		% Disable or enable OSNMA detection
-osnma,osnmaFileName,"osnma-cli.py",		% -p {sbf,ascii}, --protocol {sbf,ascii}
-osnma,publicKeyName," -k osnma-key-aug.pem", 	%file name should be written after .\
-osnma,inputFileType," -p ascii", 		%Input file type acii or sbf. Default is ascii
-osnma,rootKeyPath,'',
-osnma,merkleTree,'',
-osnma,readOutputFile,true,
-osnma,useexternalrootkey,true,
-osnma,externalosnmarootkey," -r kroot_1257_80",		% -r rootkeyfilename
+osnma,enableOSNMA,false,				                    % Disable or enable OSNMA based authenticated position solution
+osnma,publicKeyName," -k .\\osnma\\osnma-key-aug.pem", 	%file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path
+osnma,externalTESLARootKey,true,
+osnma,externalTESLARootkeyFilename," -r .\\osnma\\kroot_1257_80", %file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path. 
+
+
 
 
 % GPS L1 Settings
