@@ -82,6 +82,12 @@ nav,trueLat, 69.2957388889,
 nav,trueLong,, 16.0303444444,
 nav,trueHeight,45,
 
+%OSNMA parameters
+osnma,enableOSNMA,false,				                    % Disable or enable OSNMA based authenticated position solution
+osnma,publicKeyName," -k .\\osnma\\osnma-key-aug.pem", 	%file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path
+osnma,externalTESLARootKey,true,
+osnma,externalTESLARootkeyFilename," -r .\\osnma\\kroot_1257_80", %file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path. 
+
 
 % GPS L1 Settings
 % Input RF file
