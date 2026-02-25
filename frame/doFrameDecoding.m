@@ -58,14 +58,6 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
     end
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Preamble consistency check
-    obs.(signal) = preambleConsistencyCheck(tR.(signal), obs.(signal), signalSettings);  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-
-
-
-
     [maxVal maxInd] = max(firstSubFrames);
     [minVal minInd] = min(firstSubFrames);
     if (max(firstSubFrames)-min(firstSubFrames))>=signalSettings.preambleIntervall %subFrame/page length of each system, for Galileo it is 250 symbols
@@ -102,16 +94,20 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
             % Decode ephemerides if parity check is successful
             if (parityCheck == true)
-                [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
+                 if strcmp(signalSettings.signal,'gpsl1c') 
+                    [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).dataI_P], prn, signalSettings, allSettings.const);
+                else
+                    [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
+                end    
                 obs.(signal).channel(channelNr).bParityOk = true;
-  %%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                          
-  if(allSettings.osnma.enableOSNMA==1)    %Saving the OSNMAHEX values for each PRN
-     if strcmp(signalSettings.signal,'gale1b')                        
-        osnmaHEX = vertcat(e(prn).subframe.osnmaHEX);
-        obs.(signal).channel(channelNr).OSNMA.osnmaHEX= osnmaHEX;
-     end
-  end
-   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+          %%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                          
+          if(allSettings.osnma.enableOSNMA==1)    %Saving the OSNMAHEX values for each PRN
+             if strcmp(signalSettings.signal,'gale1b')                        
+                osnmaHEX = vertcat(e(prn).subframe.osnmaHEX);
+                obs.(signal).channel(channelNr).OSNMA.osnmaHEX= osnmaHEX;
+             end
+          end
+           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
             else
                 % Now we know wheterh parity is ok or not            
                 obs.(signal).channel(channelNr).bParityOk = false; 
@@ -135,13 +131,13 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         clear e;
     end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if(allSettings.osnma.enableOSNMA==1)
-      if strcmp(signalSettings.signal,'gale1b')% Writing OSNMA HEX in .txt for PythonLiB
-          obs.(signal)= initiateOSNMA(obs.(signal),allSettings);
-      end
-    end   
-
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if(allSettings.osnma.enableOSNMA==1)
+              if strcmp(signalSettings.signal,'gale1b')% Writing OSNMA HEX in .txt for PythonLiB
+                  obs.(signal)= initiateOSNMA(obs.(signal),allSettings);
+              end
+            end   
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end
+
