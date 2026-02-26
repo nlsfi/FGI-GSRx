@@ -39,9 +39,9 @@ sys,msToSkip,0e3,                   % Number of ms to skip from beginning of fil
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
-sys,dataFileIn,'D:\Mat Data\trackData_gpsl1c_Satellite_ID_4.mat',          % Datafile to load of enabled
-sys,saveDataFile,false,     % Defines if data should be stored to file
-sys,dataFileOut,'D:\Mat Data\trackData_v2.0.0_ParallelProcessing_GPSL1C_simulatedData_2Oct24.mat',  % Data file for storing output
+sys,dataFileIn,'',          % Datafile to load of enabled
+sys,saveDataFile,true,     % Defines if data should be stored to file
+sys,dataFileOut,'D:\Mat data files\GNSS Software Receivers\trackData_GPSL1C_ParallelTrackingChannel_with_PCT_SkyDelSimulatedData.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -52,11 +52,14 @@ sys,plotTracking,true,             % If set to true plot tracking results
 sys,showTrackingOutput,true,        % If set to true show the tracking output
 
 %Tracking option: parallel vs sequential
-sys,parallelChannelTracking,false, 
-sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx-v2.0.1\',
-sys,trackDataFilePath,'D:\Mat Data\', %This is for parallel tracking
+sys,parallelChannelTracking,true, %if it is true, it means the user enables parallel tracking mode.
+sys,PCTenabled,true, % if it is true, MATLAB's Parallel Computing Toolbox (PCT) will be used. 
+sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\NLS Github\FGI-GSRx-v2.1.0\',
+sys,trackDataFilePath,'D:\Mat data files\GNSS Software Receivers\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
-sys,matlabpath,'C:\Program Files\MATLAB\R2023b\bin\matlab', %Matlab path to be provided in case matlab is not defined as a system variable in the general windows settings
+sys,matlabpath,'C:\Program Files\MATLAB\R2025b\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
+
+
 
 % Multi correlator tracking parameters
 sys,enableMultiCorrelatorTracking,false, 	% Disable or enable multi correlator tracking 
@@ -85,11 +88,10 @@ osnma,publicKeyName," -k .\\osnma\\osnma-key-aug.pem", 	%file name should be wri
 osnma,externalTESLARootKey,true,
 osnma,externalTESLARootkeyFilename," -r .\\osnma\\kroot_1257_80", %file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path. 
 
-
 % GPS L1C Settings
 
 % Input RF file
-gpsl1c,rfFileName,'C:\skydelL1band_290923.iq',    % Name of RF data file used for GPS L1 signal
+gpsl1c,rfFileName,'D:\Raw IQ datasets\GNSS Software Receivers\skydelL1band_290923.iq',    % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 gpsl1c,centerFrequency,1575.42e6,       % Radio center frequency [Hz]
