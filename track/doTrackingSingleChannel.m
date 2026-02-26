@@ -21,12 +21,12 @@ function doTrackingSingleChannel(acqData,trackResults, allSettings)
 % This function takes input of acquisition results and performs tracking.
 %
 % Inputs:
-%   acqResults      - Results from signal acquisition for all signals
-%   allSettings     - Receiver settings
+%   acqData      - Acquisition results from signal acquisition for all signals
+%   trackResults - Initialized with user specified parameters to carry our
+%   single channel tracking
+%   allSettings  - Receiver settings
 %
-% Outputs:
-%   trackResults    - Results from signal tracking for all signals
-%
+% It will save the trackResults for the assigned tracking channel
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Start timer for tracking
@@ -50,7 +50,6 @@ if (fid == -1)
     error('Failed to open data file for tracking!');
     return;    
 end
-
 
 t1=clock;
 trackResults.(signal).fid = fid;
