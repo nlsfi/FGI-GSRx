@@ -21,12 +21,14 @@ function trackDataCombined = combineSingleTrackChannelData(allSettings)
 % This function takes input of acquisition results and performs tracking.
 %
 % Inputs:
-%   acqResults      - Results from signal acquisition for all signals
 %   allSettings     - Receiver settings
 %
 % Outputs:
-%   trackResults    - Results from signal tracking for all signals
-%
+%   trackDataCombined    - Combined tracking data for all the satellites
+%   from all the specified constellations: tracking data file name and file 
+%   path for one single satellite is given in the user confirugation file:
+%   the receiver then combined all the tracking data files available in the 
+%   speficic file path
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 trackDataInputFile= allSettings.sys.dataFileIn;
@@ -54,11 +56,3 @@ for signalNr = 1:allSettings.sys.nrOfSignals % Loop over all signals
     end % Loop over all epochs         
     trackDataCombined.(signal).nrObs = trackDataCombined.(signal).nrObs - 1;
 end
-
-
-% trackDataFileName = ['D:\Raw IQ Data\OSNMA data\trackDataSatellite_ID_',num2str(trackResults.(signal).channel.SvId.satId),'.mat'];
-% save(trackDataFileName, 'trackResults', 'allSettings');
-% % Notify user tracking is over
-% disp(['   Tracking is over (elapsed time ', datestr(now - trackStartTime, 13), ')']) 
-
-
