@@ -93,8 +93,12 @@ if(~exist('trackData'))
     if (settings.sys.parallelChannelTracking)
         if (~exist('trackResults'))
             trackDataFileName = initializeAndSplitTrackingPerChannel(acqData, settings); 
-            doTrackingParallel(trackDataFileName,settings);    
-            return;
+            if settings.sys.PCTenabled == 1
+                trackData = doTrackingPCT(trackDataFileName,settings);                    
+            else
+                doTrackingParallel(trackDataFileName,settings); 
+                return;
+            end            
         else
             trackData = combineSingleTrackChannelData(settings);
         end
