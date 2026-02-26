@@ -40,8 +40,8 @@ sys,msToSkip,0,             % Number of ms to skip from beginning of file
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'',          % Datafile to load of enabled
-sys,saveDataFile,false,     % Defines if data should be stored to file
-sys,dataFileOut,'D:\Mat Data\trackData_v2.0.0_NavICL5_Chapter6.mat',  % Data file for storing output
+sys,saveDataFile,true,     % Defines if data should be stored to file
+sys,dataFileOut,'D:\Mat data files\GNSS Software Receivers\trackData_GNSS_Software_Receivers_gpsl1_navicl5_ParallelChannelTracking_with_PCT_Chapter6.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -52,11 +52,14 @@ sys,plotTracking,true,             % If set to true plot tracking results
 sys,showTrackingOutput,true,        % If set to true show the tracking output
 
 %Tracking option: parallel vs sequential
-sys,parallelChannelTracking,false,
-sys,currentWorkingDirectoryForFGIGSRx,'D:\ZB Oct23\FGI-GSRx-v2.0.0\',
-sys,trackDataFilePath,'D:\Mat Data\', %This is for parallel tracking
+sys,parallelChannelTracking,true, %if it is true, it means the user enables parallel tracking mode.
+sys,PCTenabled,true, % if it is true, MATLAB's Parallel Computing Toolbox (PCT) will be used. 
+sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\NLS Github\FGI-GSRx-v2.1.0\',
+sys,trackDataFilePath,'D:\Mat data files\GNSS Software Receivers\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
-sys,matlabpath,'C:\Program Files\MATLAB\R2023b\bin\matlab', %Matlab path to be provided in case matlab is not defined as a system variable in the general windows settings
+sys,matlabpath,'C:\Program Files\MATLAB\R2025b\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
+
+
 
 % Multi correlator tracking parameters
 sys,enableMultiCorrelatorTracking,false, 	% Disable or enable multi correlator tracking 
@@ -85,11 +88,10 @@ osnma,publicKeyName," -k .\\osnma\\osnma-key-aug.pem", 	%file name should be wri
 osnma,externalTESLARootKey,true,
 osnma,externalTESLARootkeyFilename," -r .\\osnma\\kroot_1257_80", %file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path. 
 
-
 % GPS L1 Settings
 
 % Input RF file
-gpsl1,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\NavICL5\RawData_GPSL1_Chapter6.dat',            % Name of RF data file used for GPS L1 signal
+gpsl1,rfFileName,'D:\Raw IQ datasets\GNSS Software Receivers\RawData_GPSL1_Chapter6.dat',            % Name of RF data file used for GPS L1 signal
 
 % Radio front end configurations
 % For GTEC RFFE Config 
@@ -147,7 +149,7 @@ gpsl1,ionexFile,''                      % Filename for ionex file if ionomodel i
 % NAVIC L5 Settings
 
 % Input RF file
-navicl5,rfFileName,'D:\ZB Oct23\FGI-GSRx Raw IQ Data\NavICL5\RawData_NavICL5_Chapter6.dat',
+navicl5,rfFileName,'D:\Raw IQ datasets\GNSS Software Receivers\RawData_NavICL5_Chapter6.dat',
 
 % Radio front end configurations
 navicl5,centerFrequency,1176.45e6,    % Radio center frequency [Hz]
