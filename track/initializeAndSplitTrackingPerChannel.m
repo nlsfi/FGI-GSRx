@@ -25,7 +25,8 @@ function trackDataFile = initializeAndSplitTrackingPerChannel(acqResults, allSet
 %   allSettings     - Receiver settings
 %
 % Outputs:
-%   trackResults    - Results from signal tracking for all signals
+%   trackDataFile    - Tracking data file names for all the
+%   satellites of all the specified constellations  
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
