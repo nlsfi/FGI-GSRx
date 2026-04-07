@@ -69,7 +69,7 @@ if(allSettings.osnma.externalTESLARootKey==1)
     flag_kroot=1;
 else
 %If rootkey is valided from signal in space
-    OSNMApath=strcat(allSettings.osnma.osnmaFileName,allSettings.osnma.inputFileName,allSettings.osnma.inputFileType,allSettings.osnma.publicKeyName,allSettings.osnma.rootKeyPath,allSettings.osnma.merkleTree); flag_kroot=0;
+   OSNMApath=strcat(osnmaFileName,inputFileName,inputFileType,allSettings.osnma.publicKeyName,rootKeyPath,merkleTree); flag_kroot=1;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%         
 dfile ='.\\osnma\\OSNMAoutput.txt';                            %File to write output generated from FGI-OSNMA
