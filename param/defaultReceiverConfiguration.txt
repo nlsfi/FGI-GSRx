@@ -87,6 +87,16 @@ osnma,publicKeyName," -k .\\osnma\\osnma-key-aug.pem", 	%file name should be wri
 osnma,externalTESLARootKey,true,
 osnma,externalTESLARootkeyFilename," -r .\\osnma\\kroot_1257_80", %file name should be written after “.\\osnma\\” ONLY change the public key file name without changing the path. 
 
+%RINEX parameters
+rinex,enableRINEX,false,
+fN,dir,"",               % Change this path to a folder you want to save the Rinex file into.
+fN,projectName,'DEMO',
+fN,countryCode,'FIN',
+hD,fileType,['N' 'O'],   % O=observation data, N=navigation data, ['N' 'O']
+hD,fileProgram,'FGI-GSRX-2.1.1',
+hD,fileAgency,'FGI',
+hD,commentList,[{''}],   % example: [{'comment 1' 'comment 2'}]
+
 
 % GPS L1 Settings
 % Input RF file
