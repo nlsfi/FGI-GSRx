@@ -214,6 +214,26 @@ settings.const.BDCS_FLATTENING = 1/298.257222101;
 settings.const.BDCS_EARTH_ROT = 7.2921150e-5;
 settings.const.BDCS_GRAVCONSTANT = 3.986005e14; 
 
+% RINEX parameters
+settings.hD.lsf = [];                  % future/past leap second !LEAVE EMPTY IF NO LEAP SECOND EVENTS
+settings.hD.wnLsf = [];                % respective week number   !LEAVE EMPTY IF NO LEAP SECOND EVENTS
+settings.hD.dn=[];                     % respective day number   !LEAVE EMPTY IF NO LEAP SECOND EVENTS
+settings.hD.tsysid='';                 % time system identifier ONLY GPS or BDS (blank = GPS)
+settings.hOD.markerName='-';
+settings.hOD.markerNumber='-';
+settings.hOD.markerType='-';
+settings.hOD.observer='-';
+settings.hOD.agency='-';
+settings.hOD.rxNumber='-';          %e.g., svn revision number
+settings.hOD.rxType='-';
+settings.hOD.rxVersion='-';
+settings.hOD.antNumber='-';
+settings.hOD.antType='-';
+settings.fN.dataSource='R';         % R=from receiver, S=data stream, U=unknown
+settings.hD.version=3.04;           % RINEX format version 
+settings.hOD.antDelHen=containers.Map({'h','e','n'},{0,0,0});
+settings.rnx.gpsRollovers = 2;          % Number of GPS week number rollovers that have occurred since the GPS epoch (January 6, 1980)
+
 % Number of signal channels
 settings.sys.nrOfChannels = 0;
 
