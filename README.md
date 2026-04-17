@@ -6,6 +6,12 @@ FGI-GSRx is open-source and is associated with the updated edition of the textbo
 The software is distributed under the GNU General Public License (GPL v3), ensuring freedom to modify and redistribute the code while disclaiming warranties.
 
 
+
+### FGI-GSRx v2.1.2
+FGI-GSRx v2.1.2 introduces the capability to generate navigation and observation RINEX 3.04 files from the processed data. Currently, file generation only supports GALILEO and GPS data. More specifically, navigation file generation supports GALILEO E1B & GPS C/A signals while observation file generation supports GALILEO E1B, GPS C/A, and GPS L1C.
+
+
+
 ### FGI-GSRx v2.1.1
 FGI GSRx v2.1.1 introduces an important enhancement: full parallel tracking support using MATLAB’s Parallel Computing Toolbox (PCT). This allows users to significantly accelerate the processing of long GNSS datasets by executing tracking channels concurrently.
 Two parallel execution modes are now available:
