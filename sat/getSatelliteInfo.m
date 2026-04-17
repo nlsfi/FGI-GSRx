@@ -79,7 +79,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
                     obs.(signal).channel(channelNr).week = e(prn).weekNumber;
                 end
                 if(obs.(signal).channel(channelNr).week < 1024)
-                    obs.(signal).channel(channelNr).week = obs.(signal).channel(channelNr).week + 1024;
+                    obs.(signal).channel(channelNr).week = obs.(signal).channel(channelNr).week;
                 end
             end
             
