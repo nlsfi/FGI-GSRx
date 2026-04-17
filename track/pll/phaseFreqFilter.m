@@ -86,6 +86,14 @@ trackChannelData.prevCarrError = totalCarrError;
 % Calcualte doppler frequency
 trackChannelData.doppler(loopCnt)           = carrFreq - trackChannelData.intermediateFreq; %doppler = (IF frequency estimate during current loop of PLL) - (base IF freq)
 
+% Calculate carrier phase (accumulated Doppler)
+blockSize = trackChannelData.blockSize(loopCnt);
+% Review NL - 30 Jan 2020
+InstantaneousPhase = 2*pi*(-trackChannelData.doppler(loopCnt))*blockSize/signalSettings.samplingFreq + trackChannelData.phaseFraction; % Istantaneous phase in radians
+trackChannelData.phaseFraction = rem( InstantaneousPhase, 2*pi ); 
+trackChannelData.phaseInteger = trackChannelData.phaseInteger + fix(InstantaneousPhase/ (2*pi)) * 2*pi; % in radians
+trackChannelData.accumulatedPhase(loopCnt) = trackChannelData.phaseInteger + trackChannelData.phaseFraction; % in radians
+
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
