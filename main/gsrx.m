@@ -155,4 +155,9 @@ statResults.ver
 statResults.dop
 statResults.RMS3D
 
-
+% Generate rinex file(s)
+if isfield(settings, 'rinex') % backwards compatibility for older param files
+    if settings.rinex.enableRINEX == true
+        generateRinex(settings, obsData, navData, ephData);
+    end
+end
