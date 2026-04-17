@@ -59,6 +59,8 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         obsResults.(signal).channel(i).sampleCount = tR.(signal).channel(i).absoluteSample;
         obsResults.(signal).channel(i).codePhase = tR.(signal).channel(i).codePhase;
 
+        obsResults.(signal).channel(i).accumulatedPhase = tR.(signal).channel(i).accumulatedPhase;
+
         obsResults.(signal).channel(i).receiverTow = NaN;
         obsResults.(signal).channel(i).week = NaN;
 
