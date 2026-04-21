@@ -111,7 +111,7 @@ while (i*300 <= length(bits))
     switch subframeID
         case 1  % Subframe 1 decoding
             % Contains Week Number, SV clock corrections, health and accuracy
-            weekNumber  = bin2dec(subframe(61:70)) + 1024;
+            weekNumber  = bin2dec(subframe(61:70));
             accuracy    = bin2dec(subframe(73:76));
             health      = bin2dec(subframe(77:82));
             T_GD        = twosComp2dec(subframe(197:204)) * 2^(-31);
