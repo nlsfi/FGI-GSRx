@@ -92,6 +92,9 @@ trackChannel.prevCarrError = 0; % Estimated carrier frequency error from previou
 trackChannel.carrFreq   = zeros(1,dataLength); % Carrier frequency 
 trackChannel.carrError   = 0; % Estimated carrier frequency error
 trackChannel.estCarrFreqFromAcqBlock = trackChannel.acquiredFreq;
+trackChannel.phaseFraction = 0;
+trackChannel.phaseInteger = 0;
+trackChannel.accumulatedPhase = 0;
 
 % Correlator finger generation
 trackChannel.codePhaseStep = 0; % Code phase step when generating code replica
@@ -144,6 +147,3 @@ trackChannel.pllWideBandLockIndicatorThreshold=signalSettings.pllWideBandLockInd
 trackChannel.pllNarrowBandLockIndicatorThreshold=signalSettings.pllNarrowBandLockIndicatorThreshold;
 
 trackChannel.bitSyncConfidenceLevel = signalSettings.bitSyncConfidenceLevel;
-
-
-
