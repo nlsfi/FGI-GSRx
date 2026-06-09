@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -89,11 +89,14 @@ trackChannelData.doppler(loopCnt)           = carrFreq - trackChannelData.interm
 % Calculate carrier phase (accumulated Doppler)
 blockSize = trackChannelData.blockSize(loopCnt);
 % Review NL - 30 Jan 2020
-InstantaneousPhase = 2*pi*(-trackChannelData.doppler(loopCnt))*blockSize/signalSettings.samplingFreq + trackChannelData.phaseFraction; % Istantaneous phase in radians
-trackChannelData.phaseFraction = rem( InstantaneousPhase, 2*pi ); 
-trackChannelData.phaseInteger = trackChannelData.phaseInteger + fix(InstantaneousPhase/ (2*pi)) * 2*pi; % in radians
-trackChannelData.accumulatedPhase(loopCnt) = trackChannelData.phaseInteger + trackChannelData.phaseFraction; % in radians
-
+if isfield(trackChannelData, 'phaseFraction')
+    InstantaneousPhase = 2*pi*(-trackChannelData.doppler(loopCnt))*blockSize/signalSettings.samplingFreq + trackChannelData.phaseFraction; % Istantaneous phase in radians
+    trackChannelData.phaseFraction = rem( InstantaneousPhase, 2*pi ); 
+    trackChannelData.phaseInteger = trackChannelData.phaseInteger + fix(InstantaneousPhase/ (2*pi)) * 2*pi; % in radians
+    trackChannelData.accumulatedPhase(loopCnt) = trackChannelData.phaseInteger + trackChannelData.phaseFraction; % in radians
+    % Older than v2.1.2 .mat files do not have phaseFraction variable saved
+    % so no accumulated phase calculations can be done.
+end
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
