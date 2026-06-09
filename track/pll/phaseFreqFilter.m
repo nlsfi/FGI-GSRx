@@ -94,8 +94,7 @@ if isfield(trackChannelData, 'phaseFraction')
     trackChannelData.phaseFraction = rem( InstantaneousPhase, 2*pi ); 
     trackChannelData.phaseInteger = trackChannelData.phaseInteger + fix(InstantaneousPhase/ (2*pi)) * 2*pi; % in radians
     trackChannelData.accumulatedPhase(loopCnt) = trackChannelData.phaseInteger + trackChannelData.phaseFraction; % in radians
-    % Older than v2.1.2 .mat files do not have phaseFraction variable saved
-    % so no accumulated phase calculations can be done.
+    % Older than v2.1.2 results do not have phaseFraction variable. 
 end
 
 % Copy updated local variables
