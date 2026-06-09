@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -59,8 +59,11 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         obsResults.(signal).channel(i).sampleCount = tR.(signal).channel(i).absoluteSample;
         obsResults.(signal).channel(i).codePhase = tR.(signal).channel(i).codePhase;
 
-        obsResults.(signal).channel(i).accumulatedPhase = tR.(signal).channel(i).accumulatedPhase;
-
+        if isfield(tR.(signal).channel(i), 'accumulatedPhase')
+            obsResults.(signal).channel(i).accumulatedPhase = tR.(signal).channel(i).accumulatedPhase;
+            % Versions older than v2.1.2 .mat files that do not have accumulatedPhase variable.
+        end
+        
         obsResults.(signal).channel(i).receiverTow = NaN;
         obsResults.(signal).channel(i).week = NaN;
 

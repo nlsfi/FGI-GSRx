@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -81,11 +81,15 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             obs.(signal).channel(channelNr).codephase = (obs.(signal).channel(channelNr).codePhase(ind_min) + codediff * phase)/codephasecoeff;         
             obs.(signal).channel(channelNr).doppler = obs.(signal).channel(channelNr).carrFreq(ind_min)...
                  * SPEED_OF_LIGHT/obs.(signal).channel(channelNr).carrierFreq;
-            obs.(signal).channel(channelNr).SNR = obs.(signal).channel(channelNr).CN0(ind_min);
-
+            obs.(signal).channel(channelNr).SNR = obs.(signal).channel(channelNr).CN0(ind_min);      
+            
             % accumulated phase
-            accDiff = (obs.(signal).channel(channelNr).accumulatedPhase(ind_max) - obs.(signal).channel(channelNr).accumulatedPhase(ind_min));
-            obs.(signal).channel(channelNr).accPhase = (obs.(signal).channel(channelNr).accumulatedPhase(ind_min) + accDiff * phase); 
+            if isfield(obs.(signal).channel(channelNr), 'accumulatedPhase')
+                accDiff = (obs.(signal).channel(channelNr).accumulatedPhase(ind_max) - obs.(signal).channel(channelNr).accumulatedPhase(ind_min));
+                obs.(signal).channel(channelNr).accPhase = (obs.(signal).channel(channelNr).accumulatedPhase(ind_min) + accDiff * phase); 
+            else
+                obs.(signal).channel(channelNr).accPhase = NaN; % older version than v2.1.2 .mat files do not have this variable
+            end
         end
     end
 end
