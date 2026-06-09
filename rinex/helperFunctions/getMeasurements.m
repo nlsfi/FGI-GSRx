@@ -85,24 +85,28 @@ for ii=1:length(sont)
                     case obsType.range
                         meas=fgiChannel.rawP(c);
                     case obsType.phase
-                        currentPhaseCycles = fgiChannel.accPhase(c) / (2*pi);
+                        if ~isnan(fgiChannel.accPhase(c))
+                            currentPhaseCycles = fgiChannel.accPhase(c) / (2*pi);
+                            
+                            speed_light = 299792458;
+                            lambda = speed_light / fgiChannel.carrierFreq;
+    
+                            initialPseudorange = fgiChannel.rawP(1);
+                            initialPhaseCycles = fgiChannel.accPhase(1) / (2*pi);
+                            
+                            % This offset makes (Phase * Lambda) roughly equal to pseudorange
+                            phaseOffset = (initialPseudorange / lambda) - initialPhaseCycles;
+    
+                            %phaseOffset = 0;  
+                            meas = currentPhaseCycles + phaseOffset;
                         
-                        speed_light = 299792458;
-                        lambda = speed_light / fgiChannel.carrierFreq;
-
-                        initialPseudorange = fgiChannel.rawP(1);
-                        initialPhaseCycles = fgiChannel.accPhase(1) / (2*pi);
-                        
-                        % This offset makes (Phase * Lambda) roughly equal to pseudorange
-                        phaseOffset = (initialPseudorange / lambda) - initialPhaseCycles;
-
-                        %phaseOffset = 0;  
-                        meas = currentPhaseCycles + phaseOffset;
-                    
-                        % apply the phase corrections
-                        phaseCorr = rinex3ObsHeader.phaseCorrectionTable(rinex3ObsId(tm,cb,ot,s));
-                        if ~isnan(phaseCorr)
-                            meas = meas + phaseCorr;
+                            % apply the phase corrections
+                            phaseCorr = rinex3ObsHeader.phaseCorrectionTable(rinex3ObsId(tm,cb,ot,s));
+                            if ~isnan(phaseCorr)
+                                meas = meas + phaseCorr;
+                            end
+                        else
+                            meas = NaN;
                         end
 
                     case obsType.snr
