@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -73,7 +73,7 @@ x.truez = xyz(3);
 smoothingInterval = 1000/navSolPeriod;
 
 j=1;
-for i=1:smoothingInterval:ind-smoothingInterval
+for i=1:smoothingInterval:length(nav)-smoothingInterval
     X(j) =mean(x.X(i:i+smoothingInterval-1)); 
     Y(j) =mean(x.Y(i:i+smoothingInterval-1)); 
     Z(j) =mean(x.Z(i:i+smoothingInterval-1));     
@@ -277,8 +277,7 @@ figure;
 plot([1:1:length(x.se)],x.se,'b-*'); hold on; grid on;
 plot([1:1:length(x.sn)],x.sn,'g-+'); 
 plot([1:1:length(x.su)],x.su,'r-o');  
-plot([1:1:length(noOfUsedSat)],noOfUsedSat,'m-');  
-legend('E','N','U','N_{Sat}');
+legend('E','N','U');
 xlabel('Time (s)');
 ylabel('Deviation (m)');
 title('Coordinate variation with respect to true position');
