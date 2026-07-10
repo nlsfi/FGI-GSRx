@@ -77,7 +77,7 @@ sys,lateFingerIndex,22,                  	% Index of late finger when multi corr
 nav,navSolPeriod,1000,          % Output period in ms for navigation solution
 %nav,navSolPeriod,20,          % Output period in ms for navigation solution
 nav,elevationMask,5,            % Elevation mask in degrees [0 - 90]. Satellites below this elevation will be excluded from navigation
-nav,snrMask,30,            	% SNR mask in dB-Hz [usually in the range between 30-35 dB-Hz]. Satellites below the SNR mask will be excluded from navigation
+nav,snrMask,5,            		            % SNR mask in dB [usually in the range between 0-5 dB]. Satellites below the SNR mask will be excluded from navigation: note the 
 nav,gpsLeapSecond,18,           % GPS-UTC leap seconds % Data recorded on 31 January, 2014, the GPS leap second was at that time 17 seconds
 % True/reference user position, if available (default FGI location is loaded)
 nav,trueLat,60.182260,    
