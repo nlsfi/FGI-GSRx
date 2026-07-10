@@ -32,41 +32,35 @@ function tR = CN0fromSNR(signalSettings,tR,ch)
 % Set local variables
 trackChannelData = tR.channel(ch);
 loopCnt = tR.loopCnt;
-I_P = trackChannelData.I_P(loopCnt);
-Q_P = trackChannelData.Q_P(loopCnt);
 I_E_E = trackChannelData.I_E_E;
 Q_E_E = trackChannelData.Q_E_E;
 
 % Calculate current noise level
 trackChannelData.noiseCNOfromSNR(loopCnt) = I_E_E + Q_E_E;
-intervalEpoch = signalSettings.Nc*1000;
- if loopCnt>1000 
-    iCount = loopCnt-1000+intervalEpoch;    
+intervalEpoch = signalSettings.codeLengthMs;
+windowLengthInMs = 5000;
+ if loopCnt>windowLengthInMs 
+    iCount = loopCnt-windowLengthInMs+intervalEpoch;    
     noiseLevel = trackChannelData.noiseCNOfromSNR(iCount:intervalEpoch:loopCnt); 
+    signalPower = mean(trackChannelData.I_P(iCount:intervalEpoch:loopCnt).^2 + trackChannelData.Q_P(iCount:intervalEpoch:loopCnt).^2);
  else
     noiseLevel = trackChannelData.noiseCNOfromSNR(intervalEpoch:intervalEpoch:loopCnt);
+    signalPower = mean(trackChannelData.I_P(intervalEpoch:intervalEpoch:loopCnt).^2 + trackChannelData.Q_P(intervalEpoch:intervalEpoch:loopCnt).^2);
  end
 
 if(trackChannelData.bInited)
-    noiseVariance = sum((noiseLevel-mean(noiseLevel)).^2)/length(noiseLevel); % Variance of noise level
-    signalPower = I_P.^2 + Q_P.^2; % Signal power
-    if loopCnt>intervalEpoch
-        % Fill up the first C/N0 estimate with the 2nd C/N0 estimate: just
-        % to avoid putting zero for the first estimate
-        trackChannelData.CN0fromSNR(intervalEpoch)=10*log10(((signalPower)/noiseVariance)/tR.PDIcode);    
-    end
-    
+    noiseVariance = sum((noiseLevel-mean(noiseLevel)).^2)/length(noiseLevel); % Variance of noise level        
     % Calculate CN0 from SNR using log10
     trackChannelData.CN0fromSNR(loopCnt)=10*log10(((signalPower)/noiseVariance)/tR.PDIcode);  
 
     % Calculate sliding mean and variance 
-    if loopCnt>1000 
-       jCount = loopCnt-1000+intervalEpoch;
+    if loopCnt>windowLengthInMs 
+       jCount = loopCnt-windowLengthInMs+intervalEpoch;
        trackChannelData.meanCN0fromSNR(loopCnt)=mean(trackChannelData.CN0fromSNR(jCount:intervalEpoch:loopCnt));    
     else
-        trackChannelData.meanCN0fromSNR(loopCnt)=mean(trackChannelData.CN0fromSNR(intervalEpoch:intervalEpoch:loopCnt));    
+       trackChannelData.meanCN0fromSNR(loopCnt)=mean(trackChannelData.CN0fromSNR(intervalEpoch:intervalEpoch:loopCnt));    
     end      
-
+    trackChannelData.SNR(loopCnt) = trackChannelData.meanCN0fromSNR(loopCnt) + 10*log10(tR.PDIcode);    
 end 
 
 % Copy updated local variables
