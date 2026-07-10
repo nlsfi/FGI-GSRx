@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -47,10 +47,16 @@ for k=1:tR.nrObs
         preamble_bits = signalSettings.preamble;
     end
 
-    % "Upsample" the preamble - make 20 values per one bit. The preamble must be found with precision of a sample.
-    preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
-    preambleInterval = signalSettings.preambleIntervall;
-    preambleCorrThr = signalSettings.preambleCorrThr;
+    if strcmp(signalSettings.signal,'gpsl1')==1
+        % "Upsample" the preamble - make 20 values per one bit. The preamble must be found with precision of a sample.
+        preamble_ms = kron(preamble_bits, ones(1,signalSettings.bitDuration/signalSettings.codeLengthMs));
+        preambleInterval = signalSettings.preambleIntervall/signalSettings.codeLengthMs;
+        preambleCorrThr = signalSettings.preambleCorrThr/signalSettings.codeLengthMs;
+    else        
+        preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
+        preambleInterval = signalSettings.preambleIntervall;
+        preambleCorrThr = signalSettings.preambleCorrThr;
+    end
 
     if strcmp(signalSettings.signal,'beib1')==1
         if tR.channel(k).SvId.satId<6
@@ -76,7 +82,8 @@ for k=1:tR.nrObs
 
     %Consider processing first few messages within one minute or so:
     %specially helpful for long data set
-    firstNbits = navigationBits(1:min(preambleInterval*10,length(navigationBits)));
+    startBit = 1;
+    firstNbits = navigationBits(startBit:min(preambleInterval*12,length(navigationBits)));    
 
     %Correlate tracking output with the preamble
     tlmXcorrResult = calcCrossCorrelation(firstNbits, preamble_ms);
@@ -97,14 +104,18 @@ for k=1:tR.nrObs
                 
                 % Check parity
                 codeFunc = str2func([tR.signal,'NavParityCheck']);
-                parity1 = codeFunc(tR.channel(k), index(i),1);
-                parity2 = codeFunc(tR.channel(k), index(i),2);
+                parity1 = codeFunc(tR.channel(k), (index(i)+startBit-1)*signalSettings.codeLengthMs,1);
+                parity2 = codeFunc(tR.channel(k), (index(i)+startBit-1)*signalSettings.codeLengthMs,2);
                 
                 if ((parity1 ~= 0) && (parity2 ~= 0))
                     % Parity was OK. Record the preamble start position. Skip
                     % the rest of preamble pattern checking for this channel
-                    % and process next channel.
-                    obs.channel(k).firstSubFrame = index(i);
+                    % and process next channel.                       
+                    if strcmp(signalSettings.signal,'gpsl1')==1
+                        obs.channel(k).firstSubFrame = (index(i)+startBit-1)*signalSettings.codeLengthMs;
+                    else
+                        obs.channel(k).firstSubFrame = index(i)+startBit-1;
+                    end
                     obs.channel(k).preambleSign = sign(tlmXcorrResult(index(i) + xcorrLength - 1));
                     obs.channel(k).bPreambleOk = true;
                     
