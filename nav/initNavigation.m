@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -66,7 +66,7 @@ samplesPerMs = obsData.(signal).samplesPerMs;
 endSampleCount = floor((maxsamplecount - startSampleCount)/(samplesPerMs*allSettings.nav.navSolPeriod));
 totalSampleCount = endSampleCount *(samplesPerMs*allSettings.nav.navSolPeriod);
 
-% This is finally the max number of epochs we can processe
+% This is finally the max number of epochs we can process
 nrOfEpochs = totalSampleCount / (samplesPerMs*allSettings.nav.navSolPeriod);
 
 % Adjust number of epochs if user has requested LESS epochs
