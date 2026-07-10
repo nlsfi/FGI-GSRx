@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -39,8 +39,8 @@ if trackChannelData.fllLockIndicator(loopCnt)<trackChannelData.fllWideBandLockIn
 elseif (trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllWideBandLockIndicatorThreshold && ...
        trackChannelData.fllLockIndicator(loopCnt)<trackChannelData.fllNarrowBandLockIndicatorThreshold) 
     trackChannelData.trackState = 'STATE_COARSE_TRACKING';    
-elseif (trackChannelData.bitSync ==1 && trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllNarrowBandLockIndicatorThreshold && ...
-        trackChannelData.pllLockIndicator(loopCnt)>=trackChannelData.pllNarrowBandLockIndicatorThreshold)
+elseif (trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllNarrowBandLockIndicatorThreshold && ...
+        trackChannelData.pllLockIndicator(loopCnt)>=trackChannelData.pllNarrowBandLockIndicatorThreshold) 
     trackChannelData.trackState = 'STATE_FINE_TRACKING';
 end
 
