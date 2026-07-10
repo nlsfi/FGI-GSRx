@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -157,11 +157,28 @@ for signalNr = 1:allSettings.sys.nrOfSignals
         plot(timeAxisInMs/1000,round(tC.meanCN0fromSNR(timeAxisInMs)),displayPattern(dispind,:)); hold on; grid on;  
         dispind=dispind+1;
         visiblePRN = [visiblePRN double(tC.SvId.satId)];         
-        title(['Carrier-to-Noise density ratio (C/N_0) for the tracked ', signal, ' satellites']);
+        title(['Carrier-to-Noise Density Ratio (C/N_0) for the tracked ', signal, ' satellites']);
         xlabel('Time (s)');
         ylabel('C/N_0 (dB-Hz)');                
     end       
-    legend(num2str(visiblePRN'));    
+    legend(num2str(visiblePRN'));   
+
+    figure; hold on; grid on;        
+    visiblePRN=[];
+    dispind = 1;
+    for channelNr=1:tR.(signal).nrObs
+        tC = tR.(signal).channel(channelNr);
+        sampleSpacing = tR.(signal).PDIcarr*1000;
+        timeAxisInMs = sampleSpacing:sampleSpacing:length(tC.I_P); % create the time vector for the x-axis
+        plot(timeAxisInMs/1000,round(tC.SNR(timeAxisInMs)),displayPattern(dispind,:)); hold on; grid on;  
+        dispind=dispind+1;
+        visiblePRN = [visiblePRN double(tC.SvId.satId)];         
+        title(['Signal-to-Noise Ratio (SNR) for the tracked ', signal, ' satellites']);
+        xlabel('Time (s)');
+        ylabel('SNR (dB)');                
+    end       
+    legend(num2str(visiblePRN'));   
+
 end %for signalNr
 
 
