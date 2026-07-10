@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function tC = allocateTrackChannelHeader(aR, ch, allSettings)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Initialises generic variables in trackChannel structure
+% Initializes generic variables in trackChannel structure
 %
 % Inputs:
 %   aR              - Results from signal acquisition for one signal
@@ -26,7 +26,7 @@ function tC = allocateTrackChannelHeader(aR, ch, allSettings)
 %   allSettings     - receiver settings.
 %
 % Outputs:
-%   tC              - Initialised track channel
+%   tC              - Initialized track channel
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -43,7 +43,18 @@ tC.acquiredCodePhase    = acqChannel.codePhase;
 
 % Set state related variables
 tC.bInited       = false;
-tC.trackState = 'STATE_PULL_IN';  
+if strcmp(signal,'gpsl1')
+    if strcmp(signalSettings.trackingMode,'20msTracking')
+        %Switch to Fine tracking already in the beginning, since we
+        %achieved bit synchronization at the first stage for GPS L1 C/A
+        %signal with 20msTracking mode. 
+        tC.trackState = 'STATE_FINE_TRACKING';      
+    else
+        tC.trackState = 'STATE_PULL_IN';  
+    end
+else
+    tC.trackState = 'STATE_PULL_IN';
+end
 
 % Add code replica
 if strcmp(signal, 'gpsl1c')
