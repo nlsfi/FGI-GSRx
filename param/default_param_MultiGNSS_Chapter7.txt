@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -36,12 +36,13 @@
 sys,enabledSignals,[{['gpsl1']} {['gale1b']} {['beib1']}], % List of enabled signals
 sys,msToProcess,60000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
+sys,versionNumber,'v2.1.3', % FGI-GSRx version number to keep track of FGI-GSRx receiver
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
 sys,dataFileIn,'',          % Datafile to load of enabled
 sys,saveDataFile,true,     % Defines if data should be stored to file
-sys,dataFileOut,'D:\Mat data files\GNSS Software Receivers\trackData_GNSS_Software_Receivers_gpsl1_gale1b_beib1_v2.1.1_SequentialTracking_Chapter7.mat',  % Data file for storing output
+sys,dataFileOut,'D:\Mat data files\GNSS Software Receivers\trackData_GNSS_Software_Receivers_gpsl1_20msTracking_gale1b_beib1_PCT_Chapter7_v2_1_3.mat',  % Data file for storing output
 sys,loadIONMetaDataReading,false,
 sys,metaDataFileIn,''
 
@@ -52,12 +53,12 @@ sys,plotTracking,true,             % If set to true plot tracking results
 sys,showTrackingOutput,true,        % If set to true show the tracking output
 
 %Tracking option: parallel vs sequential
-sys,parallelChannelTracking,false, %if it is true, it means the user enables parallel tracking mode.
-sys,PCTenabled,false, % if it is true, MATLAB's Parallel Computing Toolbox (PCT) will be used. 
-sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\NLS Github\FGI-GSRx-v2.1.0\',
+sys,parallelChannelTracking,true, %if it is true, it means the user enables parallel tracking mode.
+sys,PCTenabled,true, % if it is true, MATLAB's Parallel Computing Toolbox (PCT) will be used. 
+sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\FGI-GSRx-v2.1.3\',
 sys,trackDataFilePath,'D:\Mat data files\GNSS Software Receivers\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
-sys,matlabpath,'C:\Program Files\MATLAB\R2025b\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
+sys,matlabpath,'C:\Program Files\MATLAB\R2026a\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
 
 
 
@@ -74,7 +75,7 @@ sys,lateFingerIndex,10,                  	% Index of late finger when multi corr
 % Navigation parameters
 nav,navSolPeriod,100,            % Output period in ms for navigation solution
 nav,elevationMask,5,            % Elevation mask in degrees [0 - 90]. Satellites below this elevation will be excluded from navigation
-nav,snrMask,30,            		% SNR mask in dB-Hz [usually in the range between 30-35 dB-Hz]. Satellites below the SNR mask will be excluded from navigation
+nav,snrMask,5,            	% SNR mask in dB [usually in the range between 0-5 dB]. Satellites below the SNR mask will be excluded from navigation: note the difference from earlier releases: SNR is now estimated in dB, and not expressed as C/N0 in dB-Hz
 nav,gpsLeapSecond,17,           % GPS-UTC leap seconds % Data recorded on 31 January, 2014, the GPS leap second was at that time 17 seconds
 % True/reference user position, if available
 nav,trueLat,60.161086788889,    
@@ -101,14 +102,15 @@ gpsl1,iqSwap,true, % Complex or real data
 
 % Acquisition parameters
 gpsl1,acqSatelliteList,[1:32],       % Specify what GPS satellites to search for [PRN numbers]          
-gpsl1,nonCohIntNumber,5,           % Number of non-coherent integration rounds for signal acquisition
+gpsl1,nonCohIntNumber,2,           % Number of non-coherent integration rounds for signal acquisition
 gpsl1,cohIntNumber,5,              % Coherent integration time for signal acquisition [ms]
 gpsl1,acqThreshold,9,             % Threshold for the signal presence decision rule
 gpsl1,maxSearchFreq,6000,          % Maximum search frequency in one direction 
 
 % Tracking parameters
+gpsl1,trackingMode,'20msTracking', %This is an important parameter: please check for each individual tracking data file whether it is executed in 1 ms epoch or 20-ms epoch
 gpsl1,fllNoiseBandwidthWide,100, 	% FLL noise BW wide[Hz]
-gpsl1,fllNoiseBandwidthNarrow,50,   % FLL noise BW narrow [Hz]
+gpsl1,fllNoiseBandwidthNarrow,50,  % FLL noise BW narrow [Hz]
 gpsl1,fllNoiseBandwidthVeryNarrow,10,   % FLL noise BW narrow [Hz]
 gpsl1,fllDampingRatio,1.8,         % PLL damping ratio
 gpsl1,fllLoopGain,0.7,             % PLL loop gain
@@ -119,8 +121,9 @@ gpsl1,pllDampingRatio,0.5,          % PLL damping ratio
 gpsl1,pllLoopGain,0.2,              % PLL loop gain
 gpsl1,dllDampingRatio,0.7,          % DLL damping ratio
 gpsl1,dllNoiseBandwidth,1,          % DLL noise BW [Hz]
-gpsl1,Nc,0.001,                     % integration time in seconds for DLL 
+gpsl1,dllLoopGain,1,				% DLL loop gain 
 gpsl1,corrFingers,[-2 -0.1 0 0.1],    % Correlator finger positions [chips]
+gpsl1,Nc,0.001,                     % integration time in seconds for DLL 
 gpsl1,earlyFingerIndex,2,               % Index of early finger
 gpsl1,promptFingerIndex,3,              % Index of prompt finger
 gpsl1,lateFingerIndex,4,                % Index of late finger
@@ -171,6 +174,7 @@ gale1b,pllDampingRatio,0.7,         % PLL damping ratio
 gale1b,pllLoopGain,0.2,             % PLL loop gain
 gale1b,dllDampingRatio,0.7,         % DLL damping ratio
 gale1b,dllNoiseBandwidth,1,         % DLL noise BW [Hz]
+gale1b,dllLoopGain,1,         % DLL noise BW [Hz]
 gale1b,Nc,0.004,                    % integration time in seconds for DLL 
 gale1b,corrFingers,[-2 -0.1 0 0.1],     % Correlator finger positions [chips]
 gale1b,earlyFingerIndex,2,              % Index of early finger
@@ -190,58 +194,6 @@ gale1b,enableIonoCorrections,true,      % Use iono corrections or not
 gale1b,enableTropoCorrections,true,     % Use tropo corrections or not
 gale1b,ionomodel,'gale1b',             % Iono model to use (default,gale1b,beib1,glol1, ionex)
 gale1b,ionexFile,''                     % Filename for ionex file if ionomodel is = ionex
-
-% Galileo E1C Settings
-% Input RF file
-gale1c,rfFileName,'D:\Raw IQ datasets\GNSS Software Receivers\rawData_GPSL1GalileoE1B_Chapter7.dat',               % Name of RF data file used for Galileo E1B signal
-% Radio front end configurations
-gale1c,centerFrequency,1569030000,   % Radio center frequency [Hz]
-gale1c,samplingFreq,26e6,           % Sampling frequency [Hz]
-gale1c,bandWidth,4.2e6,              % Bandwidth of the front end [Hz]
-gale1c,sampleSize,8,               % Number of bits for one sample. For complex data this is the size for I+Q.
-gale1c,complexData,false,            % Complex or real data
-gale1c,iqSwap,false, 
-
-%Signal Modulation
-gale1c,modType,'CBOC', 			%Can take input either of the two types: 'CBOC' or 'SinBOC'
-
-% Acquisition parameters
-gale1c,acqSatelliteList,[1:36],       % Specify what GPS satellites to search for [PRN numbers]          
-gale1c,nonCohIntNumber,2,           % Number of non-coherent integration rounds for signal acquisition
-gale1c,cohIntNumber,1,              % Coherent integration time for signal acquisition [ms]
-gale1c,acqThreshold,9,             % Threshold for the signal presence decision rule
-gale1c,maxSearchFreq,6000,          % Maximum search frequency in one direction 
-
-% Tracking parameters
-gale1c,fllNoiseBandwidthWide,75, 	% FLL noise BW wide[Hz]
-gale1c,fllNoiseBandwidthNarrow,35,   % FLL noise BW narrow [Hz]
-gale1c,fllNoiseBandwidthVeryNarrow,5,   % FLL noise BW narrow [Hz]
-gale1c,fllDampingRatio,1.5,         % PLL damping ratio
-gale1c,fllLoopGain,0.7,             % PLL loop gain
-gale1c,pllNoiseBandwidthWide,15,        % PLL noise BW [Hz]
-gale1c,pllNoiseBandwidthNarrow,10,        % PLL noise BW [Hz]
-gale1c,pllNoiseBandwidthVeryNarrow,5,        % PLL noise BW [Hz]
-gale1c,pllDampingRatio,0.7,         % PLL damping ratio
-gale1c,pllLoopGain,0.2,             % PLL loop gain
-gale1c,dllDampingRatio,0.7,         % DLL damping ratio
-gale1c,dllNoiseBandwidth,1,         % DLL noise BW [Hz]
-gale1c,corrFingers,[-2 -0.1 0 0.1],     % Correlator finger positions [chips]
-gale1c,Nc,0.004,                     % integration time in seconds 
-gale1c,earlyFingerIndex,2,              % Index of early finger
-gale1c,promptFingerIndex,3,             % Index of prompt finger
-gale1c,lateFingerIndex,4,               % Index of late finger
-gale1c,noiseFingerIndex,1,              % Index of fingers for measuring noise level
-gale1c,pllWideBandLockIndicatorThreshold,0.5,               % PLL lock indicator threshold for DLL unlocked => locked
-gale1c,pllNarrowBandLockIndicatorThreshold,0.8,               % PLL lock indicator threshold for DLL unlocked => locked
-gale1c,runningAvgWindowForLockDetectorInMs, 40
-gale1c,fllWideBandLockIndicatorThreshold,0.5,               % FLL wide band lock indicator threshold for DLL unlocked => locked
-gale1c,fllNarrowBandLockIndicatorThreshold,0.7,               % FLL narrow band lock detector threshold for DLL unlocked => locked
-
-% Signal specific observation parameters
-gale1c,enableIonoCorrections,true,      % Use iono corrections or not
-gale1c,enableTropoCorrections,true,     % Use tropo corrections or not
-gale1c,ionomodel,'gale1c',             % Iono model to use (default,gale1c,beib1,glol1, ionex)
-gale1c,ionexFile,''                     % Filename for ionex file if ionomodel is = ionex
 
 % BeiDou B1 Settings
 
@@ -276,6 +228,7 @@ beib1,pllDampingRatio,0.5,          % PLL damping ratio
 beib1,pllLoopGain,0.2,              % PLL loop gain
 beib1,dllDampingRatio,0.7,          % DLL damping ratio
 beib1,dllNoiseBandwidth,1,          % DLL noise BW [Hz]
+beib1,dllLoopGain,1,         % DLL noise BW [Hz]
 beib1,Nc,0.001,                         % integration time in seconds for DLL 
 beib1,corrFingers,[-2 -0.1 0 0.1],    % Correlator finger positions [chips]
 beib1,earlyFingerIndex,2,               % Index of early finger
@@ -288,8 +241,11 @@ beib1,runningAvgWindowForLockDetectorInMs, 20
 beib1,fllWideBandLockIndicatorThreshold,0.5,               % FLL wide band lock indicator threshold for DLL unlocked => locked
 beib1,fllNarrowBandLockIndicatorThreshold,0.7,               % FLL narrow band lock detector threshold for DLL unlocked => locked
 
+
 % Signal specific observation parameters
 beib1,enableIonoCorrections,true,       % Use iono corrections or not
 beib1,enableTropoCorrections,true,      % Use tropo corrections or not
 beib1,ionomodel,'beib1',              % Iono model to use (default,gale1b,gale1b,beib1,glol1, ionex)
 beib1,ionexFile,''                      % Filename for ionex file if ionomodel is = ionex
+
+

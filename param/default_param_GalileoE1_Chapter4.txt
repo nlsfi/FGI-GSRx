@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -36,6 +36,7 @@
 sys,enabledSignals,[{['gale1b']}], % List of enabled signals
 sys,msToProcess,100000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
+sys,versionNumber,'v2.1.3', % FGI-GSRx version number to keep track of FGI-GSRx receiver
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
@@ -122,6 +123,7 @@ gale1b,pllDampingRatio,0.7,         % PLL damping ratio
 gale1b,pllLoopGain,0.2,             % PLL loop gain
 gale1b,dllDampingRatio,0.7,         % DLL damping ratio
 gale1b,dllNoiseBandwidth,1,         % DLL noise BW [Hz]
+gale1b,dllLoopGain,1,  		    % DLL loop gain 
 gale1b,Nc,0.004,                    % integration time in seconds for DLL 
 gale1b,corrFingers,[-2 -0.1 0 0.1],     % Correlator finger positions [chips]
 gale1b,earlyFingerIndex,2,              % Index of early finger

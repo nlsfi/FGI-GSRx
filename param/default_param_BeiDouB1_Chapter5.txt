@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -36,6 +36,7 @@
 sys,enabledSignals,[ {['beib1']}], % List of enabled signals
 sys,msToProcess,60000,       % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
 sys,msToSkip,0,             % Number of ms to skip from beginning of file
+sys,versionNumber,'v2.1.3', % FGI-GSRx version number to keep track of FGI-GSRx receiver
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
@@ -54,10 +55,10 @@ sys,showTrackingOutput,true,        % If set to true show the tracking output
 %Tracking option: parallel vs sequential
 sys,parallelChannelTracking,true, %if it is true, it means the user enables parallel tracking mode.
 sys,PCTenabled,true, % if it is true, MATLAB's Parallel Computing Toolbox (PCT) will be used. 
-sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\NLS Github\FGI-GSRx-v2.1.0\',
+sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\FGI-GSRx-v2.1.3\',
 sys,trackDataFilePath,'D:\Mat data files\GNSS Software Receivers\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
-sys,matlabpath,'C:\Program Files\MATLAB\R2025b\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
+sys,matlabpath,'C:\Program Files\MATLAB\R2026a\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
 
 
 
@@ -74,7 +75,7 @@ sys,lateFingerIndex,10,                  	% Index of late finger when multi corr
 % Navigation parameters
 nav,navSolPeriod,100,            % Output period in ms for navigation solution
 nav,elevationMask,5,            % Elevation mask in degrees [0 - 90]. Satellites below this elevation will be excluded from navigation
-nav,snrMask,30,            		% SNR mask in dB-Hz [usually in the range between 30-35 dB-Hz]. Satellites below the SNR mask will be excluded from navigation
+nav,snrMask,5,            	% SNR mask in dB [usually in the range between 0-5 dB]. Satellites below the SNR mask will be excluded from navigation: note the difference from earlier releases: SNR is now estimated in dB, and not expressed as C/N0 in dB-Hz
 nav,gpsLeapSecond,17,           % GPS-UTC leap seconds % Data recorded on 31 January, 2014, the GPS leap second was at that time 17 seconds
 % True/reference user position, if available
 nav,trueLat,60.161086788889,    
@@ -120,6 +121,7 @@ beib1,pllDampingRatio,0.5,          % PLL damping ratio
 beib1,pllLoopGain,0.2,              % PLL loop gain
 beib1,dllDampingRatio,0.7,          % DLL damping ratio
 beib1,dllNoiseBandwidth,1,          % DLL noise BW [Hz]
+beib1,dllLoopGain,1,	            % DLL loop gain 
 beib1,Nc,0.001,                         % integration time in seconds for DLL 
 beib1,corrFingers,[-2 -0.1 0 0.1],    % Correlator finger positions [chips]
 beib1,earlyFingerIndex,2,               % Index of early finger

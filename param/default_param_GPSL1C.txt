@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -36,6 +36,7 @@
 sys,enabledSignals,[{['gpsl1c']}],  % List of enabled signals
 sys,msToProcess,100e3,              % Number of ms to process in total from data file. If 0 the maximum number of ms will be processed
 sys,msToSkip,0e3,                   % Number of ms to skip from beginning of file
+sys,versionNumber,'v2.1.3', % FGI-GSRx version number to keep track of FGI-GSRx receiver
 
 % Input/Output file names
 sys,loadDataFile,false,     % Defines if data file is to be loaded
@@ -54,10 +55,10 @@ sys,showTrackingOutput,true,        % If set to true show the tracking output
 %Tracking option: parallel vs sequential
 sys,parallelChannelTracking,true, %if it is true, it means the user enables parallel tracking mode.
 sys,PCTenabled,true, % if it is true, MATLAB's Parallel Computing Toolbox (PCT) will be used. 
-sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2025\NLS Github\FGI-GSRx-v2.1.0\',
+sys,currentWorkingDirectoryForFGIGSRx,'D:\FGI-GSRx 2026\FGI-GSRx-v2.1.3\',
 sys,trackDataFilePath,'D:\Mat data files\GNSS Software Receivers\', %This is for parallel tracking
 sys,batchFileNameToRunParallelTracking,'runGNSSSingleSatelliteTracking.bat', %FGI-GSRx creates this batch file to be processed later in windows command prompt
-sys,matlabpath,'C:\Program Files\MATLAB\R2025b\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
+sys,matlabpath,'C:\Program Files\MATLAB\R2026a\bin\matlab', %MATLAB path to be provided in case MATLAB is not defined as a system variable in the general windows settings
 
 
 
@@ -124,6 +125,7 @@ gpsl1c,pllDampingRatio,0.8,             % PLL damping ratio
 gpsl1c,pllLoopGain,0.2,                 % PLL loop gain
 gpsl1c,dllDampingRatio,0.7,             % DLL damping ratio
 gpsl1c,dllNoiseBandwidth,1,             % DLL noise BW [Hz]
+gpsl1c,dllLoopGain,1,	            % DLL loop gain 
 gpsl1c,Nc,0.010,                        % integration time in seconds for DLL
 gpsl1c,corrFingers,[-2 -0.04 0 0.04],   % Correlator finger positions [chips]
 gpsl1c,earlyFingerIndex,2,              % Index of early finger
