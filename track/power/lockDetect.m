@@ -34,7 +34,7 @@ trackChannelData = tR.channel(ch);
 loopCnt = tR.loopCnt;
 
 
-step = (signalSettings.Nc*1000);
+step = signalSettings.codeLengthMs;
 runningAvgWindowForLockDetectorInMs = trackChannelData.runningAvgWindowForLockDetectorInMs;
 startInd = max([0 loopCnt-runningAvgWindowForLockDetectorInMs])+step;        
 endInd = min([loopCnt length(trackChannelData.I_P)]);
@@ -44,8 +44,8 @@ if(trackChannelData.bInited)
     IP_1 = trackChannelData.I_P(loopCnt-step);
     QP_1 = trackChannelData.Q_P(loopCnt-step);
 else
-    IP_1 = 0.001;
-    QP_1 = 0.001;    
+    IP_1 = 0.001*step;
+    QP_1 = 0.001*step;    
 end
 IP_2 = trackChannelData.I_P(loopCnt);
 QP_2 = trackChannelData.Q_P(loopCnt);        
