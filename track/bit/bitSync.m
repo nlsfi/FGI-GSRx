@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -39,14 +39,14 @@ else
 end
 bitSyncConfidenceLevel = trackChannelData.bitSyncConfidenceLevel;
 
-if(trackChannelData.bitSync == 1)
+if(trackChannelData.bitSync == 1) || loopCnt<1500
     return; % Nothing to do yet
 end
 
 % Consider a time window of 1000 ms
 minStartInd = max([loopCnt-1000 1]);
 
-% Calculate normalised phase difference between pair of samples next to each other
+% Calculate normalized phase difference between pair of samples next to each other
 phaseDiff = trackChannelData.I_P(minStartInd+1:loopCnt)-trackChannelData.I_P(minStartInd:loopCnt-1);
 normalizedPhaseDiff = phaseDiff/max(phaseDiff);
 
@@ -63,10 +63,10 @@ if isempty(phaseChangeIndices)==0
             if trackChannelData.bitBoundaryIndex==0
                 trackChannelData.bitBoundaryIndex=bitLength;
             end
-            % Check whether bitSync is really successfull by looking at
+            % Check whether bitSync is really successfully by looking at
             % the I_P correlation values: they should have at least same
             % sign for one whole bit
-            if mod(sum(sign(trackChannelData.I_P((loopCnt+trackChannelData.bitBoundaryIndex)-2*bitLength:(loopCnt+trackChannelData.bitBoundaryIndex)-bitLength-1))),bitLength)==0
+            if mod(sum(sign(trackChannelData.I_P((loopCnt+trackChannelData.bitBoundaryIndex)-5*bitLength:(loopCnt+trackChannelData.bitBoundaryIndex)-bitLength-1))),bitLength)==0
                 if  trackChannelData.bitSync == 0
                     disp(['   Bit sync for ', tR.signal, ' prn ', ...
                         int2str(trackChannelData.SvId.satId),' found at ',int2str(loopCnt), ' with index ', int2str(trackChannelData.bitBoundaryIndex)]);
