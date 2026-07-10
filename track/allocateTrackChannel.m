@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -58,7 +58,7 @@ trackChannel.pllDiscr = 0; % PLL discriminator value
 trackChannel.dllDiscr = zeros(1,dataLength); % DLL discriminator value
 
 % DLL Loop values
-[trackChannel.tau1code, trackChannel.tau2code] = calcLoopCoef(signalSettings.dllNoiseBandwidth, signalSettings.dllDampingRatio, 1.0);
+[trackChannel.tau1code, trackChannel.tau2code] = calcLoopCoef(signalSettings.dllNoiseBandwidth, signalSettings.dllDampingRatio, signalSettings.dllLoopGain);
 trackChannel.codeNco = 0; % Feedback value for code NCO
 trackChannel.codeError = 0; % Estimated code tracking error
 trackChannel.codeFreq   = 0; % Code frequency 
@@ -107,7 +107,8 @@ trackChannel.prevCodePhase = 0; % Code phase in correlation
 % estimate CNO from SNR
 trackChannel.noiseCNOfromSNR = zeros(1,dataLength); % Noise calculated from very early finger
 trackChannel.CN0fromSNR = zeros(1,dataLength); % CN0 estimated from SNR values
-trackChannel.meanCN0fromSNR = zeros(1,dataLength); % Mean of last 1000 CN0 from SNR values
+trackChannel.meanCN0fromSNR = zeros(1,dataLength); % Mean of last 'X' CN0 
+trackChannel.SNR = zeros(1,dataLength); % Estimated Signal-to-Noise Ratio
 
 % Bit Sync scripts
 trackChannel.bitSync = 0;
@@ -147,3 +148,6 @@ trackChannel.pllWideBandLockIndicatorThreshold=signalSettings.pllWideBandLockInd
 trackChannel.pllNarrowBandLockIndicatorThreshold=signalSettings.pllNarrowBandLockIndicatorThreshold;
 
 trackChannel.bitSyncConfidenceLevel = signalSettings.bitSyncConfidenceLevel;
+
+
+
