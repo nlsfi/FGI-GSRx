@@ -59,7 +59,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             % Let's start with the next sample count
             samplecount = obs.(signal).channel(channelNr).sampleCount(channelStartIndex); 
             
-            % We need to find the sample count that is the last preceeding the target sample count
+            % We need to find the sample count that is the last preceding the target sample count
             while (samplecount < samplecnt) 
                 channelStartIndex = channelStartIndex + stepsize;
                 samplecount = obs.(signal).channel(channelNr).sampleCount(channelStartIndex);
@@ -81,7 +81,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             obs.(signal).channel(channelNr).codephase = (obs.(signal).channel(channelNr).codePhase(ind_min) + codediff * phase)/codephasecoeff;         
             obs.(signal).channel(channelNr).doppler = obs.(signal).channel(channelNr).carrFreq(ind_min)...
                  * SPEED_OF_LIGHT/obs.(signal).channel(channelNr).carrierFreq;
-            obs.(signal).channel(channelNr).SNR = obs.(signal).channel(channelNr).CN0(ind_min);      
+            obs.(signal).channel(channelNr).measuredSNR = obs.(signal).channel(channelNr).SNR(ind_min);      
             
             % accumulated phase
             if isfield(obs.(signal).channel(channelNr), 'accumulatedPhase')
