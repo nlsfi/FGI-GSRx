@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -85,28 +85,45 @@ if(settings.sys.saveDataFile == true)
     save(settings.sys.dataFileOut,'settings','acqData','ephData');
 end
 
-
-
-% Execute tracking if results not allready available
 if(~exist('trackData'))
     tic;
+    if (contains(settings.sys.enabledSignals,'gpsl1') == 1)
+        if (~exist('trackResults'))
+            if strcmp(settings.gpsl1.trackingMode,'20msTracking') == 1
+                %Find out the bit boundaries for GPS L1 signal: continue tracking the
+                %signal for 2 seconds to detect bit boundaries
+                [acqData, settings] = doBitSynchronization(acqData,settings);                                         
+            end
+        end
+    end
+
+
     if (settings.sys.parallelChannelTracking)
         if (~exist('trackResults'))
             trackDataFileName = initializeAndSplitTrackingPerChannel(acqData, settings); 
             if settings.sys.PCTenabled == 1
-                trackData = doTrackingPCT(trackDataFileName,settings);                    
+                trackData = doTrackingPCT(trackDataFileName,settings);   
             else
                 doTrackingParallel(trackDataFileName,settings); 
                 return;
             end            
-        else
+        else             
             trackData = combineSingleTrackChannelData(settings);
         end
-    else
-        trackData = doTracking(acqData, settings);   
+    else    
+        trackData = doTracking(acqData, settings);       
     end
     trackData.trackingRunTime = toc;
+else
+    if (contains(settings.sys.enabledSignals,'gpsl1') == 1)
+        if strcmp(settings.gpsl1.trackingMode,'20msTracking') == 1
+            % Update tracking parameters for 20 ms integration for 
+            settings = gpsl1UpdateTrackingParametersFor20msIntegration(settings);
+        end
+    end
 end
+
+
 % Save results so far to file
 if(settings.sys.saveDataFile == true)
     save(settings.sys.dataFileOut,'settings','acqData','ephData','trackData');
@@ -119,7 +136,7 @@ if settings.sys.plotTracking == 1
 end
 
 
-% Convert track data to usefull observations for navigation if data not allready available
+% Convert track data to useful observations for navigation if data not already available
 if(~exist('obsData'))
     obsData = generateObservations(trackData, settings);
 end
@@ -154,6 +171,7 @@ statResults.hor
 statResults.ver
 statResults.dop
 statResults.RMS3D
+
 
 % Generate rinex file(s)
 if isfield(settings, 'rinex') % backwards compatibility for older param files
