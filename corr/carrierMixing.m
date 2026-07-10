@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -38,7 +38,7 @@ if(trackChannelData.bInited)
     carrFreq      = trackChannelData.acquiredFreq + trackChannelData.prevCarrFreq;
     carrPhase  = trackChannelData.prevCarrPhase; % define residual carrier phase    
 else
-    carrFreq = trackChannelData.acquiredFreq; % Firts round so use default values
+    carrFreq = trackChannelData.acquiredFreq; % First round so use default values
     carrPhase = 0;
 end
 
@@ -65,7 +65,7 @@ trackChannelData.Q_L            = sum(real(trackChannelData.lateCode)   .* qBase
 trackChannelData.I_E_E  = sum(real(trackChannelData.twoChipEarlyCode) .* iBasebandSignal) + sum(imag(trackChannelData.twoChipEarlyCode)  .* qBasebandSignal);
 trackChannelData.Q_E_E  = sum(real(trackChannelData.twoChipEarlyCode) .* qBasebandSignal) - sum(imag(trackChannelData.twoChipEarlyCode)  .* iBasebandSignal);
 
-% In addition, correlate data channel codes for GPS L1C and Beidou B1C signals
+% In addition, correlate data channel codes for GPS L1C and BeiDou B1C signals
 if strcmp(signalSettings.signal,'gpsl1c') || strcmp(signalSettings.signal,'beib1c')
     trackChannelData.dataI_P(loopCnt) = sum(trackChannelData.promptDataCode .* iBasebandSignal);
 end
