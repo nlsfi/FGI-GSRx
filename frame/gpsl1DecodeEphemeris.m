@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -37,24 +37,36 @@ function [eph, obsCh] = gpsl1DecodeEphemeris(obsCh, I_P, prn, signalSettings, co
 % Pi used in the GPS coordinate system
 gpsPi = const.PI;
 
-% For GPS we need the previous subframes last bit 
-bit = sum(I_P(obsCh.firstSubFrame-20:obsCh.firstSubFrame-1));
+if signalSettings.codeLengthMs==1
+    % For GPS we need the previous subframes last bit 
+    bit = sum(I_P(obsCh.firstSubFrame-20:obsCh.firstSubFrame-1));
+else
+    bit = I_P(obsCh.firstSubFrame);
+end
+
 preBit(bit > 0)  = 1;
 preBit(bit <= 0) = -1;  
 preBit = (preBit > 0);        
 D30Star = dec2bin(preBit);
 
-% Convert tracking output to navigation bits 
-startIndex = signalSettings.codeLengthMs * obsCh.firstSubFrame; % Include 2 bits from previous subframe
-endIndex = signalSettings.codeLengthMs * (obsCh.firstSubFrame + (signalSettings.frameLength) - 1);
-navBitsSamples = I_P(startIndex : signalSettings.codeLengthMs: endIndex)';
+if signalSettings.codeLengthMs==1
+    % Convert tracking output to navigation bits 
+    startIndex = signalSettings.codeLengthMs * obsCh.firstSubFrame; % Include 2 bits from previous subframe
+    endIndex = signalSettings.codeLengthMs * (obsCh.firstSubFrame + (signalSettings.frameLength) - 1);
+    navBitsSamples = I_P(startIndex : signalSettings.codeLengthMs: endIndex)';
+    % Group I_P values into bits
+    navBitsSamples = reshape(navBitsSamples, ...
+                             signalSettings.bitDuration, (size(navBitsSamples, 1) / signalSettings.bitDuration));
+    % Sum all samples in the bits to get the best estimate
+    navBits = sum(navBitsSamples,1);
+else
+    % Convert tracking output to navigation bits 
+    startIndex =  obsCh.firstSubFrame; % Include 2 bits from previous subframe
+    endIndex = (obsCh.firstSubFrame + (signalSettings.frameLength) - signalSettings.codeLengthMs);
+    navBitsSamples = I_P(startIndex : signalSettings.codeLengthMs: endIndex)';
+    navBits = navBitsSamples;
+end
 
-% Group I_P values into bits
-navBitsSamples = reshape(navBitsSamples, ...
-                         signalSettings.bitDuration, (size(navBitsSamples, 1) / signalSettings.bitDuration));
-
-% Sum all samples in the bits to get the best estimate
-navBits = sum(navBitsSamples,1);
 bits(navBits > 0)  = 1;
 bits(navBits <= 0) = -1;    
 
