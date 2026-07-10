@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -94,20 +94,20 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
             % Decode ephemerides if parity check is successful
             if (parityCheck == true)
-                if strcmp(signalSettings.signal,'gpsl1c') || strcmp(signalSettings.signal,'beib1c') 
+                 if strcmp(signalSettings.signal,'gpsl1c') 
                     [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).dataI_P], prn, signalSettings, allSettings.const);
                 else
                     [e(prn), obs.(signal).channel(channelNr)] = ephFunc(obs.(signal).channel(channelNr), [tR.(signal).channel(channelNr).I_P], prn, signalSettings, allSettings.const);
-                end
+                end    
                 obs.(signal).channel(channelNr).bParityOk = true;
-                %%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                          
-                if(allSettings.osnma.enableOSNMA==1)    %Saving the OSNMAHEX values for each PRN
-                   if strcmp(signalSettings.signal,'gale1b')                        
-                      osnmaHEX = vertcat(e(prn).subframe.osnmaHEX);
-                      obs.(signal).channel(channelNr).OSNMA.osnmaHEX= osnmaHEX;
-                   end
-                end
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+          %%%%%%%%%%%%%%%%%%%%OSNMA%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                          
+          if(allSettings.osnma.enableOSNMA==1)    %Saving the OSNMAHEX values for each PRN
+             if strcmp(signalSettings.signal,'gale1b')                        
+                osnmaHEX = vertcat(e(prn).subframe.osnmaHEX);
+                obs.(signal).channel(channelNr).OSNMA.osnmaHEX= osnmaHEX;
+             end
+          end
+           %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
             else
                 % Now we know wheterh parity is ok or not            
                 obs.(signal).channel(channelNr).bParityOk = false; 
@@ -123,11 +123,7 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
            obs.(signal).codeLengthInMs=allSettings.(signal).Nc*1000; %% Hack to read output processed by V3
 
-           if strcmp(signal,'gpsl1')==1
-                obs.(signal).channel(channelNr).firstSubFrame=obs.(signal).channel(channelNr).firstSubFrame; %% ZB: required to multiply by codeLengthInMs; because the index is generated considering the code length duration as 1 epoch
-            else
-                obs.(signal).channel(channelNr).firstSubFrame=obs.(signal).channel(channelNr).firstSubFrame*obs.(signal).codeLengthInMs; %% ZB: required to multiply by codeLengthInMs; because the index is generated considering the code length duration as 1 epoch
-           end           
+            obs.(signal).channel(channelNr).firstSubFrame=obs.(signal).channel(channelNr).firstSubFrame*obs.(signal).codeLengthInMs; %% ZB: required to multiply by codeLengthInMs; because the index is generated considering the code length duration as 1 epoch
         end
     end   
     if(exist('e'))
@@ -135,13 +131,13 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         clear e;
     end
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    if(allSettings.osnma.enableOSNMA==1)
-      if strcmp(signalSettings.signal,'gale1b')% Writing OSNMA HEX in .txt for PythonLiB
-          obs.(signal)= initiateOSNMA(obs.(signal),allSettings);
-      end
-    end   
-
- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            if(allSettings.osnma.enableOSNMA==1)
+              if strcmp(signalSettings.signal,'gale1b')% Writing OSNMA HEX in .txt for PythonLiB
+                  obs.(signal)= initiateOSNMA(obs.(signal),allSettings);
+              end
+            end   
+         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 end
+
