@@ -78,10 +78,10 @@ nav,elevationMask,5,            % Elevation mask in degrees [0 - 90]. Satellites
 nav,snrMask,30,            		% SNR mask in dB-Hz [usually in the range between 30-35 dB-Hz]. Satellites below the SNR mask will be excluded from navigation
 nav,gpsLeapSecond,18,           % GPS-UTC leap seconds
 
-% True/reference user position, if available (default FGI location is loaded)
-nav,trueLat,69.2754762,    
-nav,trueLong,15.9687992,
-nav,trueHeight,41.3,
+% True/reference user position, if available (true coodinates are estimated as mean during low-jamming period (not available otherwise))
+nav,trueLat,69.27547620,
+nav,trueLong,15.96879920,
+nav,trueHeight,40.824,
 
 %OSNMA parameters
 osnma,enableOSNMA,false,				                    % Disable or enable OSNMA based authenticated position solution
