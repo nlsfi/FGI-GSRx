@@ -39,9 +39,9 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
     
     obsResults.(signal).samplesPerMs = param.samplingFreq/1000; 
 
-    % Estimated travel time from satellite to user in ms. Same for all GNSS. 
+    % Estimated traveltime from satellite to user in ms. Same for all GNSS. 
     % This is needed to form PR, both the value is not critical.
-    % This is why it is called pseudorange and not range
+    % This is whi it is called pseudo range and not range
     obsResults.(signal).averagetraveltime = 80; 
 
     obsResults.(signal).codeLengthInMs = allSettings.(signal).codeLengthMs; 
@@ -54,7 +54,7 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
         obsResults.(signal).channel(i).carrierFreq = tR.(signal).channel(i).carrierFreq; 
         obsResults.(signal).channel(i).sampleCount = tR.(signal).channel(i).absoluteSample;
         obsResults.(signal).channel(i).SvId = tR.(signal).channel(i).SvId;
-        obsResults.(signal).channel(i).SNR = tR.(signal).channel(i).SNR;
+        obsResults.(signal).channel(i).CN0 = tR.(signal).channel(i).meanCN0fromSNR;
         obsResults.(signal).channel(i).carrFreq = tR.(signal).channel(i).carrFreq - tR.(signal).channel(i).intermediateFreq;
         obsResults.(signal).channel(i).sampleCount = tR.(signal).channel(i).absoluteSample;
         obsResults.(signal).channel(i).codePhase = tR.(signal).channel(i).codePhase;
