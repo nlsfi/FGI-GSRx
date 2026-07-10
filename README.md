@@ -5,6 +5,13 @@ The design of FGI-GSRx is modular, enabling researchers to modify or insert new 
 FGI-GSRx is open-source and is associated with the updated edition of the textbook 'GNSS Software Receivers' by Cambridge University Press. Supporting datasets include raw GNSS recordings, jamming and spoofing datasets, and GPS L1C example data, which are publicly available.
 The software is distributed under the GNU General Public License (GPL v3), ensuring freedom to modify and redistribute the code while disclaiming warranties.
 
+### FGI-GSRx v2.1.3
+
+FGI-GSRx v2.1.3 introdcues a new '20msTracking' mode for GPS L1 C/A signal to offer 20-ms integration based tracking after bit synchronization. The receiver first estimates the bit boundaries and then switches to fine tracking starting from the first detected bit interval that allows 20 ms integration without having any bit transition during the correlation interval. 
+If the user chooses ‘20msTracking’ mode, all the required FLL, PLL and DLL tracking parameters will be set considering 20 ms coherent integration at the tracking stage. The FLL, PLL and DLL will be invoked after 20 ms instead of 1 ms, and therefore, all the tracking loop parameters are adjusted accordingly in a newly introduced function named as: 
+‘gpsl1UpdateTrackingParametersFor20msIntegration.m’
+
+The user can change tracking loop parameters within this function, if need be, considering signal correlation after every 20 ms. 
 
 
 ### FGI-GSRx v2.1.2
