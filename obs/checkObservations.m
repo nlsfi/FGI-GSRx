@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Copyright 2015-2021 Finnish Geospatial Research Institute FGI, National
+%% Copyright 2015-2026 Finnish Geospatial Research Institute FGI, National
 %% Land Survey of Finland. This file is part of FGI-GSRx software-defined
 %% receiver. FGI-GSRx is a free software: you can redistribute it and/or
 %% modify it under the terms of the GNU General Public License as published
@@ -50,7 +50,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
                     obs.(signal).channel(channelNr).bObsOk = false;
                 end            
                 %SNR limit        
-                if(obs.(signal).channel(channelNr).SNR < allSettings.nav.snrMask)
+                if(obs.(signal).channel(channelNr).measuredSNR < allSettings.nav.snrMask)
                     obs.(signal).channel(channelNr).bObsOk = false;
                 end             
         end
