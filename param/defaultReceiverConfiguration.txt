@@ -96,7 +96,7 @@ fN,dir,"",               % Change this path to a folder you want to save the Rin
 fN,projectName,'DEMO',
 fN,countryCode,'FIN',
 hD,fileType,['N' 'O'],   % O=observation data, N=navigation data, ['N' 'O']
-hD,fileProgram,'FGI-GSRX-2.1.1',
+hD,fileProgram,'FGI-GSRX-2.1.3',
 hD,fileAgency,'FGI',
 hD,commentList,[{''}],   % example: [{'comment 1' 'comment 2'}]
 
