@@ -32,6 +32,9 @@ function dop = getDOPValues(const, H, XYZ)
 nrofSystems=length(H(1,:))-3;
 dop=4+nrofSystems; %size dop vector
 
+% Compute degrees-to-radians factor
+dtr = pi / 180;
+
 % Calculate DOP 
 dop     = zeros(1,dop);
 Q       = inv(H'*H);
@@ -43,8 +46,8 @@ dop(2)  = sqrt(Q(1,1) + Q(2,2) + Q(3,3));       % PDOP
 [dphi, dlambda, h] = convXyz2Geod(const, XYZ);
  
 % %Conversion from degree to radian
-phi = dphi/180;
-lambda = dlambda/180;
+phi = dphi * dtr;
+lambda = dlambda * dtr;
 
 % rotation matrix  'R_ENU'
 R_ENU = [-sin(lambda) -sin(phi)*cos(lambda) cos(lambda)*cos(phi);
