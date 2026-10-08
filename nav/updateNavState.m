@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function navSolution = updateNavState(navSolution)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This function update the navigation flag based on calculated solution
+% This function updates the navigation flag based on the calculated solution
 %
 % Inputs:
 %   navSolution - navigation solution
@@ -31,5 +31,6 @@ function navSolution = updateNavState(navSolution)
 % Set state based on fom
 if(navSolution.Pos.fom < 50)
     navSolution.Pos.Flag = 'GOOD_FOR_NAV';
+else
+    navSolution.Pos.Flag = 'NOT_GOOD_FOR_NAV';
 end    
-
