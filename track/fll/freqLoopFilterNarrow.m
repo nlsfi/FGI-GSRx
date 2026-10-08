@@ -21,6 +21,7 @@ function tR = freqLoopFilterNarrow(signalSettings,tR,ch)
 % Narrow bandwidth FLL loop filter for tracking for all signals
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -31,7 +32,6 @@ function tR = freqLoopFilterNarrow(signalSettings,tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = tR.loopCnt;
 BWFLL = trackChannelData.fllNoiseBandwidthNarrow;
 dampingRatioFLL = trackChannelData.fllDampingRatio;
 loopGainFLL = trackChannelData.fllLoopGain;
@@ -40,7 +40,7 @@ PDIcarr = tR.PDIcarr;
 % Calculate frequency error from discriminator function
 fllDiscr = trackChannelData.fllDiscr;
 
-% Freuqency locked loop filter (narrow band)
+% Frequency locked loop filter (narrow band)
 Wn = (8*dampingRatioFLL*BWFLL)/(4*dampingRatioFLL^2 + 1);
 c1 = (1/loopGainFLL)*(8*dampingRatioFLL*Wn*PDIcarr)/(4+(4*dampingRatioFLL*Wn*PDIcarr)+(Wn*PDIcarr)^2);
 c2 = (1/loopGainFLL)*(4*(Wn*PDIcarr)^2)/(4+(4*dampingRatioFLL*Wn*PDIcarr)+(Wn*PDIcarr)^2);
@@ -64,4 +64,3 @@ trackChannelData.prevIR11 = IR11;
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
-

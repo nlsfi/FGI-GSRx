@@ -22,15 +22,15 @@ function [obs, sat, navSolution] = getNavSolution(obs, sat, navSolution, allSett
 %
 % Inputs:
 %   obs             - Observations for one epoch
-%   sat             - satellite positions and velocities for one epoch
+%   sat             - Satellite positions and velocities for one epoch
 %   navSolution     - Current navigation solution 
-%   allSettings     - receiver settings.
-%   ephData         -  ephemeris data for all systems
+%   allSettings     - Receiver settings
 %
 % Outputs:
-%   obsSingle       - Observations for one epoch
-%   satSingle       - satellite positions and velocities for one epoch
-%   navSolutions    - Output from navigation (position, velocity, time,
+%   obs             - Observations for one epoch
+%   sat             - satellite positions and velocities for one epoch
+%   navSolution     - Output from navigation (position, velocity, time,
+%   dop etc)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -90,5 +90,3 @@ end
 navSolution.Pos = Pos;
 navSolution.Vel = Vel;
 navSolution.Time = Time;
-
-

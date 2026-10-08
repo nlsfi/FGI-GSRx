@@ -288,4 +288,3 @@ for i = 1:settings.sys.nrOfSignals
 
     disp(strcat(signal,' Enabled'));
 end
-

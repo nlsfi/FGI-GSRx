@@ -21,6 +21,7 @@ function [tR]  = carrierMixing(signalSettings,tR, ch, pRfData)
 % Carrier and code mixing (correlation)
 %
 % Inputs:
+%   signalSettings  - Settings for one signal
 %   tR              - Results from signal tracking for one signals
 %   ch              - Channel index
 %   pRfData         - RF data from file
@@ -35,21 +36,21 @@ trackChannelData = tR.channel(ch);
 loopCnt = tR.loopCnt;
 blockSize = trackChannelData.blockSize(loopCnt);
 if(trackChannelData.bInited)
-    carrFreq      = trackChannelData.acquiredFreq + trackChannelData.prevCarrFreq;
-    carrPhase  = trackChannelData.prevCarrPhase; % define residual carrier phase    
+    carrFreq = trackChannelData.acquiredFreq + trackChannelData.prevCarrFreq;
+    carrPhase = trackChannelData.prevCarrPhase; % define residual carrier phase
 else
     carrFreq = trackChannelData.acquiredFreq; % First round so use default values
     carrPhase = 0;
 end
 
 % Get time stamps for carrier signal
-time    = (0:blockSize) ./ signalSettings.samplingFreq;
+time = (0:blockSize) ./ signalSettings.samplingFreq;
 
 % Get the argument to sin/cos functions
 trigarg = -((carrFreq * 2.0 * pi) .* time) + carrPhase;
 
 % Compute the carrier replica signal
-carrSignal = exp(1i.*trigarg(1:blockSize));
+carrSignal = exp(1i .* trigarg(1:blockSize));
 
 % Mix signal to baseband
 iBasebandSignal = real(carrSignal .* pRfData);

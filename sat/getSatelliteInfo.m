@@ -23,13 +23,13 @@ function [obs, sat] = getSatelliteInfo(obs, ephData, navSolution, allSettings)
 %
 % Inputs: 
 %   obs             - Observations for one epoch
-%   ephData         -  ephemeris data for all systems
+%   ephData         - Ephemeris data for all systems
 %   navSolution     - Navigation information
 %   allSettings     - Receiver configuration settings
 %
 % Outputs:
 %   obs             - Observations for one epoch
-%   sat             - satellite data for one epoch
+%   sat             - Satellite data for one epoch
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -46,7 +46,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
             % Set function to call
             codeFunc = str2func([signal,'Satpos']);
             
-            % Temporary varaibel for satellite indexing
+            % Temporary variable for satellite indexing
             prn = obs.(signal).channel(channelNr).SvId.satId;
             
             % Calculate satellite info for each system

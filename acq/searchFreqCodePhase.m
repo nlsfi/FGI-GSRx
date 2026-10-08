@@ -91,7 +91,7 @@ for frqBinIndex = 1:numberOfFrqBins
             % Mix with carrier replica
             IQ = sigCarr .* signal(nonCohIndex,:);
   
-            % Reste sum of coherent integration
+            % Reset sum of coherent integration
             sumCoh=zeros(1,samplesPerCode);
             
             % Coherent integration

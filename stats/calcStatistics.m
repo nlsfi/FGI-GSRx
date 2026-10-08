@@ -83,7 +83,7 @@ for i=1:smoothingInterval:ind-smoothingInterval
     noOfUsedSat(j) =mean(nSat(i:i+smoothingInterval-1));
     j=j+1;
 end
-clear x.X; clear x.Y; clear x.Z; clear x.latitude; clear x.longitude; clear x.height;
+
 x.X = X;
 x.Y = Y;
 x.Z = Z;
@@ -127,7 +127,7 @@ x.sn	= (x.topo(1,1)*(x.X-x.xr) + x.topo(1,2)*(x.Y-x.yr) + x.topo(1,3)*(x.Z-x.zr)
 x.se	= (x.topo(2,1)*(x.X-x.xr) + x.topo(2,2)*(x.Y-x.yr) + x.topo(2,3)*(x.Z-x.zr));
 x.su	= (x.topo(3,1)*(x.X-x.xr) + x.topo(3,2)*(x.Y-x.yr) + x.topo(3,3)*(x.Z-x.zr));
 
-% Compute speed (horisontal) and velocity (3D)
+% Compute speed (horizontal) and velocity (3D)
 x.vel_n = (x.topo(1,1)*(x.VX) + x.topo(1,2)*(x.VY) + x.topo(1,3)*(x.VZ));
 x.vel_e = (x.topo(2,1)*(x.VX) + x.topo(2,2)*(x.VY) + x.topo(2,3)*(x.VZ));
 x.vel_u = (x.topo(3,1)*(x.VX) + x.topo(3,2)*(x.VY) + x.topo(3,3)*(x.VZ));
@@ -142,7 +142,7 @@ x.meansn	= (x.topo(1,1)*(x.meanx-x.xr) + x.topo(1,2)*(x.meany-x.yr) + x.topo(1,3
 x.meanse	= (x.topo(2,1)*(x.meanx-x.xr) + x.topo(2,2)*(x.meany-x.yr) + x.topo(2,3)*(x.meanz-x.zr));
 x.meansu	= (x.topo(3,1)*(x.meanx-x.xr) + x.topo(3,2)*(x.meany-x.yr) + x.topo(3,3)*(x.meanz-x.zr));
 
-% Horisontal deviation
+% Horizontal deviation
 x.dhor = sqrt(x.se.^2 + x.sn.^2);
 
 % Vertical deviation
@@ -157,7 +157,7 @@ ver=sort(x.dver);
 x.Index50=floor(size(x.X,2)*0.5) + 1;
 x.Index95=floor(size(x.X,2)*0.95) + 1;
 
-% Horisontal stats
+% Horizontal stats
 x.hor.Error50=hor(x.Index50);
 x.hor.Error95=hor(x.Index95);
 x.hor.Max=max(x.dhor);
@@ -275,9 +275,9 @@ x.ppp.true.dev_max_u = max(abs(su));
 
 figure;
 plot([1:1:length(x.se)],x.se,'b-*'); hold on; grid on;
-plot([1:1:length(x.sn)],x.sn,'g-+'); 
-plot([1:1:length(x.su)],x.su,'r-o');  
-plot([1:1:length(noOfUsedSat)],noOfUsedSat,'m-');  
+plot([1:1:length(x.sn)],x.sn,'g-+');
+plot([1:1:length(x.su)],x.su,'r-o');
+plot([1:1:length(noOfUsedSat)],noOfUsedSat,'m-');
 legend('E','N','U','N_{Sat}');
 xlabel('Time (s)');
 ylabel('Deviation (m)');

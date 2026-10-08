@@ -22,7 +22,8 @@ function trackChannel = allocateTrackChannel(trackChannel, allSettings, signal)
 %
 % Inputs:
 %   trackChannel    - Data structure for one tracking channel
-%   signalSettings  - receiver settings for one signal
+%   allSettings     - receiver settings
+%   signal          - signal acronym
 %
 % Outputs:
 %   trackChannel    - Updated data structure for one tracking channel
@@ -148,6 +149,3 @@ trackChannel.pllWideBandLockIndicatorThreshold=signalSettings.pllWideBandLockInd
 trackChannel.pllNarrowBandLockIndicatorThreshold=signalSettings.pllNarrowBandLockIndicatorThreshold;
 
 trackChannel.bitSyncConfidenceLevel = signalSettings.bitSyncConfidenceLevel;
-
-
-

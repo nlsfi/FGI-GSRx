@@ -45,7 +45,7 @@ index= strcmp(saveEnabledSignals,signal);
 allSettings.sys.enabledSignals = saveEnabledSignals{index};
 
 % Open file for reading    
-[fid, message] = fopen(signalSettings.rfFileName, 'rb');
+[fid, ~] = fopen(signalSettings.rfFileName, 'rb');
 if (fid == -1)
     error('Failed to open data file for tracking!');
     return;    
@@ -88,5 +88,3 @@ allSettings.sys.nrOfSignals=saveNrOfSignals;
 save(trackDataFileName, 'trackResults', 'allSettings','acqData');
 % Notify user tracking is over
 disp(['   Tracking is over (elapsed time ', datestr(now - trackStartTimeInstance, 13), ')']) 
-
-

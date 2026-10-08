@@ -26,9 +26,9 @@ function trackDataCombined = combineSingleTrackChannelData(allSettings)
 % Outputs:
 %   trackDataCombined    - Combined tracking data for all the satellites
 %   from all the specified constellations: tracking data file name and file 
-%   path for one single satellite is given in the user confirugation file:
+%   path for one single satellite is given in the user configuration file:
 %   the receiver then combined all the tracking data files available in the 
-%   speficic file path
+%   specific file path
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 trackDataInputFile= allSettings.sys.dataFileIn;

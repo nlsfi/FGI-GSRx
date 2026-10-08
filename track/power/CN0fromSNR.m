@@ -21,6 +21,7 @@ function tR = CN0fromSNR(signalSettings,tR,ch)
 % Function for estimating CNO values using SNR
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %

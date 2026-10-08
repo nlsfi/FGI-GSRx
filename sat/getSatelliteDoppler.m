@@ -22,8 +22,8 @@ function [doppler,el,az] = getSatelliteDoppler(const, carrFreq, satSingle, pos)
 %
 % Inputs:
 %   const       - Constants
-%   satSingle   - Satellite data for one epoch
 %   carrFreq    - Signal carrier frequency
+%   satSingle   - Satellite data for one epoch
 %   pos         - user position
 %
 % Outputs:
@@ -43,7 +43,7 @@ dz = satSingle.Pos(3) - pos(3);
 
 % Calculate Azimuth, Elevation and distance to satellite
 %[az, el, dist] = calcAzimElevDist(const, pos(1:3), [dx;dy;dz], 6378137, 298.257223563);
-[az, el, dist] = calcAzimElevDist(const, pos(1:3), [dx;dy;dz]);
+[az, el, ~] = calcAzimElevDist(const, pos(1:3), [dx;dy;dz]);
 
 % Calculate satellite doppler
 dopp = dx * satSingle.Vel(1) + dy * satSingle.Vel(2) + dz * satSingle.Vel(3);
@@ -51,6 +51,3 @@ dopp = dopp / sqrt(dx*dx+dy*dy+dz*dz);
 doppler = -dopp*carrFreq/SPEED_OF_LIGHT;
 
 %[az_sphere, el_sphere, dist] = calcAzimElevDistSphere(pos(1:3), [dx;dy;dz], 6370000);
-
-
-

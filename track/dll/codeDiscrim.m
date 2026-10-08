@@ -21,6 +21,7 @@ function tR = codeDiscrim(signalSettings,tR,ch)
 % Code discriminator function
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -41,8 +42,7 @@ Q_L = trackChannelData.Q_L;
 codeError = (sqrt(I_E * I_E + Q_E * Q_E) - sqrt(I_L * I_L + Q_L * Q_L)) / ...
            (sqrt(I_E * I_E + Q_E * Q_E) + sqrt(I_L * I_L + Q_L * Q_L)) ;              
 
-trackChannelData.dllDiscr(loopCnt)     = codeError;
+trackChannelData.dllDiscr(loopCnt) = codeError;
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
-

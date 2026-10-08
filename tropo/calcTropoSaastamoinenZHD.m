@@ -22,7 +22,7 @@ function ZHD = calcTropoSaastamoinenZHD(const, pos)
 % 
 % Inputs:
 %   const   - Constants
-%   pos     -  Position vector, i.e. X,Y,Z
+%   pos     - Position vector, i.e. X,Y,Z
 %
 % Outputs:
 %   ZHD     - Tropospheric hydrostatic zenith delay 
@@ -32,12 +32,10 @@ function ZHD = calcTropoSaastamoinenZHD(const, pos)
 % Ref: Book: GPS Satellite Surveying, by Alfred Leick, pp 197, formula 6.17
 
 % Convert to lat, lon, alt
-[dLat,dLon,dAlt] = wgsxyz2lla(const, pos(1:3)');
+[dLat,~,dAlt] = wgsxyz2lla(const, pos(1:3)');
 
 % Saastamoinen zenith hydrostatic delay model
 P0 = 1013.25; % Pressure in mbar
 H = dAlt/1000; % Height in km
 Lat = dLat / 360*pi*2;
 ZHD = 0.0022768*P0/(1-0.00266*cos(2*Lat)-0.00028*H); % Zenith hydrostatic delay
-
-

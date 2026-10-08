@@ -22,7 +22,7 @@ function dop = getDOPValues(const, H, XYZ)
 % 
 % Input:
 %  const  - System constant used in the receiver
-%   H     - Directional cosine matrix
+%  H      - Directional cosine matrix
 %  XYZ    - Observed position in ECEF
 %
 % Output:
@@ -43,9 +43,9 @@ dop(2)  = sqrt(Q(1,1) + Q(2,2) + Q(3,3));       % PDOP
 % In order to compute 'HDOP' and 'VDOP', we need to convert from ECEF to
 % LLA
 
-[dphi, dlambda, h] = convXyz2Geod(const, XYZ);
+[dphi, dlambda, ~] = convXyz2Geod(const, XYZ);
  
-% %Conversion from degree to radian
+% Conversion from degree to radian
 phi = dphi * dtr;
 lambda = dlambda * dtr;
 

@@ -16,7 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function obs = applyObservationCorrections(allSettings, obs, sat, navSolution,corrInputData)
+function obs = applyObservationCorrections(allSettings, obs, sat, navSolution, corrInputData)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This is the main function for applying all corrections to the pseudoranges
 % and dopplers
@@ -25,7 +25,10 @@ function obs = applyObservationCorrections(allSettings, obs, sat, navSolution,co
 %   allSettings     - receiver configuration settings
 %   obs             - Observations for one epoch
 %   sat             - satellite positions and velocities for one epoch
-%   navSolutions    - Output from navigation (position, velocity, time,
+%   navSolution     - Output from navigation (position, velocity, time,
+%   dop etc)
+%   corrInputData   - correction data which can be applied for different
+%   corrections depending on the model type
 %
 % Outputs:
 %   obs             - Observations for one epoch
@@ -65,11 +68,3 @@ for signalNr = 1:allSettings.sys.nrOfSignals
         end
     end
 end
-
-
-
-
-
-
-
-

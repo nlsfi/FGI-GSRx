@@ -21,16 +21,16 @@ function [spectra,freq] = fftSpec(x,seg_len,overlap,Nfft,Fs,range)
 % This function generates the psd of a given input signal
 %
 %  Inputs: 
-%       x - Input data (time series) 
+%       x       - Input data (time series) 
 %       seg_len - length of data that should be used
 %       overlap - TBD
-%       Nfft - Number of points for FFT
-%       Fs - Sampling frequency
-%       range - 0 if one sided and 1 if two sided spectrum
+%       Nfft    - Number of points for FFT
+%       Fs      - Sampling frequency
+%       range   - 0 if one sided and 1 if two sided spectrum
 %
 %   Output:
 %       spectra - Spectrum
-%       freq - Frequency vector for data
+%       freq    - Frequency vector for data
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -60,10 +60,10 @@ win_meansq = (window.' * window) / seg_len;
 xx = zeros(Nfft,1);
 Pxx = xx;
 
-% Calulate and add FFT's
+% Calculate and add FFT's
 n_ffts = 0;
 x_len = length(x);
-for start_seg = [1:seg_len-overlap:x_len-seg_len+1]
+for start_seg = 1:seg_len-overlap:x_len-seg_len+1
     end_seg = start_seg+seg_len-1;
 
     xx(1:seg_len) = window .* x(start_seg:end_seg);
@@ -95,7 +95,4 @@ spectra    = zeros(psd_len,1);
 scale = n_ffts * seg_len * Fs * win_meansq;
 spectra(:,1) = Pxx / scale;
 
-freq = [0:psd_len-1].' * ( Fs / Nfft );
-
-
-
+freq = (0:psd_len-1).' * ( Fs / Nfft );

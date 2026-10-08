@@ -21,6 +21,7 @@ function tR = phaseLoopFilterWide(signalSettings,tR,ch)
 % PLL loop filter for all signals
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -31,7 +32,6 @@ function tR = phaseLoopFilterWide(signalSettings,tR,ch)
 
 % Set local variables
 trackChannelData = tR.channel(ch);
-loopCnt = tR.loopCnt;
 BWPLL = trackChannelData.pllNoiseBandwidthWide;
 loopGainPLL = trackChannelData.pllLoopGain;
 dampingRatioPLL = trackChannelData.pllDampingRatio;
@@ -63,7 +63,3 @@ trackChannelData.prevIR4 = IR4;
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
-
-
-
-

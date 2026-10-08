@@ -61,12 +61,10 @@ for k=1:tR.nrObs
     if strcmp(signalSettings.signal,'beib1')==1
         if tR.channel(k).SvId.satId<6
             secondaryCode = [1 1];      % As one data bit lasts for 2 msec for GEO satellites and does not have any NH code modulation
-            clear preamble_ms;
             preamble_ms = kron(preamble_bits, secondaryCode);
             preambleInterval = 600;     % Preamble interval for GEO satellites is 0.6 seconds
             preambleCorrThr = 20;       % Preamble correlation threshold for GEO satellites (10 times less than MEO)
         else
-            clear preamble_ms;
             preamble_ms = kron(preamble_bits, signalSettings.secondaryCode);
             preambleInterval = signalSettings.preambleIntervall;
             preambleCorrThr = signalSettings.preambleCorrThr;
@@ -88,8 +86,7 @@ for k=1:tR.nrObs
     %Correlate tracking output with the preamble
     tlmXcorrResult = calcCrossCorrelation(firstNbits, preamble_ms);
 
-    % Find all starting points of all preamble like patterns 
-    clear index
+    % Find all starting points of all preamble like patterns
     xcorrLength = (length(tlmXcorrResult) +  1) /2;
     index = find(abs(tlmXcorrResult(xcorrLength : xcorrLength * 2 - 1)) >= preambleCorrThr)' + searchStartOffset;    
     

@@ -22,7 +22,8 @@ function tC = getCorrelatorFingers(tC,allSettings,signal)
 %
 % Inputs:
 %   tC           - Results from signal tracking for one channel
-%   fingerParams - settings with finger configuration 
+%   allSettings  - Receiver settings
+%   signal       - Signal acronym
 %
 % Outputs:
 %   tC           - Results from signal tracking for one channel
@@ -40,8 +41,3 @@ if (allSettings.sys.enableMultiCorrelatorTracking == true)
     tC.mulCorrFingers = allSettings.sys.mulCorrFingers;
     tC.mulCorrFingersOut = zeros(dataLength,length(allSettings.sys.mulCorrFingers));
 end
-
-
-
-
-

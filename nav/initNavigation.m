@@ -84,7 +84,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     for channelNr = 1:obs.nrObs
         if(obs.channel(channelNr).bObsOk)
             diff = obs.channel(channelNr).sampleCount - startSampleCount;
-            [Y,I] = sort(abs(diff));
+            [~,I] = sort(abs(diff));
             obs.channel(channelNr).channelStartIndex = min(I(1),I(2));        
         end
     end
@@ -112,7 +112,3 @@ navData.Vel.df = NaN;
 navData.Vel.bValid = false;
 
 navData.Time.receiverTow = NaN;
-
-
-
-

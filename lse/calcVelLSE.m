@@ -25,7 +25,7 @@ function Vel = calcVelLSE(obs, sat, allSettings, Vel, Pos)
 %   sat             - Satellite positions and velocities for one epoch
 %   allSettings     - receiver settings
 %   Vel             - receiver velocity and receiver clock drift
-%   pos             - Initial position for the LSE 
+%   Pos             - Initial position for the LSE
 %
 % Outputs:
 %   Vel             - receiver velocity and receiver clock drift
@@ -96,9 +96,7 @@ for iter = 1:nmbOfIterations
         
     end
 
-    % This is the actual solutions to the LSE optimisation problem
-    clear H;
-    clear dR;    
+    % This is the actual solution to the LSE optimisation problem
     H=sv_matrix;
     dR=omp.dRange_rate;
     DeltaVel=(H'*H)^(-1)*H'*dR';
@@ -124,5 +122,3 @@ Vel.fom = norm(Res/length(Res));
 if(Vel.fom < 50)
     Vel.bValid = true;
 end
- 
- 

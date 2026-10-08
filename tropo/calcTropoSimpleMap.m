@@ -33,6 +33,3 @@ dEle = sat.elev/180*pi;
 % Simple mapping function for standard point positioning
 % http://www.navipedia.net/index.php/Tropospheric_Delay
 tropo_map = 1.001/sqrt(0.002001 + sin(dEle)^2);
-
-
-

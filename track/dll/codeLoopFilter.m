@@ -21,6 +21,7 @@ function tR = codeLoopFilter(signalSettings,tR,ch)
 % Code tracking loop filter
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -62,9 +63,5 @@ trackChannelData.prevCodeFreq = codeFreq;
 trackChannelData.prevCodeNco = codeNco;
 trackChannelData.prevCodeError = codeError;   
 
-
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
-
-
-

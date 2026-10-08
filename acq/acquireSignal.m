@@ -149,7 +149,7 @@ for PRN = signalSettings.acqSatelliteList
     baseline = mean(results(frequencyBinIndex,codePhaseRange));
     peakMetric = (peakSize-baseline)/variance;
 
-    acqResults.channel(PRN).peakMetric = (peakSize-baseline)/variance;
+    acqResults.channel(PRN).peakMetric = peakMetric;
     acqResults.channel(PRN).peakValue = peakSize;    
     acqResults.channel(PRN).variance = variance;
     acqResults.channel(PRN).baseline = baseline;
@@ -199,11 +199,9 @@ for PRN = signalSettings.acqSatelliteList
             numberOfFrqBinsFineEstimation = floor(2 * signalSettings.maxSearchFreq/freqStepFineEstimation + 1);
             frqBins = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep - ...
                                signalSettings.maxSearchFreq + ...
-                               freqStepFineEstimation * [1:1:numberOfFrqBinsFineEstimation];   
+                               freqStepFineEstimation * (1:1:numberOfFrqBinsFineEstimation);
             dataResultsFine = searchFreqCodePhase(upSampledCodeE1B, signalSettings, pRfData(codePhase-1:end), PRN);
             pilotResultsFine = searchFreqCodePhase(upSampledCodeE1C, signalSettings, pRfData(codePhase-1:end), PRN);
-            [peakSizeData, frequencyBinIndexData] = max(max(dataResultsFine, [], 2));
-            [peakSizePilot, frequencyBinIndexPilot] = max(max(pilotResultsFine, [], 2));
             searchResults = dataResultsFine + abs(pilotResultsFine);     
         elseif strcmp(signalSettings.signal,'gpsl1c') || strcmp(signalSettings.signal,'beib1c')
             signalSettings.cohIntNumber = 1;
@@ -231,28 +229,28 @@ for PRN = signalSettings.acqSatelliteList
                 signalSettings.nonCohIntNumber = 5;   
             end
             signalSettings.codeLengthMs = 20;
-            % Number of the frequency bins for the given acquisition band        
-            freqStepFineEstimation = 1000/(2*signalSettings.codeLengthMs*signalSettings.cohIntNumber);        
-            % Number of the frequency bins for the given acquisition band (500Hz steps)        
+            % Number of the frequency bins for the given acquisition band
+            freqStepFineEstimation = 1000/(2*signalSettings.codeLengthMs*signalSettings.cohIntNumber);
+            % Number of the frequency bins for the given acquisition band (500Hz steps)
             numberOfFrqBinsFineEstimation = floor(2 * signalSettings.maxSearchFreq/freqStepFineEstimation + 1);
             frqBins = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep - ...
                                signalSettings.maxSearchFreq + ...
-                               freqStepFineEstimation * [1:1:numberOfFrqBinsFineEstimation];   
-            searchResults = searchFreqCodePhase(upSampledCode, signalSettings, pRfData(codePhase:end), PRN);        
+                               freqStepFineEstimation * (1:1:numberOfFrqBinsFineEstimation);
+            searchResults = searchFreqCodePhase(upSampledCode, signalSettings, pRfData(codePhase:end), PRN);
         end
-            %Find the code phase peak: should be around the first sample        
-            [peakVal codePhase] = max(max(searchResults(:,:)));        
-            [fineDopplerIndexVal fineDopplerIndex] = max(searchResults(:,codePhase));                   
-            fineDoppler = frqBins(fineDopplerIndex) - signalSettings.intermediateFreq - (PRN-8)*signalSettings.frequencyStep;                 
-            %Restore original acquisition parameters                    
-            signalSettings.cohIntNumber=cohIntNumber;        
-            signalSettings.nonCohIntNumber = nonCohIntNumber;         
-            signalSettings.maxSearchFreq = freqWindow; % One sided        
+            %Find the code phase peak: should be around the first sample
+            [~, codePhase] = max(max(searchResults(:,:)));
+            [~, fineDopplerIndex] = max(searchResults(:,codePhase));
+            fineDoppler = frqBins(fineDopplerIndex) - signalSettings.intermediateFreq - (PRN-8)*signalSettings.frequencyStep;
+            %Restore original acquisition parameters
+            signalSettings.cohIntNumber=cohIntNumber;
+            signalSettings.nonCohIntNumber = nonCohIntNumber;
+            signalSettings.maxSearchFreq = freqWindow; % One sided
             signalSettings.intermediateFreq = intermediateFreq;
-            signalSettings.codeLengthMs = codeLengthMs;        
+            signalSettings.codeLengthMs = codeLengthMs;
             %fineDoppler = searchFreqCodePhaseFineEstimation(upSampledCode(1,:), signalSettings, pRfData(codePhase:end), PRN, acqResults.channel(PRN).doppler);
-            acqResults.channel(PRN).doppler    = acqResults.channel(PRN).doppler + fineDoppler;
-            acqResults.channel(PRN).carrFreq    = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep + acqResults.channel(PRN).doppler;                
+            acqResults.channel(PRN).doppler = acqResults.channel(PRN).doppler + fineDoppler;
+            acqResults.channel(PRN).carrFreq = signalSettings.intermediateFreq + (PRN-8)*signalSettings.frequencyStep + acqResults.channel(PRN).doppler;
     else
         % No signal with this PRN 
         fprintf('.. ');
@@ -281,4 +279,3 @@ fprintf(' signals acquired in %6.2f sec.\n',t);
 
 % Set duration of acquisition
 acqResults.duration = t;
-

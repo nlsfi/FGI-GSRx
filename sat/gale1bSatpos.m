@@ -23,12 +23,14 @@ function [satPositions, satClkCorr, satT_GD, satVelocity, satHealth, satSISA] = 
 %
 %   Inputs:
 %       transmitTime  - transmission time
-%       prn         - prn to be processed
+%       prn           - prn to be processed
 %       eph           - ephemeridies of satellites
+%       const         - constants
 %
 %   Outputs:
 %       satPositions  - positions of satellites (in ECEF system [X; Y; Z;])
 %       satClkCorr    - correction of satellites clocks
+%       satT_GD       - L1 pseudorange group delay correction
 %       satVelocity   - velocity of satellites (in ECEF system [VX; VY; VZ;])
 %       satHealth     - Boolean satellite health flag. true for good satellites
 %       satSISA       - predicted SIS accuracy standard deviation
@@ -37,10 +39,11 @@ function [satPositions, satClkCorr, satT_GD, satVelocity, satHealth, satSISA] = 
 
 noOfSubframes = size(ephAll(prn).subframe,2);
 
+timeDifference = zeros(1, noOfSubframes);
 for i=1:noOfSubframes
     timeDifference(i) = abs(ephAll(prn).subframe(i).TOW_6 - transmitTime);
 end
-[minVal currentSubframeNo] = min(timeDifference);
+[~, currentSubframeNo] = min(timeDifference);
 
 previousSubframeNo = max([1 (currentSubframeNo-1)]);
 %Find if Issue of Data has changed from the previous subframe

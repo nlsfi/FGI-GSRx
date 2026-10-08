@@ -40,5 +40,4 @@ for index=1:250:length(navBits)
     halfPageSymbolsDeinterleaved = gale1bDeinterleaving(halfPageSymbols,8,30);
     % Viterbi decoding
     decodedNavBits(bitIndex+1,:) = viterbiDecoding(halfPageSymbolsDeinterleaved,trel,tblen); %Hard decision
-    clear halfPage*;
 end

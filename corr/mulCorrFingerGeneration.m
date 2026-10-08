@@ -21,6 +21,7 @@ function [fingers,tR] = mulCorrFingerGeneration(signalSettings,tR,ch)
 % Generates all the correlator fingers
 %
 % Inputs:
+%   signalSettings  - Settings for one signal
 %   tR              - Track data for all channels
 %   ch              - Channel number for processing
 %
@@ -64,7 +65,7 @@ add_data = floor(add_data);
 % This is the long code with data added on both sides
 longCode = [Code(end-add_data+1:end) Code Code(1:add_data)];
 
-% Time stamps for for prompt finger (TBA: DO we need this)
+% Time stamps for prompt finger (TBA: DO we need this)
 tcode       = ((codePhase) : ...
               codePhaseStep : ...
               ((blockSize-1)*codePhaseStep+codePhase))*scalingFactor;         

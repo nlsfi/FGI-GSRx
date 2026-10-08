@@ -24,6 +24,7 @@ function rfData = readRfData(fid, dataType, complexData, iqSwap, bytesToSkip, sa
 %   fid                 - RF file identifier
 %   dataType            - Type of data to read
 %   complexData         - Complex or Real data
+%   iqSwap              - Is the IQ data swapped (QI)?
 %   bytesToSkip         - Bytes to skip from beginning of file
 %   samplesToRead       - Samples to read from file
 %
@@ -49,9 +50,9 @@ if (complexData == true)
     Idata = data(1:2:end);
     Qdata = data(2:2:end);
     if iqSwap == true
-        Cdata = Qdata + i.* Idata;
+        Cdata = Qdata + 1i.* Idata;
     else
-        Cdata = Idata + i.* Qdata;
+        Cdata = Idata + 1i.* Qdata;
     end
     rfData=Cdata;        
 else
@@ -66,5 +67,3 @@ else
     
     rfData=data;
 end
-
-

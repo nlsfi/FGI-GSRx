@@ -21,6 +21,7 @@ function tR = phaseDiscrim(signalSettings,tR,ch)
 % Phase discriminator function 
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %

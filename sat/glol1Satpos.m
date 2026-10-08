@@ -31,6 +31,7 @@ function [satPositions, satClkCorr, groupDelay, satVelocities, satHealth, satAcc
 % Outputs:
 %   satPositions        - satellites positions
 %   satClkCorr          - corrections for satellite clock
+%   groupDelay          - group delay
 %   satVelocities       - satellites velocities
 %   satHealth           - Satellite health flag. true for good satellites
 %   satAcc              - mean square ephemeris error prediction
@@ -65,7 +66,7 @@ y0(6)= eph(prn).zdot * 1000; %VZ
 tspan = [0 deltat];
 
 % Solve the differential equation
-[T,Y] = ode45(@orbit, tspan, y0);
+[~,Y] = ode45(@orbit, tspan, y0);
 y(1)     = Y(end,1);
 y(2)     = Y(end,2);
 y(3)     = Y(end,3);

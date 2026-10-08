@@ -22,7 +22,6 @@ function [rfData,sampleCnt] = getDataForAcquisition(params,msToProcess)
 %
 %  Inputs: 
 %       params - Configuration parameters for one signal
-%       msToSkip - ms to skip from beginning of file
 %       msToProcess - ms to read from file
 %
 %   Output:
@@ -40,7 +39,7 @@ samplesToRead = msToProcess*samplesPerMs; % Total number of samples to read
 
 
 % Lets open the file and read the data
-[fid, message] = fopen(fileNameStr, 'rb');
+[fid, ~] = fopen(fileNameStr, 'rb');
 
 if (fid > 0)
     sampleCnt =(ftell(fid))/(bytesPerSample);        

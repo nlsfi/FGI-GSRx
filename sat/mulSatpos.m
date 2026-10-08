@@ -43,8 +43,8 @@ GravConstant = const.EARTH_GRAVCONSTANT; % WGS-84 value for the earths universal
 F = -2*sqrt(GravConstant)/c^2;
 
 dCrs=eph(prn).C_rs; 					%sine correction to radius
-dCuc=eph(prn).C_uc; 					%cosine correction to lattitude
-dCus=eph(prn).C_us; 					%sine correction to lattitude
+dCuc=eph(prn).C_uc; 					%cosine correction to latitude
+dCus=eph(prn).C_us; 					%sine correction to latitude
 dCic=eph(prn).C_ic; 					%cosine correction to inclination
 dCrc=eph(prn).C_rc; 					%cosine correction to radius
 dCis=eph(prn).C_is; 					%sine correction to inclination
@@ -98,10 +98,10 @@ for k=1:20
 
     if(abs(dTemp) < 1.0e-14)
         break;
-    end;
+    end
     
     E = E + dTemp;
-end;
+end
 
 % Reduce eccentric anomaly to between 0 and 360 deg
 E   = rem(E + 2*gpsPi, 2*gpsPi);
@@ -206,6 +206,3 @@ satVelocity(1) = -Ldot*(dY) + Xpdot*cL - (dtemp3 + dtemp2)*sL;
 satVelocity(2) = Ldot*(dX) + Xpdot*sL + (dtemp3 - dtemp2)*cL;
 satVelocity(3) = dtemp*Idot + Ypdot*sI;
 satVelocity(4) = dDeltaFreq;
-
-
-

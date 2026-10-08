@@ -31,6 +31,7 @@ function [dIono, tec] = neQuickIonoCorrection( towMs, week, userpos, satpos, fre
 %          freq       1×m vector of carrier frequencies [Hz]
 %          ionoParam  structure containing the broadcast NeQuick G parameters
 %                     DEFAULT: struct( 'a0', 63.7, 'a1', 0, 'a2', 0 )
+%          const      constants
 %
 % Outputs: 
 %          dIono      n×m array of ionospheric group delays in units of meters

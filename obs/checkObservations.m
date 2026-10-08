@@ -22,13 +22,14 @@ function obs = checkObservations(obs,sat,allSettings,navSolution)
 % navigation
 %
 % Inputs:
-%   obs             - structure with observations for one measurement epochs
-%   sat             - structure with satellite info for one epochs
+%   obs             - structure with observations for one measurement epoch
+%   sat             - structure with satellite info for one epoch
 %   allSettings     - configuration parameters
-%   navSolutions    - Output from navigation (position, velocity, time,
+%   navSolution     - Output from navigation (position, velocity, time,
+%   dop etc)
 %   currMeasNr      - Time index
 % Outputs:
-%   obs             - structure with observations for one measurement epochs
+%   obs             - structure with observations for one measurement epoch
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -69,6 +70,3 @@ if(allSettings.osnma.enableOSNMA==1)
    end
 end
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-

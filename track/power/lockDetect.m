@@ -21,6 +21,7 @@ function tR = lockDetect(signalSettings,tR,ch)
 % Lock Detector function for all signals
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %

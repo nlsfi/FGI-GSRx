@@ -32,7 +32,7 @@ function [c,lags] = calcCrossCorrelation(x,y)
 
 [x,nshift] = shiftdim(x);
 x = x(:);
-[M,N] = size(x);
+M = size(x, 1);
 maxlag = M - 1;
 
 y = y(:);
@@ -60,5 +60,3 @@ c = [c(end-maxlag+1:end,:);c(1:maxlag+1,:)];
 
 % If first vector is a row, return a row
 c = shiftdim(c,-nshift);
-
-

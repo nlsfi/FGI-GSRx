@@ -117,6 +117,7 @@ OmegaEDot = 7.2921151467e-5;
 % Find the bordering latitudes
 [adjLat, latDiff] = findAdjacent(ionexTables.latitudes, lat, 2);
 % Compute TEC values to tow bordering time values
+tecs = zeros(1, 2);
 for i=[1,2]
   % Rotate the longitudes to the new time
   % i.e., if time increases, smaller longitude values correspond to TEC

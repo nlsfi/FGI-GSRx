@@ -48,7 +48,7 @@ for i = 1:allSettings.sys.nrOfSignals
     fileNameStr = paramBlock.rfFileName; % Filename for RF data file
     
     % Lets open the file and read the data
-    [fid, message] = fopen(fileNameStr, 'rb');
+    [fid, ~] = fopen(fileNameStr, 'rb');
 
     if (fid > 0)
         pRfData = readRfData(fid, paramBlock.dataType, paramBlock.complexData, paramBlock.iqSwap, paramBlock.numberOfBytesToSkip, samplesToRead);    
@@ -65,6 +65,3 @@ for i = 1:allSettings.sys.nrOfSignals
     drawnow;
 
 end
-
-
-

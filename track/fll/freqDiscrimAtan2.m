@@ -21,6 +21,7 @@ function tR = freqDiscrimAtan2(signalSettings,tR,ch)
 % Atan2 frequency discriminator function
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -44,7 +45,7 @@ else
 end
 
 
-% Calcualte dot and cross products
+% Calculate dot and cross products
 dot   = (IP_1*IP_2 + QP_1*QP_2);
 cross = (IP_1*QP_2 - IP_2*QP_1);
 

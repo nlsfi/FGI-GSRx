@@ -25,11 +25,11 @@ function obsSingle = applyIonoCorrections(signalSettings, const, obsSingle, satS
 %   const           - Constants
 %   obsSingle       - Observations for one epoch
 %   satSingle       - satellite positions and velocities for one epoch
-%   navSolutions    - Output from navigation (position, velocity, time,
+%   navSolution     - Output from navigation (position, velocity, time,
 %   dop etc)
 %   refTime         - Reference time 
 %   corrIonoData    - contains ionosphere parameters
-% Outputss:
+% Outputs:
 %   obsSingle       - Observations for one epoch
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,6 +56,3 @@ end
 % Copy results
 obsSingle.ionoCorr = -ionoCorr;
 obsSingle.corrP = obsSingle.corrP + obsSingle.ionoCorr;
-
-
-

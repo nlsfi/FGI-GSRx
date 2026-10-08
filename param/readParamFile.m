@@ -21,11 +21,11 @@ function settings = readParamFile(filename,settings)
 % Function reads a parameter file and updates the settings structure
 % 
 % Input:
-%   filename   -   Name of parameter file to read
-%   settings     - Receiver settings. 
+%   filename     - Name of parameter file to read
+%   settings     - Receiver setting
 %
 % Output:
-%   settings     - Updated receiver settings. 
+%   settings     - Updated receiver settings
 %   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

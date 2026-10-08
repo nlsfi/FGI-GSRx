@@ -46,7 +46,7 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     signalSettings = allSettings.(signal);
     
     % Open file for reading
-    [fid, message] = fopen(signalSettings.rfFileName, 'rb');
+    [fid, ~] = fopen(signalSettings.rfFileName, 'rb');
     if (fid == -1)
        error('Failed to open data file for tracking!');
        return;
@@ -93,5 +93,3 @@ end % Loop over all epochs
 
 % Notify user tracking is over
 disp(['   Tracking is over (elapsed time ', datestr(now - trackStartTime, 13), ')']) 
-
-

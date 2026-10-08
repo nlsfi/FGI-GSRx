@@ -21,6 +21,7 @@ function tR = navicl5UpdateChannelState(signalSettings,tR,ch)
 % Update track state for gps tracking
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -42,8 +43,6 @@ elseif (trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllWideBand
 elseif (trackChannelData.bitSync ==1 && trackChannelData.fllLockIndicator(loopCnt)>=trackChannelData.fllNarrowBandLockIndicatorThreshold && ...
         trackChannelData.pllLockIndicator(loopCnt)>=trackChannelData.pllNarrowBandLockIndicatorThreshold)
     trackChannelData.trackState = 'STATE_FINE_TRACKING';
-else
-    ;
 end
 
 
@@ -55,4 +54,3 @@ trackChannelData.bInited = true;
 
 % Copy updated local variables
 tR.channel(ch) = trackChannelData;
-

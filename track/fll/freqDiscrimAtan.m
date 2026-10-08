@@ -21,6 +21,7 @@ function tR = freqDiscrimAtan(signalSettings,tR,ch)
 % Atn frequency discriminator function
 %
 % Inputs:
+%   signalSettings - Settings for one signal
 %   tR             - Results from signal tracking for one signals
 %   ch             - Channel index
 %
@@ -43,7 +44,7 @@ else
     QP_1 = signalSettings.Nc;    
 end
 
-% Calcualte dot and cross products
+% Calculate dot and cross products
 dot   = (IP_1*IP_2 + QP_1*QP_2);
 cross = (IP_1*QP_2 - IP_2*QP_1);
 

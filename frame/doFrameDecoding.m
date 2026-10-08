@@ -52,16 +52,17 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
     % Find preamble positions 
     [obs.(signal)] = findPreambles(tR.(signal), obs.(signal), signalSettings);
     
-    %%Consistency check whether all the subframes point to the same subframe beginning 
+    %Consistency check whether all the subframes point to the same subframe beginning
+	firstSubFrames = zeros(1, tR.(signal).nrObs);
     for channelNr = 1:tR.(signal).nrObs
         firstSubFrames(channelNr) = obs.(signal).channel(channelNr).firstSubFrame;
     end
 
 
-    [maxVal maxInd] = max(firstSubFrames);
-    [minVal minInd] = min(firstSubFrames);
-    if (max(firstSubFrames)-min(firstSubFrames))>=signalSettings.preambleIntervall %subFrame/page length of each system, for Galileo it is 250 symbols
-        indices = find((max(firstSubFrames)-firstSubFrames)>=signalSettings.preambleIntervall);
+    maxVal = max(firstSubFrames);
+    minVal = min(firstSubFrames);
+    if (maxVal-minVal)>=signalSettings.preambleIntervall %subFrame/page length of each system, for Galileo it is 250 symbols
+        indices = find((maxVal-firstSubFrames)>=signalSettings.preambleIntervall);
         firstSubFrames(indices) = firstSubFrames(indices)+signalSettings.preambleIntervall;
         for channelNr = 1:tR.(signal).nrObs
            obs.(signal).channel(channelNr).firstSubFrame = firstSubFrames(channelNr);
@@ -81,6 +82,7 @@ for signalIndex = 1:allSettings.sys.nrOfSignals
 
             parityCheck = true;
             % TBA. Move parity checking to proper place for each signal
+            parity = zeros(1:10);
             for i=0:9
                 parity(i+1) = parityFunc(tR.(signal).channel(channelNr), obs.(signal).channel(channelNr).firstSubFrame,i+1);
 
