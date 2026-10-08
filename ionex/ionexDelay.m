@@ -89,7 +89,7 @@ while counter < 15 && abs(height - targetHeight) > 10
   losStep = losStep * (targetHeight - height) / (height - previousHeight);
 end
 
-if abs(height - targetHeight > 10)
+if abs(height - targetHeight) > 10
   error('Could not find a suitable piercing point');
 end
 
