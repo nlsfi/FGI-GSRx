@@ -113,7 +113,7 @@ end
 
 % Copying data to output data structure
 Vel.dopplerResid = Res;
-Vel.nrSats = nrSatsUsed;
+Vel.nrSats = diff([0 nrSatsUsed]);
 Vel.xyz = vel(1:3);
 Vel.df = vel(4:end);
 Vel.fom = norm(Res/length(Res));
