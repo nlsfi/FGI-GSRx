@@ -104,8 +104,8 @@ for signalNr = 1:allSettings.sys.nrOfSignals
 
         %----- Correlation ------------------------------------------------
         plot(handles(2, 2), timeAxisInMs/1000, ...
-                            [sqrt(tC.I_P(timeAxisInMs).^2 + ...
-                                  tC.Q_P(timeAxisInMs).^2)'], '-*');
+                            sqrt(tC.I_P(timeAxisInMs).^2 + ...
+                                  tC.Q_P(timeAxisInMs).^2)', '-*');
 
         grid  (handles(2, 2));
         title (handles(2, 2), 'Correlation results');
@@ -148,15 +148,13 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     end % for channelNr 
     
     figure; hold on; grid on;        
-    visiblePRN=[];
-    dispind = 1;
+    visiblePRN = zeros(1, tR.(signal).nrObs);
     for channelNr=1:tR.(signal).nrObs
         tC = tR.(signal).channel(channelNr);
         sampleSpacing = tR.(signal).PDIcarr*1000;
         timeAxisInMs = sampleSpacing:sampleSpacing:length(tC.I_P); % create the time vector for the x-axis
-        plot(timeAxisInMs/1000,round(tC.meanCN0fromSNR(timeAxisInMs)),displayPattern(dispind,:)); hold on; grid on;  
-        dispind=dispind+1;
-        visiblePRN = [visiblePRN double(tC.SvId.satId)];         
+        plot(timeAxisInMs/1000,round(tC.meanCN0fromSNR(timeAxisInMs)),displayPattern(channelNr,:));
+        visiblePRN(channelNr) = double(tC.SvId.satId);
         title(['Carrier-to-Noise Density Ratio (C/N_0) for the tracked ', signal, ' satellites']);
         xlabel('Time (s)');
         ylabel('C/N_0 (dB-Hz)');                
@@ -164,15 +162,13 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     legend(num2str(visiblePRN'));   
 
     figure; hold on; grid on;        
-    visiblePRN=[];
-    dispind = 1;
+    visiblePRN = zeros(1, tR.(signal).nrObs);
     for channelNr=1:tR.(signal).nrObs
         tC = tR.(signal).channel(channelNr);
         sampleSpacing = tR.(signal).PDIcarr*1000;
         timeAxisInMs = sampleSpacing:sampleSpacing:length(tC.I_P); % create the time vector for the x-axis
-        plot(timeAxisInMs/1000,round(tC.SNR(timeAxisInMs)),displayPattern(dispind,:)); hold on; grid on;  
-        dispind=dispind+1;
-        visiblePRN = [visiblePRN double(tC.SvId.satId)];         
+        plot(timeAxisInMs/1000,round(tC.SNR(timeAxisInMs)),displayPattern(channelNr,:));
+        visiblePRN(channelNr) = double(tC.SvId.satId);
         title(['Signal-to-Noise Ratio (SNR) for the tracked ', signal, ' satellites']);
         xlabel('Time (s)');
         ylabel('SNR (dB)');                
@@ -180,10 +176,3 @@ for signalNr = 1:allSettings.sys.nrOfSignals
     legend(num2str(visiblePRN'));   
 
 end %for signalNr
-
-
-
-
-
-
-
