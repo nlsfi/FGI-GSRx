@@ -39,7 +39,7 @@ Pos.bValid = false;
 WGS84oe = allSettings.const.EARTH_WGS84_ROT;
 SPEED_OF_LIGHT = allSettings.const.SPEED_OF_LIGHT;
 
-% Temporary variables
+% Maximum number of iterations for Least Squares
 nmbOfIterations = 10;
 
 % Total number of signals enabled
@@ -101,15 +101,28 @@ for iter = 1:nmbOfIterations
     % This is the actual solution to the LSE optimization problem
     H = sv_matrix;
     dR = dRange;
-    DeltaPos=(H'*H)\(H'*dR');
+    DeltaPos = (H'*H)\(H'*dR');
+
+    % Calculate how much the position components will change (norm)
+    posChange = norm(DeltaPos(1:3));
+
+    % Calculate how much the time components will change (absolute value)
+    absDtChange = abs(pos(4:end)' - DeltaPos(4:end)/SPEED_OF_LIGHT);
 
     % Updating the position with the solution
     pos(1)=  pos(1) - DeltaPos(1);
     pos(2) = pos(2) - DeltaPos(2);
     pos(3) = pos(3) - DeltaPos(3);
-    
+
     % Update the clock offsets for all systems
     pos(4:end) = DeltaPos(4:end)/SPEED_OF_LIGHT; % In seconds
+
+    % If the xyz position changes less than 0.001 m AND
+    % the times dt change less than 1e-14 s (distance less than order 1e-6 m)
+    % then stop iterating
+    if posChange < 0.001 && all(absDtChange < 1e-14)
+        break
+    end
 end    
 
 % Copying data to output data structure
