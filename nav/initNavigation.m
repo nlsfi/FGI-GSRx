@@ -92,21 +92,22 @@ for signalNr = 1:allSettings.sys.nrOfSignals
 end
 
 % Init navData structure
-navData.Pos.xyz  = zeros(1,3);
-navData.Pos.lla = zeros(1,3);
+navData.Pos.xyz  = zeros(1, 3);
+navData.Pos.LLA = zeros(1, 3);
 navData.Pos.fom = NaN;
-navData.Pos.dop = zeros(1,5);
+navData.Pos.dop = zeros(1, 5);
 navData.Pos.trueRange = NaN;
 navData.Pos.rangeResid = NaN;
 navData.Pos.nrSats = NaN;
 navData.Pos.dt = NaN;
 navData.Pos.bValid = false;
 navData.Pos.Flag = NaN;
+navData.Pos.signals = NaN;
 
-navData.Vel.xyz = zeros(1,3);
+navData.Vel.xyz = zeros(1, 3);
 navData.Vel.fom = NaN;
 navData.Vel.dopplerResid = NaN;
-navData.Vel.nrSats = 0;
+navData.Vel.nrSats = NaN;
 navData.Vel.df = NaN;
 navData.Vel.bValid = false;
 
