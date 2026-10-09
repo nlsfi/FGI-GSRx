@@ -40,7 +40,6 @@ WGS84oe = allSettings.const.EARTH_WGS84_ROT;
 SPEED_OF_LIGHT = allSettings.const.SPEED_OF_LIGHT;
 
 % Temporary variables
-rcvr_clock_corr = 0;
 nmbOfIterations = 10;
 
 % Total number of signals enabled
@@ -48,8 +47,6 @@ nrOfSignals = allSettings.sys.nrOfSignals;
 
 % Init clock elements in pos vector
 pos(4:3+nrOfSignals) = zeros;
-
-%nrSatsUsed = zeros(1,length(obs));
 
 % Iteratively find receiver position 
 for iter = 1:nmbOfIterations
@@ -64,52 +61,52 @@ for iter = 1:nmbOfIterations
         % Loop over all channels
         for channelNr = 1:obs.(signal).nrObs
             if(obs.(signal).channel(channelNr).bObsOk)
-                ind = ind + 1; % Index for valid obervations                                
-                pseudo_range(ind) = obs.(signal).channel(channelNr).corrP;
-                            
+                % Index for valid observations
+                ind = ind + 1;
+
+                % Get corrected pseudorange
+                pseudo_range = obs.(signal).channel(channelNr).corrP;
+
                 % Calculate range to satellite
-                dx=sat.(signal).channel(channelNr).Pos(1)-pos(1);
-                dy=sat.(signal).channel(channelNr).Pos(2)-pos(2);
-                dz=sat.(signal).channel(channelNr).Pos(3)-pos(3);                
-                range(ind)=sqrt(dx^2+dy^2+dz^2); % This is the calculated range to the satellites
+                dx = sat.(signal).channel(channelNr).Pos(1) - pos(1);
+                dy = sat.(signal).channel(channelNr).Pos(2) - pos(2);
+                dz = sat.(signal).channel(channelNr).Pos(3) - pos(3);
+                range(ind) = sqrt(dx^2 + dy^2 + dz^2); % This is the calculated range to the satellites
 
                 % Direction cosines
-                sv_matrix(ind,1) = dx/range(ind);
-                sv_matrix(ind,2) = dy/range(ind);
-                sv_matrix(ind,3) = dz/range(ind);
-                sv_matrix(ind,3+signalNr) = 1;
-                
-                % Total clock correction term (m). */
-                %clock_correction = c*(sv_pos.dDeltaTime - eph(info.PRN).group_delay);
-                clock_correction = 0;
+                sv_matrix(ind, 1) = dx / range(ind);
+                sv_matrix(ind, 2) = dy / range(ind);
+                sv_matrix(ind, 3) = dz / range(ind);
+                sv_matrix(ind, 3 + signalNr) = 1;
                 
                 % First compute the SV's earth rotation correction
                 rhox = sat.(signal).channel(channelNr).Pos(1) - pos(1);
                 rhoy = sat.(signal).channel(channelNr).Pos(2) - pos(2);
-                EarthRotCorr(ind) = WGS84oe / SPEED_OF_LIGHT * (sat.(signal).channel(channelNr).Pos(2)*rhox-sat.(signal).channel(channelNr).Pos(1)*rhoy);
+                EarthRotCorr = WGS84oe / SPEED_OF_LIGHT * (sat.(signal).channel(channelNr).Pos(2)*rhox-sat.(signal).channel(channelNr).Pos(1)*rhoy);
 
                 % Total propagation delay.
-                propagation_delay(ind) = range(ind) + EarthRotCorr(ind) - clock_correction;
+                propagation_delay = range(ind) + EarthRotCorr;
 
-                % Correct the pseudoranges also (because we corrected rcvr stamp)
-                pseudo_range(ind)  = pseudo_range(ind) - SPEED_OF_LIGHT*rcvr_clock_corr;
-                omp.dRange(ind)    = pseudo_range(ind) - propagation_delay(ind);
-                Res(ind) = omp.dRange(ind) - pos(3 + signalNr)*SPEED_OF_LIGHT;                
+                 % (Observed) corrected pseudorange minus computed range
+                dRange(ind) = pseudo_range - propagation_delay;
+
+                % Calculate residual
+                Res(ind) = dRange(ind) - pos(3 + signalNr) * SPEED_OF_LIGHT;
                 
             end
         end
         nrSatsUsed(signalNr) = ind;
     end
      
-    % This is the actual solution to the LSE optimisation problem
-    H=sv_matrix;%(1:5,:);
-    dR=omp.dRange;%(1:5);
-    DeltaPos=(H'*H)^(-1)*H'*dR';
+    % This is the actual solution to the LSE optimization problem
+    H = sv_matrix;
+    dR = dRange;
+    DeltaPos=(H'*H)\(H'*dR');
 
     % Updating the position with the solution
-    pos(1)=pos(1)-DeltaPos(1);
-    pos(2)=pos(2)-DeltaPos(2);
-    pos(3)=pos(3)-DeltaPos(3);
+    pos(1)=  pos(1) - DeltaPos(1);
+    pos(2) = pos(2) - DeltaPos(2);
+    pos(3) = pos(3) - DeltaPos(3);
     
     % Update the clock offsets for all systems
     pos(4:end) = DeltaPos(4:end)/SPEED_OF_LIGHT; % In seconds
@@ -124,10 +121,10 @@ Pos.xyz = pos(1:3);
 Pos.dt = pos(4:end);
 
 % Get dop values
-Pos.dop = getDOPValues(allSettings.const,H, Pos.xyz);
+Pos.dop = getDOPValues(allSettings.const, H, Pos.xyz);
 
 % Calculate fom
-Pos.fom = norm(Res/length(Res));
+Pos.fom = norm(Res / length(Res));
 
 % Check if solution is valid
 if(Pos.fom < 50)
