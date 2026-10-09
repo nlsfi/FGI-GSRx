@@ -49,8 +49,6 @@ nrOfSignals = allSettings.sys.nrOfSignals;
 % Init clock elements in vel vector
 vel(4:3+nrOfSignals) = zeros;
 
-%nrSatsUsed = zeros(1,length(obs));
-
 % Iteratively find receiver velocity
 for iter = 1:nmbOfIterations
     ind = 0;    
@@ -65,30 +63,33 @@ for iter = 1:nmbOfIterations
         for channelNr = 1:obs.(signal).nrObs
 
             if(obs.(signal).channel(channelNr).bObsOk)
-                ind = ind + 1; % Index for valid obervations
-            
+                % Index for valid observations
+                ind = ind + 1;
+
                 % These are the dopplers for all satellites
-                pseudo_range_rate(ind) = obs.(signal).channel(channelNr).doppler;
+                pseudo_range_rate = obs.(signal).channel(channelNr).doppler;
                 
                 % Calculate range to satellite    
-                dx=sat.(signal).channel(channelNr).Pos(1)-pos(1);
-                dy=sat.(signal).channel(channelNr).Pos(2)-pos(2);
-                dz=sat.(signal).channel(channelNr).Pos(3)-pos(3);
-                range(ind)=sqrt(dx^2+dy^2+dz^2); 
+                dx = sat.(signal).channel(channelNr).Pos(1) - pos(1);
+                dy = sat.(signal).channel(channelNr).Pos(2) - pos(2);
+                dz = sat.(signal).channel(channelNr).Pos(3) - pos(3);
+                range = sqrt(dx^2 + dy^2 + dz^2);
 
                 % Direction cosines
-                sv_matrix(ind,1) = dx/range(ind);
-                sv_matrix(ind,2) = dy/range(ind);
-                sv_matrix(ind,3) = dz/range(ind);
-                sv_matrix(ind,3+signalNr) = 1;
+                sv_matrix(ind, 1) = dx / range;
+                sv_matrix(ind, 2) = dy / range;
+                sv_matrix(ind, 3) = dz / range;
+                sv_matrix(ind, 3 + signalNr) = 1;
                 
-                relative_velocity(ind) = dx * sat.(signal).channel(channelNr).Vel(1) + dy * sat.(signal).channel(channelNr).Vel(2) + dz * sat.(signal).channel(channelNr).Vel(3);
-                relative_velocity(ind) = relative_velocity(ind) / sqrt(dx*dx+dy*dy+dz*dz);
+                % Calculate relative velocity
+                relative_velocity = dx * sat.(signal).channel(channelNr).Vel(1) + dy * sat.(signal).channel(channelNr).Vel(2) + dz * sat.(signal).channel(channelNr).Vel(3);
+                relative_velocity = relative_velocity / range;
 
                 % Observed minus predicted
-                omp.dRange_rate(ind) = pseudo_range_rate(ind) + relative_velocity(ind) + sat.(signal).channel(channelNr).Vel(4) * SPEED_OF_LIGHT;
+                dRange_rate(ind) = pseudo_range_rate + relative_velocity + sat.(signal).channel(channelNr).Vel(4) * SPEED_OF_LIGHT;
 
-                Res(ind) = omp.dRange_rate(ind) - vel(3 + signalNr)*SPEED_OF_LIGHT;                
+                % Calculate residual
+                Res(ind) = dRange_rate(ind) - vel(3 + signalNr) * SPEED_OF_LIGHT;
                 
             end
         end
@@ -96,18 +97,18 @@ for iter = 1:nmbOfIterations
         
     end
 
-    % This is the actual solution to the LSE optimisation problem
-    H=sv_matrix;
-    dR=omp.dRange_rate;
-    DeltaVel=(H'*H)^(-1)*H'*dR';
+    % This is the actual solution to the LSE optimization problem
+    H = sv_matrix;
+    dR = dRange_rate;
+    DeltaVel = (H'*H)\(H'*dR');
 
     % Updating the position with the solution
-    vel(1)=DeltaVel(1);
-    vel(2)=DeltaVel(2);
-    vel(3)=DeltaVel(3);
+    vel(1) = DeltaVel(1);
+    vel(2) = DeltaVel(2);
+    vel(3) = DeltaVel(3);
 
     % Update the clock offsets for all systems
-    vel(4:end) = DeltaVel(4:end)/SPEED_OF_LIGHT;
+    vel(4:end) = DeltaVel(4:end) / SPEED_OF_LIGHT;
 
 end    
 
