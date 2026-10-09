@@ -93,7 +93,6 @@ end
 
 % Init navData structure
 navData.Pos.xyz  = zeros(1,3);
-navData.Pos.enu = zeros(1,3);
 navData.Pos.lla = zeros(1,3);
 navData.Pos.fom = NaN;
 navData.Pos.dop = zeros(1,5);
