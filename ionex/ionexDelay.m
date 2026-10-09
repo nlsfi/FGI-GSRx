@@ -51,7 +51,8 @@ if size(svPosition,1) > 1
 end
 
 % TEC units in IONEX files. One TECU is 1e16.
-ionexTecu = 1e15;
+ionexTecu = 1e16;
+ionexScalingFactor = 0.1; % Please check details from literature
 % Find the piercing point
 height = ionexTables.height;
 try
@@ -61,7 +62,7 @@ try
     % Compute the slant TEC value
     slantTec =  vtec / sin(angle/180*pi);
     % Compute the delay in meters
-    delay = 40.30 * slantTec * ionexTecu / frequency^2;
+    delay = (40.30 * slantTec * ionexTecu * ionexScalingFactor) / (frequency^2);
 catch
     delay = 0;
 end
