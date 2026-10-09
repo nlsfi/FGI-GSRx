@@ -18,7 +18,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function acqResults = initAcquisition(allSettings)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This function initialises the acquisition structure
+% This function initializes the acquisition structure
 %
 % Inputs: 
 %   allSettings         - Receiver settings
@@ -37,7 +37,7 @@ for i = 1:allSettings.sys.nrOfSignals
     for k=1:len
         acqResults.(signal).channel(k).peakMetric = 0;
         acqResults.(signal).channel(k).peakValue = 0;
-        acqResults.(signal).channel(k).variance = 0;
+        acqResults.(signal).channel(k).standardDev = 0;
         acqResults.(signal).channel(k).baseline = 0;
         acqResults.(signal).channel(k).bFound = 0;
         acqResults.(signal).channel(k).carrFreq = 0;
@@ -47,4 +47,3 @@ for i = 1:allSettings.sys.nrOfSignals
     end
     
 end
-
